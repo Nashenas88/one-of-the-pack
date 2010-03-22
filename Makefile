@@ -41,7 +41,7 @@ endif
 all: $(PROG)
 
 $(PROG):	$(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
-	cd $(SRC_DIR); $(CC) $(ARCH) $(CFLAGS) -o $(PROG) $(INCL) $(SRCS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS)
+	cd $(SRC_DIR); $(CC) $(ARCH) $(CFLAGS) -o $(PROG) $(INCL) $(SRCS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS); mv $(PROG) ../
 
 clean:
 	rm -f $(PROG)

@@ -9,15 +9,20 @@
 
 #define DIST_CHECK 30
 
+#define RESOURCES "resources/"
+#define LEVEL1 "Level 1/"
+#define LEVEL2 "Level 2/"
+#define LEVEL3 "Level 3/"
+
 // texture files
-#define TILE_TEXTURE "resources/tiles2.png"
-#define BACKGROUND_TEXTURE "resources/bg.png"
-#define PAUSED_BACKGROUND "resources/pause_background.png"
-#define PLAYER_TEXTURE "resources/Flock you! Ulysses the Blob.png"
-#define MAP1 "resources/blob sample level.bmp"
+#define TILE_TEXTURE "tiles.png"
+#define BACKGROUND_TEXTURE "bg.png"
+#define PAUSED_BACKGROUND "pause_background.png"
+#define PLAYER_TEXTURE "Flock you! Ulysses the Blob.png"
+#define MAP1 "level.bmp"
 
 // sound files
-#define PLAYER_SOUND "resources/Level 1 - Default.wav"
+#define PLAYER_SOUND "Default.wav"
 
 // widths and heights
 #define TILE_WIDTH 100

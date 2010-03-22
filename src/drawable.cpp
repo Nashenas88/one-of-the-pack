@@ -48,7 +48,6 @@ Drawable::Drawable(float x, float y, int num, int frames, D_TYPE type, Texture *
   {
     width = texture->get_width();
     height = texture->get_height();
-    cout << width << " " << height << endl;
   }
   reset_corners();
 }
