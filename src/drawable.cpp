@@ -5,9 +5,6 @@
   #include <GL/glut.h>
 #endif
 
-#include <iostream>
-using namespace std;
-
 #include "drawable.h"
 #include "defines.h"
 

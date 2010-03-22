@@ -5,12 +5,13 @@
 #include "player.h"
 #include "defines.h"
 
-enum Special_Dir_Text { PLAYER_RIGHT = 1, PLAYER_LEFT };
+enum Special_Dir_Text { SPECIAL_RIGHT = 1, SPECIAL_RIGHT };
 
 class Special : public Character
 {
 private:
   int loc[2];
+  bool following;
   /* attribute here */
   
 public:
@@ -19,7 +20,7 @@ public:
          direc dir, bool jump, int vs, int hs, FMOD_SYSTEM *sys,
          FMOD_SOUND *so, FMOD_CHANNEL *ch);
   
-  void use_ability(int dir);
+  virtual void use_ability(int dir);
   void start_following(Player *p);
   void stop_following(Player *p);
   void go_home();

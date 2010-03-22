@@ -159,7 +159,7 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables)
       // strong helper
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
       {
-        //moveables.push_back(new Stronger(x * TILE_WIDTH, y * TILE_HEIGHT));
+        moveables.push_back(new Ahnold(x * TILE_WIDTH, y * TILE_HEIGHT));
       }
       // jumping helper
       else if(red[0] == 0 && green[0] == 255 && blue[0] == 0)

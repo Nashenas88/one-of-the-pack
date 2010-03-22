@@ -47,6 +47,8 @@ public:
   
   // getters and setters
   void get_top_left(float &x, float &y);
+  float get_x(void) {return tl_x;}
+  float get_y(void) {return tl_y;}
   void set_width(int w) {width = w;}
   int get_width(void) {return width;}
   void set_height(int h) {height = h;}
