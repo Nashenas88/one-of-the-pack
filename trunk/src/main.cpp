@@ -52,16 +52,16 @@ int main(int argc, char *argv[])
   FMOD_RESULT result;
   
   // initializing the texture
-  t = new Texture(PLAYER_TEXTURE);
-  bg = new Texture(BACKGROUND_TEXTURE);
-  tiles = new Texture(TILE_TEXTURE);
-  pause_bg = new Texture(PAUSED_BACKGROUND);
-  mi = new Texture(MAP1);
+  t = new Texture(RESOURCES LEVEL1 PLAYER_TEXTURE);
+  bg = new Texture(RESOURCES LEVEL1 BACKGROUND_TEXTURE);
+  tiles = new Texture(RESOURCES LEVEL1 TILE_TEXTURE);
+  pause_bg = new Texture(RESOURCES PAUSED_BACKGROUND);
+  mi = new Texture(RESOURCES LEVEL1 MAP1);
   
   // initializing the sound system and the sounds
   initSound(&system);
   
-  result = FMOD_System_CreateSound(system, PLAYER_SOUND, FMOD_SOFTWARE, 0, &s_sound);
+  result = FMOD_System_CreateSound(system, RESOURCES LEVEL1 PLAYER_SOUND, FMOD_SOFTWARE, 0, &s_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
   
   vector<Drawable*> moveables;
   m = new Map(v);
-  m->load_map(MAP1, moveables);
+  m->load_map(RESOURCES LEVEL1 MAP1, moveables);
   
   s = new Game_State(p, m, system);
   paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,
