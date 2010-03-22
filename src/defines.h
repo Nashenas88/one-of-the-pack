@@ -15,6 +15,7 @@
 #define LEVEL3 "Level 3/"
 
 // texture files
+#define AHNOLD_TEXTURE "Ahnold.png"
 #define TILE_TEXTURE "tiles.png"
 #define BACKGROUND_TEXTURE "bg.png"
 #define PAUSED_BACKGROUND "pause_background.png"
