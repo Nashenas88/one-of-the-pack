@@ -15,15 +15,14 @@
 #define LEVEL3 "Level 3/"
 
 // texture files
-#define AHNOLD_TEXTURE "Ahnold.png"
-#define TILE_TEXTURE "tiles.png"
+#define TILE_TEXTURE "tiles2.png"
 #define BACKGROUND_TEXTURE "bg.png"
 #define PAUSED_BACKGROUND "pause_background.png"
 #define PLAYER_TEXTURE "Flock you! Ulysses the Blob.png"
-#define MAP1 "level.bmp"
+#define MAP1 "blob sample level.bmp"
 
 // sound files
-#define PLAYER_SOUND "Default.wav"
+#define PLAYER_SOUND "resources/Level 1/Level 1 - Default.wav"
 
 // widths and heights
 #define TILE_WIDTH 100

@@ -19,6 +19,8 @@ public:
   
   void pickupItem(int item);
   
+  void Attack(int dir);
+  void Jump(void);
   void move(int x, int y);
 };
 
