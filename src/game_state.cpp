@@ -107,12 +107,6 @@ void Game_State::update(int &delta)
     mys = -mys;
   }
   
-  // if we are falling due to gravity, lock movement in the x
-  /*if((p_movey || m_movey) && p->getVSpeed() == GRAVITY_SPEED)
-  {
-    p_movex = m_movex = false;
-  }*/
-  
   if (m_movey && 0.0 >= my + mys &&
            my + mys + m->get_height() * TILE_HEIGHT >= SCREEN_HEIGHT)
   {
