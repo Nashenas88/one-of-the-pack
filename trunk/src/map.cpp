@@ -6,6 +6,7 @@ using namespace std;
 #include "ahnold.h"
 #include "map.h"
 #include "defines.h"
+#include "character.h"
 
 Map::Map(void)
 :Drawable(), map(NULL) {}
@@ -42,9 +43,10 @@ void Map::draw(void)
   }
 }
 
-bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables, vector<Character *> &specials,
-                   vector<Texture*> texs, FMOD_SYSTEM *system, 
-                   vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel)
+bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
+                   vector<Special *> &specials, vector<Texture*> texs,
+                   FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
+                   FMOD_CHANNEL *channel)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];

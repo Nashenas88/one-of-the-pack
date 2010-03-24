@@ -6,6 +6,7 @@ using namespace std;
 
 #include "player.h"
 #include "map.h"
+#include "special.h"
 #include "state.h"
 
 class Game_State : public State
@@ -13,14 +14,15 @@ class Game_State : public State
 private:
   Player *p; // human controlled player
   Map *m; // map object
-  vector<Character *> specials; // all specials that can follow player
   vector<Drawable *> moveables; // all moveable entities
+  vector<Special *> specials; // all specials that can follow player
   bool gravity; // is gravity on or off?
   bool collision; // is collision on or off?
   
 public:
   Game_State(void);
-  Game_State(Player *pl, Map *map, FMOD_SYSTEM *system);
+  Game_State(Player *pl, Map *map, vector<Drawable *> mvs,
+             vector<Special *> sps, FMOD_SYSTEM *system);
   
   // does all drawing for each level
   void draw(void);

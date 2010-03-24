@@ -2,12 +2,17 @@
 #define FLOCK__SPECIAL__H
 
 #include "character.h"
+#include "map.h"
 #include "player.h"
 #include "defines.h"
 
-enum Special_Dir_Text { SPECIAL_RIGHT = 1, SPECIAL_LEFT };
+typedef enum
+{
+  SPECIAL_RIGHT = 1,
+  SPECIAL_LEFT
+} Special_Dir_Text;
 
-class Special : public Character
+class Special: public Character
 {
 private:
   float loc[2];
@@ -16,7 +21,8 @@ private:
 public:
   Special(void);
   Special(float x, float y, int num, int frames, Texture *tex,
-         direc dir, int vs, int hs, FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch);
+         direc dir, int vs, int hs, FMOD_SYSTEM *sys, FMOD_SOUND *so,
+         FMOD_CHANNEL *ch);
   
   virtual void use_ability(int dir, Map *m){}
   void start_following(Player *p);
