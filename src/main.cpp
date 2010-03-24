@@ -135,6 +135,11 @@ int main(int argc, char *argv[])
     specials.at(i)->pause_sound();
   }
   
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->setVSpeed(GRAVITY_SPEED);
+  }
+  
   // set timer function to update and call
   // it in 25 miliseconds
   srand((unsigned)time(NULL));
