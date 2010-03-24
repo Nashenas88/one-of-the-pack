@@ -129,6 +129,12 @@ int main(int argc, char *argv[])
   paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,
                            map_image, ladder);
   
+  p->pause_sound();
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->pause_sound();
+  }
+  
   // set timer function to update and call
   // it in 25 miliseconds
   srand((unsigned)time(NULL));

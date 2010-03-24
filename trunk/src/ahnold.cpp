@@ -16,8 +16,6 @@ Ahnold::Ahnold(float x, float y, int num, int frames, Texture *tex, direc dir,
   
   result = FMOD_System_CreateSound(sys, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE, 0, &sfx);
   ERRCHECK(result);
-  
-  ((Character *)this)->pause_sound();
 }
 
 void Ahnold::use_ability(int dir, Map *m)
