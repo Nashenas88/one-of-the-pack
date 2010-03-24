@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "special.h"
 #include "defines.h"
 
@@ -48,11 +46,3 @@ void Special::move(int x, int y)
     set_tex_num(SPECIAL_LEFT);
   }
 }
-
-/*void Special::draw(void)
-{
-  float x, y;
-  get_top_left(x, y);
-  std::cout << x << " " << y << std::endl;
-  ((Character*)this)->draw();
-}*/
