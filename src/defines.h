@@ -24,6 +24,8 @@
 #define PLAYER_TEXTURE "Ulysses.png"
 #define AHNOLD_TEXTURE "Ahnold.png"
 
+#define NUM_SOUNDS_FILE "sounds.txt"
+
 // sound files
 #define PLAYER_SOUND "Default.wav"
 #define AHNOLD_SFX "Ahnold_sound.wav"
