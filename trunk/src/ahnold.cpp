@@ -9,7 +9,6 @@ Ahnold::Ahnold(float x, float y, int num, int frames, Texture *tex, direc dir,
                FMOD_SYSTEM *sys, FMOD_SOUND *music, FMOD_CHANNEL *ch)
 :Special(x, y, num, frames, tex, dir, 0, 0, sys, music, ch)
 {
-  printf("Creating Ahnold...\n");
   loc[0] = x;
   loc[1] = y;
   

@@ -2,6 +2,9 @@
 #include <time.h>
 
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 using namespace std;
 
 #include "player.h"
@@ -47,10 +50,14 @@ int main(int argc, char *argv[])
   Texture *t, *bg, *tiles, *pause_bg, *mi, *ahnold;
   Map *m;
   FMOD_SYSTEM *system;
-  FMOD_SOUND *s_sound;
+  FMOD_SOUND *s_sound, *temp_sound;
   vector<FMOD_SOUND *> sounds;
   FMOD_CHANNEL *channel = 0;
   FMOD_RESULT result;
+  
+  int num_sounds;
+  ifstream file;
+  stringstream temp_string;
   
   // initializing the texture
   t = new Texture(RESOURCES LEVEL1 PLAYER_TEXTURE);
@@ -68,6 +75,24 @@ int main(int argc, char *argv[])
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
+  
+  file.open (RESOURCES LEVEL1 NUM_SOUNDS_FILE, ios::in);
+  file >> num_sounds;
+  file.close();
+  
+  for (int i = 1; i <= num_sounds; ++i)
+  {
+    temp_string << RESOURCES LEVEL1 << i << ".wav";
+    
+    result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
+                                     FMOD_SOFTWARE, 0, &temp_sound);
+    ERRCHECK(result);
+    result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_NORMAL);
+    ERRCHECK(result);
+    
+    sounds.push_back(temp_sound);
+    temp_string.str("");
+  }
   
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
@@ -98,9 +123,7 @@ int main(int argc, char *argv[])
   
   vector<Drawable*> moveables;
   m = new Map(v);
-  printf("Loading Map...\n");
   m->load_map((RESOURCES LEVEL1 MAP1), moveables, textures, system, sounds, channel);
-  printf("Map Loaded\n");
   s = new Game_State(p, m, system);
   paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,
                            map_image, ladder);

@@ -10,7 +10,6 @@ Special::Special(float x, float y, int num, int frames, Texture *tex,
                  FMOD_CHANNEL *ch)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch)
 {
-  printf("Creating Special...\n");
   loc[0] = x;
   loc[1] = y;
   ((Character *)this)->pause_sound();
