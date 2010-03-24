@@ -6,11 +6,15 @@ Game_State::Game_State(void)
 Game_State::Game_State(Player *pl, Map *map, FMOD_SYSTEM *system)
 :State(system), p(pl), m(map), gravity(true), collision(true) {}
 
-// draw static background, then map, then player
+// draw static background, then map, then specials, then moveables, then player
 void Game_State::draw(void)
 {
   m->get_background()->draw();
   m->draw();
+  for (int i = 0; i < specials.size(); i++)
+  { specials.at(i)->draw();  }
+  for (int i = 0; i < moveables.size(); i++)
+  { moveables.at(i)->draw();  }
   p->draw();
 }
 
@@ -103,6 +107,10 @@ void Game_State::update(int &delta)
            my + mys + m->get_height() * TILE_HEIGHT >= SCREEN_HEIGHT)
   {
     m->move(0, mys);
+    for (int i = 0; i < specials.size(); i++)
+    { specials.at(i)->move(0, mys);  }
+    for (int i = 0; i < moveables.size(); i++)
+    { moveables.at(i)->move(0, mys);  }
   }
   else if (p_movey)
   {
@@ -113,6 +121,10 @@ void Game_State::update(int &delta)
            mx + mxs + m->get_width() * TILE_WIDTH >= SCREEN_WIDTH)
   {
     m->move(mxs, 0);
+    for (int i = 0; i < specials.size(); i++)
+    { specials.at(i)->move(mxs, 0);  }
+    for (int i = 0; i < moveables.size(); i++)
+    { moveables.at(i)->move(mxs, 0);  }
   }
   else if (p_movex)
   {
