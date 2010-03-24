@@ -167,9 +167,11 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
       // strong helper
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
       {
-        moveables.push_back(new Ahnold(x * TILE_WIDTH, y * TILE_HEIGHT, 1, 1, 
-                            texs.at(AHNOLD), LEFT, system, sounds.at(sound_num), 
-                            channel));
+        float mx, my;
+        get_top_left(mx, my);
+        specials.push_back(new Ahnold(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                                      1, 1, texs.at(AHNOLD), LEFT, system,
+                                      sounds.at(sound_num), channel));
         ++sound_num;
       }
       // jumping helper
@@ -209,6 +211,18 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
         // move map so that player start is top left
         move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f - TILE_WIDTH,
              -y * TILE_WIDTH + SCREEN_HEIGHT / 2.0f - TILE_HEIGHT);
+        for (unsigned int i = 0; i < specials.size(); ++i)
+        {
+          specials.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
+                               TILE_WIDTH, -y * TILE_WIDTH +
+                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT);
+        }
+        for (unsigned int i = 0; i < moveables.size(); ++i)
+        {
+          moveables.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
+                               TILE_WIDTH, -y * TILE_WIDTH +
+                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT);
+        }
       }
     }
     // apparently there's some sort of bitmap "newline"
@@ -220,6 +234,7 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
     {
       file.read((char *)alpha, 1);
     }*/
+    // commented out because this issues magically dissapeared
   }
   
   file.close();
