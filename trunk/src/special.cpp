@@ -1,3 +1,4 @@
+
 #include "special.h"
 #include "defines.h"
 
@@ -22,6 +23,7 @@ void Special::start_following(Player *p)
 
 void Special::stop_following(Player *p)
 {
+  printf("Stop Following\n");
   following = false;
 }
 
@@ -32,7 +34,7 @@ void Special::go_home()
 
 // moves the player and also changes the direction
 // in which he moves
-void Special::move(int x, int y)
+void Special::move(float x, float y)
 {
   ((Drawable *)this)->move(x, y);
   if (x > 0)

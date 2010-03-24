@@ -26,9 +26,10 @@ public:
   
   virtual void use_ability(int dir, Map *m){}
   void start_following(Player *p);
+  bool is_following(void) { return following; }
   void stop_following(Player *p);
   void go_home();
-  void move(int x, int y);
+  void move(float x, float y);
 };
 
 #endif // FLOCK__SPECIAL__H
