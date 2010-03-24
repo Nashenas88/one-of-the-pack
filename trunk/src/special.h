@@ -17,6 +17,8 @@ class Special: public Character
 private:
   float loc[2];
   bool following;
+  FMOD_CHANNELGROUP *group;
+  bool mute;
   
 public:
   Special(void);
@@ -28,6 +30,8 @@ public:
   void start_following(Player *p);
   bool is_following(void) { return following; }
   void stop_following(Player *p);
+  bool get_mute(void) {return mute;}
+  void set_mute(bool m);
   void go_home();
   void move(float x, float y);
 };

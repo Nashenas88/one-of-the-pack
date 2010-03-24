@@ -154,6 +154,10 @@ void Game_State::update(int &delta)
     
     if (specials.at(i)->is_following() && dist > TOO_CLOSE)
     {
+      if (specials.at(i)->get_mute())
+      {
+        specials.at(i)->set_mute(false);
+      }
       specials.at(i)->move(dx<0?PLAYER_SPEED:-PLAYER_SPEED, 0);
     }
     else

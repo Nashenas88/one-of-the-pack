@@ -67,6 +67,7 @@ public:
   
   // return sound system
   FMOD_SYSTEM *get_system(void) {return system;}
+  FMOD_CHANNEL *get_channel(void) {return music_channel;}
   
   // clean all character data
   void clean(void);

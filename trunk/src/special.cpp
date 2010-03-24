@@ -11,9 +11,16 @@ Special::Special(float x, float y, int num, int frames, Texture *tex,
                  FMOD_CHANNEL *ch)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch)
 {
+  FMOD_RESULT result;
   loc[0] = x;
   loc[1] = y;
-  ((Character *)this)->pause_sound();
+  result = FMOD_System_CreateChannelGroup(get_system(), "Group A", &group);
+  ERRCHECK(result);
+  result = FMOD_Channel_SetChannelGroup(get_channel(), group);
+  ERRCHECK(result);
+  
+  mute = true;
+  FMOD_ChannelGroup_SetMute(group, mute);
 }
 
 void Special::start_following(Player *p)
@@ -25,6 +32,12 @@ void Special::stop_following(Player *p)
 {
   printf("Stop Following\n");
   following = false;
+}
+
+void Special::set_mute(bool m)
+{
+  mute = m;
+  FMOD_ChannelGroup_SetMute(group, mute);
 }
 
 void Special::go_home()
