@@ -18,11 +18,15 @@
 #define TILE_TEXTURE "tiles.png"
 #define BACKGROUND_TEXTURE "bg.png"
 #define PAUSED_BACKGROUND "pause_background.png"
-#define PLAYER_TEXTURE "Ulysses.png"
 #define MAP1 "level.bmp"
+
+// character texture files
+#define PLAYER_TEXTURE "Ulysses.png"
+#define AHNOLD_TEXTURE "Ahnold.png"
 
 // sound files
 #define PLAYER_SOUND "Default.wav"
+#define AHNOLD_SFX "Ahnold_sound.wav"
 
 // widths and heights
 #define TILE_WIDTH 100
@@ -52,5 +56,10 @@ typedef enum
   BREAKABLE,
   GOAL
 } tile_type;
+
+typedef enum
+{
+  AHNOLD
+} specials;
 
 #endif // FLOCK__DEFINES__H

@@ -3,6 +3,7 @@
 #include <iostream>
 using namespace std;
 
+#include "ahnold.h"
 #include "map.h"
 #include "defines.h"
 
@@ -41,9 +42,9 @@ void Map::draw(void)
   }
 }
 
-bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
-                   FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
-                   FMOD_CHANNEL *channel)
+bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables, 
+                   vector<Texture*> texs, FMOD_SYSTEM *system, 
+                   vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];
@@ -143,7 +144,8 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
   for (int y = height - 1; y >= 0 && file.good(); --y)
   {
     for (int x = 0; x < (int)width && file.good(); ++x)
-    {
+    { 
+      int sound_num;
       file.read((char *)blue, 1);
       file.read((char *)green, 1);
       file.read((char *)red, 1);
@@ -161,7 +163,11 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
       // strong helper
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
       {
-        //moveables.push_back(new Ahnold(x * TILE_WIDTH, y * TILE_HEIGHT));
+        printf("Creating an Ahnold...\n");
+        moveables.push_back(new Ahnold(x * TILE_WIDTH, y * TILE_HEIGHT, 1, 1, 
+                            texs.at(AHNOLD), LEFT, system, sounds.at(sound_num), 
+                            channel));
+        printf("Ahnold Created\n");
       }
       // jumping helper
       else if(red[0] == 0 && green[0] == 255 && blue[0] == 0)

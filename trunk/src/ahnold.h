@@ -7,17 +7,20 @@
 class Ahnold : public Special
 {
 private:
-  int loc[2];
+  float loc[2];
   bool following;
-  /* attribute here */
+  FMOD_SOUND *sfx;
   
 public:
   Ahnold(void);
-  Ahnold(float x, float y, int num, int frames, Texture *tex,
-         direc dir, bool jump, int vs, int hs, FMOD_SYSTEM *sys,
-         FMOD_SOUND *so, FMOD_CHANNEL *ch);
+  Ahnold(float x, float y, int num, int frames, Texture *tex, direc dir,
+         FMOD_SYSTEM *sys, FMOD_SOUND *music, FMOD_CHANNEL *ch);
   
   void use_ability(int dir, Map *m);
+  void start_following(Player *p);
+  void stop_following(Player *p);
+  void go_home();
+  void move(int x, int y);
 };
 
 #endif // FLOCK__AHNOLD__H
