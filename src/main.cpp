@@ -122,9 +122,9 @@ int main(int argc, char *argv[])
   textures.push_back(ahnold);
   
   vector<Drawable*> moveables;
-  vector<Character *> specials;
+  vector<Special *> specials;
   m = new Map(v);
-  m->load_map((RESOURCES LEVEL1 MAP1), *moveables, *specials, textures, system, sounds, channel);
+  m->load_map((RESOURCES LEVEL1 MAP1), moveables, specials, textures, system, sounds, channel);
   s = new Game_State(p, m, moveables, specials, system);
   paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,
                            map_image, ladder);
