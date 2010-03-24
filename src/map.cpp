@@ -42,7 +42,7 @@ void Map::draw(void)
   }
 }
 
-bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables, 
+bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables, vector<Character *> &specials,
                    vector<Texture*> texs, FMOD_SYSTEM *system, 
                    vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel)
 {
