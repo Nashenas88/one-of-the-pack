@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
   Player *p;
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image;
-  Texture *t, *bg, *tiles, *pause_bg, *mi;
+  Texture *t, *bg, *tiles, *pause_bg, *mi, *ahnold;
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound;
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
   tiles = new Texture(RESOURCES LEVEL1 TILE_TEXTURE);
   pause_bg = new Texture(RESOURCES PAUSED_BACKGROUND);
   mi = new Texture(RESOURCES LEVEL1 MAP1);
+  ahnold = new Texture(RESOURCES LEVEL1 AHNOLD_TEXTURE);
   
   // initializing the sound system and the sounds
   initSound(&system);
@@ -91,10 +92,15 @@ int main(int argc, char *argv[])
   v.push_back(breakable);
   v.push_back(plat);
   
+  vector<Texture*> textures;
+  textures.clear();
+  textures.push_back(ahnold);
+  
   vector<Drawable*> moveables;
   m = new Map(v);
-  m->load_map((RESOURCES LEVEL1 MAP1), moveables, system, sounds, channel);
-  
+  printf("Loading Map...\n");
+  m->load_map((RESOURCES LEVEL1 MAP1), moveables, textures, system, sounds, channel);
+  printf("Map Loaded\n");
   s = new Game_State(p, m, system);
   paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,
                            map_image, ladder);

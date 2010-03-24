@@ -41,7 +41,7 @@ public:
   
   // loads map from a binary image, returns false on fail, also modifies
   // moveables so that it includes a list of all objects that can move
-  bool load_map(const char *map_bmp, vector<Drawable *> &moveables,
+  bool load_map(const char *map_bmp, vector<Drawable *> &moveables, vector<Texture*> texs,
                 FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
                 FMOD_CHANNEL *channel);
 };
