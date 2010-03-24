@@ -9,9 +9,7 @@ Player::Player(float x, float y, int num, int frames, Texture *tex,
                direc dir, bool jump, int vs, int hs, FMOD_SYSTEM *sys,
             FMOD_SOUND *so, FMOD_CHANNEL *ch)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch), jumping(jump)
-{
-  ((Character *)this)->pause_sound();
-}
+{}
 
 // moves the player and also changes the direction
 // in which he moves

@@ -17,7 +17,6 @@ class Special: public Character
 private:
   float loc[2];
   bool following;
-  FMOD_CHANNELGROUP *group;
   bool mute;
   
 public:
