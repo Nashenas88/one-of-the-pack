@@ -45,6 +45,10 @@ void Game_State::update(int &delta)
     if (y_val - my_val < m->get_height())
     {
       p->setVSpeed(GRAVITY_SPEED);
+      /*for (unsigned int i = 0; i < specials.size(); ++i)
+      {
+        specials.at(i)->setVSpeed(GRAVITY_SPEED);
+      }*/
     }
   }
   
