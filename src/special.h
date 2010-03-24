@@ -29,6 +29,7 @@ public:
   void stop_following(Player *p);
   void go_home();
   void move(int x, int y);
+  //void draw(void);
 };
 
 #endif // FLOCK__SPECIAL__H

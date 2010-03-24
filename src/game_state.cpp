@@ -115,7 +115,7 @@ void Game_State::update(int &delta)
     m->move(0, mys);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
-      specials.at(i)->move(0, mys);
+      ((Drawable*)specials.at(i))->move(0, mys);
     }
     for (unsigned int i = 0; i < moveables.size(); i++)
     {
@@ -133,7 +133,7 @@ void Game_State::update(int &delta)
     m->move(mxs, 0);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
-      specials.at(i)->move(mxs, 0);
+      ((Drawable*)specials.at(i))->move(mxs, 0);
     }
     for (unsigned int i = 0; i < moveables.size(); i++)
     {
