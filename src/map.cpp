@@ -41,7 +41,9 @@ void Map::draw(void)
   }
 }
 
-bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables)
+bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
+                   FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
+                   FMOD_CHANNEL *channel)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];

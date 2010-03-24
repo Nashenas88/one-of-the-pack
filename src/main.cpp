@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound;
+  vector<FMOD_SOUND *> sounds;
   FMOD_CHANNEL *channel = 0;
   FMOD_RESULT result;
   
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
   
   vector<Drawable*> moveables;
   m = new Map(v);
-  m->load_map((RESOURCES LEVEL1 MAP1), moveables);
+  m->load_map((RESOURCES LEVEL1 MAP1), moveables, system, sounds, channel);
   
   s = new Game_State(p, m, system);
   paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,

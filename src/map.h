@@ -7,6 +7,8 @@ using namespace std;
 #include "drawable.h"
 #include "defines.h"
 
+#include "FMOD_includes.h"
+
 enum
 {
   M_TILE,
@@ -39,7 +41,9 @@ public:
   
   // loads map from a binary image, returns false on fail, also modifies
   // moveables so that it includes a list of all objects that can move
-  bool load_map(const char *map_bmp, vector<Drawable *> &moveables);
+  bool load_map(const char *map_bmp, vector<Drawable *> &moveables,
+                FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
+                FMOD_CHANNEL *channel);
 };
 
 #endif // FLOCK__MAP__H
