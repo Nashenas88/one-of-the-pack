@@ -144,6 +144,22 @@ void Game_State::update(int &delta)
     p->move(p->getHSpeed(), 0);
   }
   
+  // specials gravity
+  if (collision)
+  {
+    if (gravity)
+    {
+      for (unsigned int i = 0; i < specials.size(); ++i)
+      {
+        if (!(specials.at(i)->will_collide_y(m)))
+        {
+          specials.at(i)->move(0, specials.at(i)->getVSpeed());
+        }
+      }
+    }
+  }
+  
+  // specials following
   float dx, dy, dist;
   
   for (unsigned int i = 0; i < specials.size(); ++i)
@@ -158,14 +174,12 @@ void Game_State::update(int &delta)
       {
         specials.at(i)->set_mute(false);
       }
-      specials.at(i)->move(dx<0?PLAYER_SPEED:-PLAYER_SPEED, 0);
+      specials.at(i)->setHSpeed(dx<0?PLAYER_SPEED:-PLAYER_SPEED);
+      specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
     }
-    else
+    else if (dist < FOLLOW_DIST)
     {
-      if (dist < FOLLOW_DIST)
-      {
-        specials.at(i)->start_following(p);
-      }
+      specials.at(i)->start_following(p);
     }
   }
   

@@ -119,7 +119,6 @@ bool Character::will_collide_y(Map *m)
   byo = tyo + col_height - col_y_offset;
   
   m->get_top_left(lxm, tym);
-  
   lx = (int)((lxo - lxm) / TILE_WIDTH);
   rx = (int)((rxo - lxm - col_x_offset) / TILE_WIDTH);
   ty = (int)((tyo - tym) / TILE_HEIGHT);
