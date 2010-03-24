@@ -1,3 +1,4 @@
+#include "math.h"
 #include "game_state.h"
 
 Game_State::Game_State(void)
@@ -141,6 +142,27 @@ void Game_State::update(int &delta)
   else if (p_movex)
   {
     p->move(p->getHSpeed(), 0);
+  }
+  
+  float dx, dy, dist;
+  
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    dx = (specials.at(i)->get_x()-p->get_x());
+    dy = (specials.at(i)->get_y()-p->get_y());
+    dist = sqrt((dx*dx)+(dy*dy));
+    
+    if (specials.at(i)->is_following() && dist > TOO_CLOSE)
+    {
+      specials.at(i)->move(dx<0?PLAYER_SPEED:-PLAYER_SPEED, 0);
+    }
+    else
+    {
+      if (dist < FOLLOW_DIST)
+      {
+        specials.at(i)->start_following(p);
+      }
+    }
   }
   
   state_update();

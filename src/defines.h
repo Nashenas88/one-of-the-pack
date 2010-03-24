@@ -8,6 +8,8 @@
 #define GRAVITY_SPEED 20
 
 #define DIST_CHECK 30
+#define FOLLOW_DIST 300
+#define TOO_CLOSE 100
 
 #define RESOURCES "resources/"
 #define LEVEL1 "Level 1/"
