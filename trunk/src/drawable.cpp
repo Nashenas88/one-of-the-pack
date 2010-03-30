@@ -9,8 +9,8 @@
 #include "defines.h"
 
 Drawable::Drawable(void)
-:tl_x(0), tl_y(0), width(0), height(0), tex_num(0),
-num_frames(0), cur_frame(0), texture(0)
+:tl_x(0), tl_y(0), width(0), height(0), tex_num(0), num_frames(0),
+cur_frame(0), texture(0), facing_right(false)
 {
   // initializes the corners to 0
   int i = 0, j = 0;
@@ -24,7 +24,8 @@ num_frames(0), cur_frame(0), texture(0)
 }
 
 Drawable::Drawable(float x, float y, int num, int frames, D_TYPE type, Texture *tex)
-:tl_x(x), tl_y(y), tex_num(num), num_frames(frames), cur_frame(1), texture(tex)
+:tl_x(x), tl_y(y), tex_num(num), num_frames(frames), cur_frame(1), texture(tex),
+facing_right(true)
 {
   // this is for drawing purposes
   // a tile only needs to take up a small space
@@ -87,21 +88,42 @@ void Drawable::draw(void)
   // Begin drawing a rectangular object
   glBegin(GL_QUADS);
   
-  // top left
-  glTexCoord2d(corners[0][0], corners[1][1]);
-  glVertex3i(0, 0, 0);
-  
-  // top right
-  glTexCoord2d(corners[0][1], corners[1][1]);
-  glVertex3i(width, 0, 0);
-  
-  // bottom right
-  glTexCoord2d(corners[0][1], corners[1][0]);
-  glVertex3i(width, height, 0);
-  
-  // bottom left
-  glTexCoord2d(corners[0][0], corners[1][0]);
-  glVertex3i(0, height, 0);
+  if (facing_right)
+  {
+    // top left
+    glTexCoord2d(corners[0][0], corners[1][1]);
+    glVertex3i(0, 0, 0);
+    
+    // top right
+    glTexCoord2d(corners[0][1], corners[1][1]);
+    glVertex3i(width, 0, 0);
+    
+    // bottom right
+    glTexCoord2d(corners[0][1], corners[1][0]);
+    glVertex3i(width, height, 0);
+    
+    // bottom left
+    glTexCoord2d(corners[0][0], corners[1][0]);
+    glVertex3i(0, height, 0);
+  }
+  else
+  {
+    // top left
+    glTexCoord2d(corners[0][1], corners[1][1]);
+    glVertex3i(0, 0, 0);
+    
+    // top right
+    glTexCoord2d(corners[0][0], corners[1][1]);
+    glVertex3i(width, 0, 0);
+    
+    // bottom right
+    glTexCoord2d(corners[0][0], corners[1][0]);
+    glVertex3i(width, height, 0);
+    
+    // bottom left
+    glTexCoord2d(corners[0][1], corners[1][0]);
+    glVertex3i(0, height, 0);
+  }
   
   glEnd();
   glPopMatrix();

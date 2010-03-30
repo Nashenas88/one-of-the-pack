@@ -32,6 +32,7 @@ private:
   int cur_frame; // current frame of animation
   float corners[2][2]; // corners of sprite from texture
   Texture *texture;
+  bool facing_right;
   
   void reset_corners(); // re-calculates the corners when tex_num or cur_frame
                         // is changed
