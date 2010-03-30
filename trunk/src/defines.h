@@ -46,7 +46,7 @@
 #define MENU_ITEMS 3
 #define POINTER_MOVE 90
 
-#define DELTA_DELAY 6
+#define DELTA_DELAY 4
 
 #define BORDER 100
 
