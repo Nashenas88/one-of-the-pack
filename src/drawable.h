@@ -9,6 +9,7 @@
 #endif
 
 #include "texture.h"
+#include "defines.h"
 
 // used for determining size of drawable object
 typedef enum
@@ -60,6 +61,7 @@ public:
   int get_num_frames(void) {return num_frames;}
   void set_cur_frame(int cf);
   int get_cur_frame(void) {return cur_frame;}
+  void change_direction(direc dir);
 };
 
 #endif // FLOCK__DRAWABLE__H

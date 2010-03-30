@@ -51,6 +51,8 @@ public:
   int get_animdir(void) {return animdir;}
   void set_animdir(int d) {animdir = d;}
   
+  void move(float x, float y);
+  
   // check collision with other possible objects
   // (moving players are not collideables)
   bool will_collide(Drawable *o);
