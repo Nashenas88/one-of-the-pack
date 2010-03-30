@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
   // objects that are needed by the state
   Player *p;
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
-  Drawable *map_image;
-  Texture *t, *bg, *tiles, *pause_bg, *mi, *ahnold;
+  Drawable *map_image, *pointer;
+  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold;
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound, *temp_sound;
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
   tiles = new Texture(RESOURCES LEVEL1 TILE_TEXTURE);
   pause_bg = new Texture(RESOURCES PAUSED_BACKGROUND);
   mi = new Texture(RESOURCES LEVEL1 MAP1);
+  pi = new Texture(RESOURCES POINTER_TEXTURE);
   ahnold = new Texture(RESOURCES LEVEL1 AHNOLD_TEXTURE);
   
   // initializing the sound system and the sounds
@@ -105,6 +106,7 @@ int main(int argc, char *argv[])
   ladder = new Drawable(0.0f, 0.0f, 4, 1, TILE, tiles);
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
   map_image = new Drawable(300, 300, 0, 0, TEXT, mi);
+  pointer = new Drawable(650, 270, 0, 0, TEXT, pi);
   
   FMOD_DSP *pe;
   
@@ -124,10 +126,11 @@ int main(int argc, char *argv[])
   vector<Drawable*> moveables;
   vector<Special *> specials;
   m = new Map(v);
-  m->load_map((RESOURCES LEVEL1 MAP1), moveables, specials, textures, system, sounds, channel);
+  m->load_map((RESOURCES LEVEL1 MAP1), moveables, specials, textures, system,
+              sounds, channel);
   s = new Game_State(p, m, moveables, specials, system);
-  paused = new Pause_State(system, pe, (Game_State *)s, v, paused_background,
-                           map_image, ladder);
+  paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
+                           map_image, pointer);
   
   p->pause_sound();
   for (unsigned int i = 0; i < specials.size(); ++i)
@@ -200,8 +203,18 @@ void handleKeypress(unsigned char key, int x, int y)
     case ' ':
       if (s == paused)
       {
-        s = stack.at(stack.size() - 1);
-        stack.pop_back();
+        if (((Pause_State *)s)->get_selected() == 0 ||
+            ((Pause_State *)s)->get_selected() == 1) // return
+        {
+          ((Pause_State *)s)->reset_selected();
+          s = stack.at(stack.size() - 1);
+          stack.pop_back();
+        }
+        else if (((Pause_State *)s)->get_selected() == 2) // quit
+        {
+          system_clean();
+          exit(0);
+        }
       }
       else
       {

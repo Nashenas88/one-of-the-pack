@@ -20,10 +20,11 @@
 #define TILE_TEXTURE "tiles.png"
 #define BACKGROUND_TEXTURE "bg.png"
 #define PAUSED_BACKGROUND "pause_background.png"
+#define POINTER_TEXTURE "pointer.png"
 #define MAP1 "level.bmp"
 
 // character texture files
-#define PLAYER_TEXTURE "Ulysses.png"
+#define PLAYER_TEXTURE "Character animation 1.png"
 #define AHNOLD_TEXTURE "Ahnold.png"
 
 #define NUM_SOUNDS_FILE "sounds.txt"
@@ -39,6 +40,9 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 800
+
+#define MENU_ITEMS 3
+#define POINTER_MOVE 90
 
 #define BORDER 100
 

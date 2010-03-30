@@ -14,7 +14,6 @@ class Pause_State : public State
 private:
   FMOD_DSP *dspparameq;
   Game_State *game_state;
-  vector<Drawable *> items;
   Drawable *background;
   Drawable *map;
   Drawable *pointer;
@@ -22,7 +21,7 @@ private:
 public:
   Pause_State(void);
   Pause_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              vector<Drawable *> i, Drawable *b, Drawable *m, Drawable *p);
+              Drawable *b, Drawable *m, Drawable *p);
   
   void draw(void);
   
@@ -30,6 +29,9 @@ public:
   
   void key_pressed(unsigned char key, int x, int y);
   void key_released(unsigned char key, int x, int y);
+  
+  unsigned int get_selected(void) {return selected;}
+  void reset_selected(void);
   
   void clean(void);
 };
