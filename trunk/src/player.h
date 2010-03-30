@@ -14,12 +14,10 @@ private:
 public:
   Player(void);
   Player(float x, float y, int num, int frames, Texture *tex,
-         direc dir, bool jump, int vs, int hs, FMOD_SYSTEM *sys,
+         direc dir, bool jump, FMOD_SYSTEM *sys,
          FMOD_SOUND *so, FMOD_CHANNEL *ch);
   
   void pickupItem(int item);
-  
-  void move(int x, int y);
 };
 
 #endif // FLOCK__PLAYER__H

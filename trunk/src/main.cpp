@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
                  SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
-                 4, t, (direc) 2, false, 0, 0, system, s_sound, channel);
+                 5, t, RIGHT, false, system, s_sound, channel);
   block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
   breakable = new Drawable(0.0f, 0.0f, 2, 1, TILE, tiles);

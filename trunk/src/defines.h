@@ -27,6 +27,7 @@
 #define PLAYER_TEXTURE "Character animation 1.png"
 #define AHNOLD_TEXTURE "Ahnold.png"
 
+// sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
 #define SOUND_FILE_TYPE ".mp3"
 
@@ -43,6 +44,8 @@
 
 #define MENU_ITEMS 3
 #define POINTER_MOVE 90
+
+#define DELTA_DELAY 6
 
 #define BORDER 100
 

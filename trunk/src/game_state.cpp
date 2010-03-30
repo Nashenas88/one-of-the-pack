@@ -35,6 +35,7 @@ void Game_State::update(int &delta)
   
   bool p_movex = true, m_movex = false;
   bool p_movey = true, m_movey = false;
+  bool animate = false;
   
   // if we're not colliding with anything,
   // then FALL MWAHAHA - written on very
@@ -127,8 +128,9 @@ void Game_State::update(int &delta)
   }
   
   if (m_movex && 0.0 >= mx + mxs &&
-           mx + mxs + m->get_width() * TILE_WIDTH >= SCREEN_WIDTH)
+      mx + mxs + m->get_width() * TILE_WIDTH >= SCREEN_WIDTH)
   {
+    animate = true;
     m->move(mxs, 0);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
@@ -139,9 +141,35 @@ void Game_State::update(int &delta)
       moveables.at(i)->move(mxs, 0);
     }
   }
-  else if (p_movex)
+  else if (p_movex && p->getHSpeed() != 0)
   {
+    animate = true;
     p->move(p->getHSpeed(), 0);
+  }
+  
+  // player animation
+  if (animate)
+  {
+    if (delta > DELTA_DELAY)
+    {
+      delta = 0;
+      if ((p->get_animdir() == 1 &&
+          p->get_cur_frame() == p->get_num_frames()) ||
+          (p->get_animdir() == -1 && p->get_cur_frame() == 1))
+      {
+        p->set_animdir(p->get_animdir() * -1);
+      }
+      p->set_cur_frame(p->get_cur_frame() + p->get_animdir());
+    }
+    else
+    {
+      ++delta;
+    }
+  }
+  else
+  {
+    delta = 0;
+    p->set_cur_frame(1);
   }
   
   // specials stuff

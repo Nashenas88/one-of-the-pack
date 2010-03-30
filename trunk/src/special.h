@@ -32,7 +32,6 @@ public:
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
   void go_home();
-  void move(float x, float y);
 };
 
 #endif // FLOCK__SPECIAL__H

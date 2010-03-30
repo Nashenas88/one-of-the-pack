@@ -164,3 +164,15 @@ void Drawable::set_cur_frame(int cf)
     reset_corners();
   }
 }
+
+void Drawable::change_direction(direc dir)
+{
+  if (dir == LEFT)
+  {
+    facing_right = false;
+  }
+  else if (dir == RIGHT)
+  {
+    facing_right = true;
+  }
+}
