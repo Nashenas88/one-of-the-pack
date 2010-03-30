@@ -64,6 +64,10 @@ typedef enum
 {
   BG,
   BLOCK,
+  L_BLOCK,
+  R_BLOCK,
+  LC_BLOCK,
+  RC_BLOCK,
   LADDER,
   PLATFORM,
   BREAKABLE,
