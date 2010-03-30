@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   bg = new Texture(RESOURCES LEVEL1 BACKGROUND_TEXTURE);
   tiles = new Texture(RESOURCES LEVEL1 TILE_TEXTURE);
   pause_bg = new Texture(RESOURCES PAUSED_BACKGROUND);
-  mi = new Texture(RESOURCES LEVEL1 MAP1);
+  mi = new Texture(RESOURCES LEVEL1 MAP_IMAGE);
   pi = new Texture(RESOURCES POINTER_TEXTURE);
   ahnold = new Texture(RESOURCES LEVEL1 AHNOLD_TEXTURE);
   
@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
   plat = new Drawable(0.0f, 0.0f, 3, 1, TILE, tiles);
   ladder = new Drawable(0.0f, 0.0f, 4, 1, TILE, tiles);
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
-  map_image = new Drawable(300, 300, 0, 0, TEXT, mi);
-  pointer = new Drawable(650, 270, 0, 0, TEXT, pi);
+  map_image = new Drawable(300, 300, 0, 0, VARIABLE, mi);
+  pointer = new Drawable(650, 270, 0, 0, VARIABLE, pi);
   
   FMOD_DSP *pe;
   

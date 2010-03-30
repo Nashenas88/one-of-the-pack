@@ -22,6 +22,7 @@
 #define PAUSED_BACKGROUND "pause_background.png"
 #define POINTER_TEXTURE "pointer.png"
 #define MAP1 "level.bmp"
+#define MAP_IMAGE "level.png"
 
 // character texture files
 #define PLAYER_TEXTURE "Character animation 1.png"

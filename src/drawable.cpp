@@ -42,7 +42,7 @@ facing_right(true)
     width = SCREEN_WIDTH;
     height = SCREEN_HEIGHT;
   }
-  else if (type == TEXT)
+  else if (type == VARIABLE)
   {
     width = texture->get_width();
     height = texture->get_height();
