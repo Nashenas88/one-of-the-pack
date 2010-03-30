@@ -180,7 +180,9 @@ void Game_State::update(int &delta)
     {
       if (gravity)
       {
-        if (!(specials.at(i)->will_collide_y(m)))
+        if (!(specials.at(i)->will_collide_y(m) ||
+              specials.at(i)->will_collide_ladder(m) ||
+              specials.at(i)->will_collide_platform(m)))
         {
           specials.at(i)->move(0, specials.at(i)->getVSpeed());
         }
@@ -200,7 +202,7 @@ void Game_State::update(int &delta)
       {
         specials.at(i)->set_mute(false);
       }
-      specials.at(i)->setHSpeed(dx<0?PLAYER_SPEED:-PLAYER_SPEED);
+      specials.at(i)->setHSpeed(dx==0?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
       if (collision)
       {
         if (!(specials.at(i)->will_collide_x(m)))
