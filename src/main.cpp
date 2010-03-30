@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
   
   for (int i = 1; i <= num_sounds; ++i)
   {
-    temp_string << RESOURCES LEVEL1 << i << ".wav";
+    temp_string << RESOURCES LEVEL1 << i << SOUND_FILE_TYPE;
     
     result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
                                      FMOD_SOFTWARE, 0, &temp_sound);

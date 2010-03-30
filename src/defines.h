@@ -27,10 +27,11 @@
 #define AHNOLD_TEXTURE "Ahnold.png"
 
 #define NUM_SOUNDS_FILE "sounds.txt"
+#define SOUND_FILE_TYPE ".mp3"
 
 // sound files
-#define PLAYER_SOUND "Default.wav"
-#define AHNOLD_SFX "Ahnold_sound.wav"
+#define PLAYER_SOUND "Default.mp3"
+#define AHNOLD_SFX "punch sound.wav"
 
 // widths and heights
 #define TILE_WIDTH 100
