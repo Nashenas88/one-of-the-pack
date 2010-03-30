@@ -46,7 +46,8 @@ int main(int argc, char *argv[])
   // objects that are needed by the state
   Player *p;
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
-  Drawable *map_image, *pointer;
+  Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
+  Drawable *right_corner_block;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold;
   Map *m;
   FMOD_SYSTEM *system;
@@ -100,6 +101,14 @@ int main(int argc, char *argv[])
                  SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
                  5, t, RIGHT, false, system, s_sound, channel);
   block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  left_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  left_block->set_cur_frame(3);
+  right_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  right_block->set_cur_frame(2);
+  left_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  left_corner_block->set_cur_frame(4);
+  right_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  right_corner_block->set_cur_frame(5);
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
   breakable = new Drawable(0.0f, 0.0f, 2, 1, TILE, tiles);
   plat = new Drawable(0.0f, 0.0f, 3, 1, TILE, tiles);
@@ -114,6 +123,10 @@ int main(int argc, char *argv[])
   v.clear();
   v.push_back(background);
   v.push_back(block);
+  v.push_back(left_block);
+  v.push_back(right_block);
+  v.push_back(left_corner_block);
+  v.push_back(right_corner_block);
   v.push_back(ladder);
   v.push_back(plat);
   v.push_back(breakable);

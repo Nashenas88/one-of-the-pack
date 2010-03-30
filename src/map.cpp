@@ -164,6 +164,26 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = BLOCK;
       }
+      if(red[0] == 1 && green[0] == 0 && blue[0] == 0)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = R_BLOCK;
+      }
+      if(red[0] == 2 && green[0] == 0 && blue[0] == 0)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = L_BLOCK;
+      }
+      if(red[0] == 3 && green[0] == 0 && blue[0] == 0)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = LC_BLOCK;
+      }
+      if(red[0] == 4 && green[0] == 0 && blue[0] == 0)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = RC_BLOCK;
+      }
       // strong helper
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
       {
