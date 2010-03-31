@@ -154,57 +154,20 @@ bool Character::will_collide_y(Map *m)
 }
 
 /* checks collision with the map only
- * on a ladder tile. For speed it
- * determines the (x,y) coordinates of
- * the character on the map and checks
- * collision with all blocks that surround
- * that (x,y) location
- */
-bool Character::will_collide_ladder(Map *m)
-{
-  int lx, rx, ty, by;
-  
-  float lxo, lxm;
-  float rxo;
-  float tyo, tym;
-  float byo;
-  
-  get_top_left(lxo, tyo);
-  lxo += getHSpeed() + col_x_offset;
-  tyo += getVSpeed() + col_y_offset;
-  rxo = lxo + col_width - col_x_offset;
-  byo = tyo + col_height - col_y_offset;
-  
-  m->get_top_left(lxm, tym);
-  
-  lx = (int)((lxo - lxm) / TILE_WIDTH);
-  rx = (int)((rxo - lxm - col_x_offset) / TILE_WIDTH);
-  ty = (int)((tyo - tym) / TILE_HEIGHT);
-  by = (int)((byo - tym - col_y_offset) / TILE_HEIGHT);
-  
-  for (int i = lx; i <= rx; ++i)
-  {
-    for (int j = ty; j <= by; ++j)
-    {
-      if(m->get_tile(i,j) == LADDER)
-      {
-        return true;
-      }
-    }
-  }
-  
-  return false;
-}
-
-/* checks collision with the map only
- * on a platform tile. For speed it
- * determines the (x,y) coordinates of
- * the character on the map and checks
- * collision with all blocks that surround
- * that (x,y) location
+ * on a platform tile. Vertical speed
+ * needs to be put into consideration
  */
 bool Character::will_collide_platform(Map *m)
 {
+  return will_collide_tile(m, PLATFORM) && getVSpeed() > 0;
+}
+
+/* checks collision with the map
+ * on a tile which is of type
+ * "tile"
+ */
+bool Character::will_collide_tile(Map *m, tile_type tile)
+{
   int lx, rx, ty, by;
   
   float lxo, lxm;
@@ -229,7 +192,7 @@ bool Character::will_collide_platform(Map *m)
   {
     for (int j = ty; j <= by; ++j)
     {
-      if(m->get_tile(i,j) == PLATFORM && getVSpeed() > 0)
+      if(m->get_tile(i,j) == tile)
       {
         return true;
       }

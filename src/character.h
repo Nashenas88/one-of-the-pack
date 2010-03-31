@@ -58,8 +58,8 @@ public:
   bool will_collide(Drawable *o);
   bool will_collide_x(Map *m);
   bool will_collide_y(Map *m);
-  bool will_collide_ladder(Map *m);
   bool will_collide_platform(Map *m);
+  bool will_collide_tile(Map *m, tile_type tile);
   
   // sound function
   void play_sound(void);
