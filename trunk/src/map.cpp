@@ -247,8 +247,12 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
     }
     // apparently there's some sort of bitmap "newline"
     // in the bitmaps that ryan makes. this is to fix that issue
-    /*file.read((char *)blue, 1);
-    file.read((char *)green, 1);
+    if(strncmp(map_bmp,"resources/Level 2/level.bmp",27) == 0 ||
+       strncmp(map_bmp,"resources/Level 3/level.bmp",27) == 0)
+    {
+      file.read((char *)blue, 1);
+    }
+    /*file.read((char *)green, 1);
     file.read((char *)red, 1);
     if (bpp == 32)
     {
