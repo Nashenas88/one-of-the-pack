@@ -35,6 +35,8 @@ public:
   void key_pressed(unsigned char key, int x, int y);
   // deals with keyboard releases
   void key_released(unsigned char key, int x, int y);
+  void special_pressed(int key, int x, int y);
+  void special_released(int key, int x, int y);
   
   // cleans all data from state
   void clean(void);

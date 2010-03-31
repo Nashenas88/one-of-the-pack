@@ -29,6 +29,8 @@ public:
   
   void key_pressed(unsigned char key, int x, int y);
   void key_released(unsigned char key, int x, int y);
+  void special_pressed(int key, int x, int y);
+  void special_released(int key, int x, int y);
   
   unsigned int get_selected(void) {return selected;}
   void reset_selected(void);

@@ -18,6 +18,8 @@ public:
   
   virtual void key_pressed(unsigned char key, int x, int y);
   virtual void key_released(unsigned char key, int x, int y);
+  virtual void special_pressed(int key, int x, int y);
+  virtual void special_released(int key, int x, int y);
   
   FMOD_SYSTEM *get_system(void) {return system;}
   
