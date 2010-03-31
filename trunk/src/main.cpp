@@ -16,9 +16,11 @@ using namespace std;
 State *s;
 State *paused;
 vector<State *> stack;
+unsigned int current_level;
 
 void initRendering(void);
 void initSound(FMOD_SYSTEM **system);
+void initLevel(unsigned int level);
 void handleResize(int w, int h);
 void handleKeypress(unsigned char key, int x, int y);
 void handleKeyrelease(unsigned char key, int x, int y);
@@ -38,6 +40,7 @@ int main(int argc, char *argv[])
   /* create window */
   glutCreateWindow(GAME_NAME);
   initRendering();
+  initLevel(1);
   
   /* Set handler functions */
   glutDisplayFunc(drawScene);
@@ -46,119 +49,6 @@ int main(int argc, char *argv[])
   glutSpecialFunc(handleSpecialpress);
   glutSpecialUpFunc(handleSpecialrelease);
   glutReshapeFunc(handleResize);
-  
-  // objects that are needed by the state
-  Player *p;
-  Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
-  Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
-  Drawable *right_corner_block;
-  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold;
-  Map *m;
-  FMOD_SYSTEM *system;
-  FMOD_SOUND *s_sound, *temp_sound;
-  vector<FMOD_SOUND *> sounds;
-  FMOD_CHANNEL *channel = 0;
-  FMOD_RESULT result;
-  
-  int num_sounds;
-  ifstream file;
-  stringstream temp_string;
-  
-  // initializing the texture
-  t = new Texture(RESOURCES LEVEL1 PLAYER_TEXTURE);
-  bg = new Texture(RESOURCES LEVEL1 BACKGROUND_TEXTURE);
-  tiles = new Texture(RESOURCES LEVEL1 TILE_TEXTURE);
-  pause_bg = new Texture(RESOURCES PAUSED_BACKGROUND);
-  mi = new Texture(RESOURCES LEVEL1 MAP_IMAGE);
-  pi = new Texture(RESOURCES POINTER_TEXTURE);
-  ahnold = new Texture(RESOURCES LEVEL1 AHNOLD_TEXTURE);
-  
-  // initializing the sound system and the sounds
-  initSound(&system);
-  
-  result = FMOD_System_CreateSound(system, RESOURCES LEVEL1 PLAYER_SOUND,
-                                   FMOD_SOFTWARE, 0, &s_sound);
-  ERRCHECK(result);
-  result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
-  ERRCHECK(result);
-  
-  file.open (RESOURCES LEVEL1 NUM_SOUNDS_FILE, ios::in);
-  file >> num_sounds;
-  file.close();
-  
-  for (int i = 1; i <= num_sounds; ++i)
-  {
-    temp_string << RESOURCES LEVEL1 << i << SOUND_FILE_TYPE;
-    
-    result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
-                                     FMOD_SOFTWARE, 0, &temp_sound);
-    ERRCHECK(result);
-    result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_NORMAL);
-    ERRCHECK(result);
-    
-    sounds.push_back(temp_sound);
-    temp_string.str("");
-  }
-  
-  // initializing player and all other objects
-  p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
-                 SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
-                 5, t, RIGHT, false, system, s_sound, channel);
-  block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  left_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  left_block->set_cur_frame(3);
-  right_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  right_block->set_cur_frame(2);
-  left_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  left_corner_block->set_cur_frame(4);
-  right_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  right_corner_block->set_cur_frame(5);
-  background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
-  breakable = new Drawable(0.0f, 0.0f, 2, 1, TILE, tiles);
-  plat = new Drawable(0.0f, 0.0f, 3, 1, TILE, tiles);
-  ladder = new Drawable(0.0f, 0.0f, 4, 1, TILE, tiles);
-  paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
-  map_image = new Drawable(300, 300, 0, 0, VARIABLE, mi);
-  pointer = new Drawable(650, 270, 0, 0, VARIABLE, pi);
-  
-  FMOD_DSP *pe;
-  
-  vector<Drawable*> v;
-  v.clear();
-  v.push_back(background);
-  v.push_back(block);
-  v.push_back(left_block);
-  v.push_back(right_block);
-  v.push_back(left_corner_block);
-  v.push_back(right_corner_block);
-  v.push_back(ladder);
-  v.push_back(plat);
-  v.push_back(breakable);
-  v.push_back(plat);
-  
-  vector<Texture*> textures;
-  textures.clear();
-  textures.push_back(ahnold);
-  
-  vector<Drawable*> moveables;
-  vector<Special *> specials;
-  m = new Map(v);
-  m->load_map((RESOURCES LEVEL1 MAP1), moveables, specials, textures, system,
-              sounds, channel);
-  s = new Game_State(p, m, moveables, specials, system);
-  paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
-                           map_image, pointer);
-  
-  p->pause_sound();
-  for (unsigned int i = 0; i < specials.size(); ++i)
-  {
-    specials.at(i)->pause_sound();
-  }
-  
-  for (unsigned int i = 0; i < specials.size(); ++i)
-  {
-    specials.at(i)->setVSpeed(GRAVITY_SPEED);
-  }
   
   // set timer function to update and call
   // it in 25 miliseconds
@@ -200,6 +90,131 @@ void initSound(FMOD_SYSTEM **system)
   ERRCHECK(result);
 }
 
+void initLevel(unsigned int level)
+{
+    // objects that are needed by the state
+  Player *p;
+  Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
+  Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
+  Drawable *right_corner_block;
+  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold;
+  Map *m;
+  FMOD_SYSTEM *system;
+  FMOD_SOUND *s_sound, *temp_sound;
+  vector<FMOD_SOUND *> sounds;
+  FMOD_CHANNEL *channel = 0;
+  FMOD_RESULT result;
+  FMOD_DSP *pe;
+  
+  int num_sounds;
+  ifstream file;
+  stringstream temp_string;
+  
+  
+  // initializing the texture
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PLAYER_TEXTURE;
+  t = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << BACKGROUND_TEXTURE;
+  bg = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << TILE_TEXTURE;
+  tiles = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << PAUSED_BACKGROUND;
+  pause_bg = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP_IMAGE;
+  mi = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << POINTER_TEXTURE;
+  pi = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << AHNOLD_TEXTURE;
+  ahnold = new Texture(temp_string.str().c_str());
+  
+  // initializing the sound system and the sounds
+  initSound(&system);
+  
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PLAYER_SOUND;
+  result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
+                                   FMOD_SOFTWARE, 0, &s_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
+  ERRCHECK(result);
+  
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << NUM_SOUNDS_FILE;
+  file.open (temp_string.str().c_str(), ios::in);
+  file >> num_sounds;
+  file.close();
+  
+  for (int i = 1; i <= num_sounds; ++i)
+  {
+    temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << i << SOUND_FILE_TYPE;
+    result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
+                                     FMOD_SOFTWARE, 0, &temp_sound);
+    ERRCHECK(result);
+    result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_NORMAL);
+    ERRCHECK(result);
+    
+    sounds.push_back(temp_sound);
+  }
+  
+  // initializing player and all other objects
+  p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
+                 SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
+                 5, t, RIGHT, false, system, s_sound, channel);
+  block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  left_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  left_block->set_cur_frame(3);
+  right_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  right_block->set_cur_frame(2);
+  left_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  left_corner_block->set_cur_frame(4);
+  right_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
+  right_corner_block->set_cur_frame(5);
+  background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
+  breakable = new Drawable(0.0f, 0.0f, 2, 1, TILE, tiles);
+  plat = new Drawable(0.0f, 0.0f, 3, 1, TILE, tiles);
+  ladder = new Drawable(0.0f, 0.0f, 4, 1, TILE, tiles);
+  paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
+  map_image = new Drawable(300, 300, 0, 0, VARIABLE, mi);
+  pointer = new Drawable(650, 270, 0, 0, VARIABLE, pi);
+  
+  vector<Drawable*> v;
+  v.clear();
+  v.push_back(background);
+  v.push_back(block);
+  v.push_back(left_block);
+  v.push_back(right_block);
+  v.push_back(left_corner_block);
+  v.push_back(right_corner_block);
+  v.push_back(ladder);
+  v.push_back(plat);
+  v.push_back(breakable);
+  v.push_back(plat);
+  
+  vector<Texture*> textures;
+  textures.clear();
+  textures.push_back(ahnold);
+  
+  vector<Drawable*> moveables;
+  vector<Special *> specials;
+  m = new Map(v);
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
+  m->load_map(temp_string.str().c_str(), moveables, specials, textures, system,
+              sounds, channel);
+  s = new Game_State(p, m, moveables, specials, system);
+  paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
+                           map_image, pointer);
+  
+  // this is for syncing the music in the game
+  p->pause_sound();
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->pause_sound();
+  }
+  
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->setVSpeed(GRAVITY_SPEED);
+  }
+}
+
 //Called when the window is resized
 void handleResize(int w, int h)
 {
@@ -223,12 +238,15 @@ void handleKeypress(unsigned char key, int x, int y)
     case ' ':
       if (s == paused)
       {
-        if (((Pause_State *)s)->get_selected() == 0 ||
-            ((Pause_State *)s)->get_selected() == 1) // return
+        if (((Pause_State *)s)->get_selected() == 0) // return
         {
           ((Pause_State *)s)->reset_selected();
           s = stack.at(stack.size() - 1);
           stack.pop_back();
+        }
+        else if (((Pause_State *)s)->get_selected() == 1) // restart
+        {
+          fprintf(stderr, "Restart current level\n");
         }
         else if (((Pause_State *)s)->get_selected() == 2) // quit
         {
@@ -266,6 +284,11 @@ void update(int delta)
 {
   
   s->update(delta);
+  // this means the goal state has been reached
+  if (delta < 0)
+  {
+    fprintf(stderr, "Goal reached!\n");
+  }
   
   /* Tell GLUT that the display has changed */
   glutPostRedisplay();

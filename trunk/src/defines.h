@@ -12,9 +12,7 @@
 #define TOO_CLOSE 100
 
 #define RESOURCES "resources/"
-#define LEVEL1 "Level 1/"
-#define LEVEL2 "Level 2/"
-#define LEVEL3 "Level 3/"
+#define LEVEL "Level "
 
 // texture files
 #define TILE_TEXTURE "tiles.png"

@@ -56,10 +56,18 @@ void Game_State::update(int &delta)
   
   if (collision)
   {
+    // if we collide with the goal, no need to do anything else since
+    // we're done already
+    if (p->will_collide_tile(m, GOAL))
+    {
+      delta = -1;
+      return;
+    }
+    
     // if we are colliding with ladder, then turn off gravity
     if (gravity)
     {
-      gravity = !p->will_collide_ladder(m);
+      gravity = !p->will_collide_tile(m, LADDER);
       if (!gravity)
       {
         p->setVSpeed(0);
@@ -67,7 +75,7 @@ void Game_State::update(int &delta)
     }
     else
     {
-      gravity = !p->will_collide_ladder(m);
+      gravity = !p->will_collide_tile(m, LADDER);
     }
     
     // then check for collision
@@ -181,7 +189,7 @@ void Game_State::update(int &delta)
       if (gravity)
       {
         if (!(specials.at(i)->will_collide_y(m) ||
-              specials.at(i)->will_collide_ladder(m) ||
+              specials.at(i)->will_collide_tile(m, LADDER) ||
               specials.at(i)->will_collide_platform(m)))
         {
           specials.at(i)->move(0, specials.at(i)->getVSpeed());
