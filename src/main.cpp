@@ -22,6 +22,8 @@ void initSound(FMOD_SYSTEM **system);
 void handleResize(int w, int h);
 void handleKeypress(unsigned char key, int x, int y);
 void handleKeyrelease(unsigned char key, int x, int y);
+void handleSpecialpress(int key, int x, int y);
+void handleSpecialrelease(int key, int x, int y);
 void update(int value);
 void drawScene(void);
 void system_clean(void);
@@ -41,6 +43,8 @@ int main(int argc, char *argv[])
   glutDisplayFunc(drawScene);
   glutKeyboardFunc(handleKeypress);
   glutKeyboardUpFunc(handleKeyrelease);
+  glutSpecialFunc(handleSpecialpress);
+  glutSpecialUpFunc(handleSpecialrelease);
   glutReshapeFunc(handleResize);
   
   // objects that are needed by the state
@@ -213,6 +217,9 @@ void handleKeypress(unsigned char key, int x, int y)
     case 27: // escape key
       system_clean();
       exit(0);
+      break;
+    case '\n':
+    case '\r':
     case ' ':
       if (s == paused)
       {
@@ -242,6 +249,16 @@ void handleKeypress(unsigned char key, int x, int y)
 void handleKeyrelease(unsigned char key, int x, int y)
 {
   s->key_released(key, x, y);
+}
+
+void handleSpecialpress(int key, int x, int y)
+{
+  s->special_pressed(key, x, y);
+}
+
+void handleSpecialrelease(int key, int x, int y)
+{
+  s->special_released(key, x, y);
 }
 
 // called ever 25 milliseconds to update the screen

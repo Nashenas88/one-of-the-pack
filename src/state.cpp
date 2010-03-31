@@ -19,6 +19,10 @@ void State::key_pressed(unsigned char key, int x, int y) {}
 
 void State::key_released(unsigned char key, int x, int y) {}
 
+void State::special_pressed(int key, int x, int y) {}
+
+void State::special_released(int key, int x, int y) {}
+
 void State::state_clean(void)
 {
   FMOD_RESULT result;

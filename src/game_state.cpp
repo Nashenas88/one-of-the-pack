@@ -226,6 +226,10 @@ void Game_State::update(int &delta)
 
 void Game_State::key_pressed(unsigned char key, int x, int y)
 {
+  if (key >= 'A' && key <= 'Z')
+  {
+    key += 'a' - 'A';
+  }
   switch (key)
   {
     if (!gravity)
@@ -248,6 +252,10 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
 
 void Game_State::key_released(unsigned char key, int x, int y)
 {
+  if (key >= 'A' && key <= 'Z')
+  {
+    key += 'a' - 'A';
+  }
   switch (key)
   {
     case 'w':
@@ -271,6 +279,44 @@ void Game_State::key_released(unsigned char key, int x, int y)
       collision = !collision;
       gravity = false;
       p->setVSpeed(0);
+      break;
+  }
+}
+
+void Game_State::special_pressed(int key, int x, int y)
+{
+  switch (key)
+  {
+    case GLUT_KEY_UP:
+      key_pressed('w', x, y);
+      break;
+    case GLUT_KEY_DOWN:
+      key_pressed('s', x, y);
+      break;
+    case GLUT_KEY_RIGHT:
+      key_pressed('d', x, y);
+      break;
+    case GLUT_KEY_LEFT:
+      key_pressed('a', x, y);
+      break;
+  }
+}
+
+void Game_State::special_released(int key, int x, int y)
+{
+  switch (key)
+  {
+    case GLUT_KEY_UP:
+      key_released('w', x, y);
+      break;
+    case GLUT_KEY_DOWN:
+      key_released('s', x, y);
+      break;
+    case GLUT_KEY_RIGHT:
+      key_released('d', x, y);
+      break;
+    case GLUT_KEY_LEFT:
+      key_released('a', x, y);
       break;
   }
 }

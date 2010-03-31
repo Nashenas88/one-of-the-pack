@@ -53,6 +53,27 @@ void Pause_State::key_pressed(unsigned char key, int x, int y)
 
 void Pause_State::key_released(unsigned char key, int x, int y) {}
 
+void Pause_State::special_pressed(int key, int x, int y)
+{
+  switch (key)
+  {
+    case GLUT_KEY_UP:
+      key_pressed('w', x, y);
+      break;
+    case GLUT_KEY_DOWN:
+      key_pressed('s', x, y);
+      break;
+    case GLUT_KEY_RIGHT:
+      key_pressed('d', x, y);
+      break;
+    case GLUT_KEY_LEFT:
+      key_pressed('a', x, y);
+      break;
+  }
+}
+
+void Pause_State::special_released(int key, int x, int y) {}
+
 void Pause_State::reset_selected(void)
 {
   while (selected != 0)
