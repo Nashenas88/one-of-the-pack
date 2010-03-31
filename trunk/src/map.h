@@ -47,6 +47,8 @@ public:
                 vector<Special *> &specials, vector<Texture*> texs,
                 FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
                 FMOD_CHANNEL *channel);
+  
+  void clean(void);
 };
 
 #endif // FLOCK__MAP__H

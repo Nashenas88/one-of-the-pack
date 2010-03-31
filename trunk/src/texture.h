@@ -17,7 +17,7 @@ private:
   int height;
   GLuint texture;
 public:
-  Texture();
+  Texture(void);
   Texture(const char *filename);
   
   // loads texture from a file, and automagically sets up

@@ -16,11 +16,14 @@ using namespace std;
 State *s;
 State *paused;
 vector<State *> stack;
-unsigned int current_level;
+bool loading;
+Drawable *load_screen;
+int level;
 
 void initRendering(void);
 void initSound(FMOD_SYSTEM **system);
-void initLevel(unsigned int level);
+void initLoading(void);
+void initLevel(int level);
 void handleResize(int w, int h);
 void handleKeypress(unsigned char key, int x, int y);
 void handleKeyrelease(unsigned char key, int x, int y);
@@ -40,7 +43,9 @@ int main(int argc, char *argv[])
   /* create window */
   glutCreateWindow(GAME_NAME);
   initRendering();
-  initLevel(1);
+  initLoading();
+  
+  level = 1;
   
   /* Set handler functions */
   glutDisplayFunc(drawScene);
@@ -54,6 +59,7 @@ int main(int argc, char *argv[])
   // it in 25 miliseconds
   srand((unsigned)time(NULL));
   glutTimerFunc(25, update, 0);
+  glutTimerFunc(25, initLevel, level);
   
   glutMainLoop();
   
@@ -90,14 +96,28 @@ void initSound(FMOD_SYSTEM **system)
   ERRCHECK(result);
 }
 
-void initLevel(unsigned int level)
+void initLoading(void)
+{
+  Texture *tex;
+  stringstream ss;
+  
+  loading = true;
+  ss << RESOURCES << LOADING_TEXTURE;
+  tex = new Texture(ss.str().c_str());
+  load_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
+}
+
+void initLevel(int level)
 {
     // objects that are needed by the state
   Player *p;
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
-  Drawable *right_corner_block;
+  Drawable *right_corner_block, *goal;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold;
+  vector<Texture*> textures;
+  vector<Drawable*> moveables;
+  vector<Special *> specials;
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound, *temp_sound;
@@ -158,23 +178,27 @@ void initLevel(unsigned int level)
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
                  SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
                  5, t, RIGHT, false, system, s_sound, channel);
-  block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  left_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  left_block->set_cur_frame(3);
-  right_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  right_block->set_cur_frame(2);
-  left_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  left_corner_block->set_cur_frame(4);
-  right_corner_block = new Drawable(0.0f, 0.0f, 1, 1, TILE, tiles);
-  right_corner_block->set_cur_frame(5);
+  block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  left_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  left_block->set_cur_frame(LEFT_BLOCK_FRAME);
+  right_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  right_block->set_cur_frame(RIGHT_BLOCK_FRAME);
+  left_corner_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  left_corner_block->set_cur_frame(LEFT_CORNER_BLOCK_FRAME);
+  right_corner_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  right_corner_block->set_cur_frame(RIGHT_CORNER_BLOCK_FRAME);
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
-  breakable = new Drawable(0.0f, 0.0f, 2, 1, TILE, tiles);
-  plat = new Drawable(0.0f, 0.0f, 3, 1, TILE, tiles);
-  ladder = new Drawable(0.0f, 0.0f, 4, 1, TILE, tiles);
+  breakable = new Drawable(0.0f, 0.0f, BREAKS, 1, TILE, tiles);
+  plat = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  ladder = new Drawable(0.0f, 0.0f, LADDS, 1, TILE, tiles);
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
-  map_image = new Drawable(300, 300, 0, 0, VARIABLE, mi);
-  pointer = new Drawable(650, 270, 0, 0, VARIABLE, pi);
+  map_image = new Drawable(300, 300, 1, 1, VARIABLE, mi);
+  pointer = new Drawable(650, 270, 1, 1, VARIABLE, pi);
+  goal = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
   
+  // place all drawables into vector
+  // this order MUST match the order
+  // of the tile_type enum
   vector<Drawable*> v;
   v.clear();
   v.push_back(background);
@@ -186,14 +210,11 @@ void initLevel(unsigned int level)
   v.push_back(ladder);
   v.push_back(plat);
   v.push_back(breakable);
-  v.push_back(plat);
+  v.push_back(goal);
   
-  vector<Texture*> textures;
   textures.clear();
   textures.push_back(ahnold);
   
-  vector<Drawable*> moveables;
-  vector<Special *> specials;
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, textures, system,
@@ -213,6 +234,8 @@ void initLevel(unsigned int level)
   {
     specials.at(i)->setVSpeed(GRAVITY_SPEED);
   }
+  
+  loading = false;
 }
 
 //Called when the window is resized
@@ -246,7 +269,9 @@ void handleKeypress(unsigned char key, int x, int y)
         }
         else if (((Pause_State *)s)->get_selected() == 1) // restart
         {
-          fprintf(stderr, "Restart current level\n");
+          loading = true;
+          system_clean();
+          glutTimerFunc(25, initLevel, level);
         }
         else if (((Pause_State *)s)->get_selected() == 2) // quit
         {
@@ -282,12 +307,16 @@ void handleSpecialrelease(int key, int x, int y)
 // called ever 25 milliseconds to update the screen
 void update(int delta)
 {
-  
-  s->update(delta);
-  // this means the goal state has been reached
-  if (delta < 0)
+  if (!loading)
   {
-    fprintf(stderr, "Goal reached!\n");
+    s->update(delta);
+    // this means the goal state has been reached
+    if (delta < 0)
+    {
+      loading = true;
+      system_clean();
+      glutTimerFunc(25, initLevel, ++level);
+    }
   }
   
   /* Tell GLUT that the display has changed */
@@ -305,7 +334,14 @@ void drawScene(void)
   glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
   glLoadIdentity(); //Reset the drawing perspective
   
-  s->draw();
+  if (loading)
+  {
+    load_screen->draw();
+  }
+  else
+  {
+    s->draw();
+  }
   
   glutSwapBuffers();
 }
@@ -313,5 +349,10 @@ void drawScene(void)
 // clean up all data
 void system_clean(void)
 {
-  s->clean();
+  paused->clean();
+  delete paused;
+  if (loading)
+  {
+    glutTimerFunc(25, initLevel, level);
+  }
 }

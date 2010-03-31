@@ -332,5 +332,18 @@ void Game_State::special_released(int key, int x, int y)
 void Game_State::clean(void)
 {
   p->clean();
+  delete p;
+  m->clean();
+  delete m;
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    moveables.at(i)->clean();
+    delete moveables.at(i);
+  }
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->clean();
+    delete specials.at(i);
+  }
   state_clean();
 }

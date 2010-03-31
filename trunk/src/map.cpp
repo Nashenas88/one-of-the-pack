@@ -265,3 +265,21 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
   
   return true;
 }
+
+void Map::clean(void)
+{
+  for (int i = 0; i < get_width(); ++i)
+  {
+    for (int j = 0; j < get_height(); ++j)
+    {
+      free (map[i][j]);
+    }
+    free (map[i]);
+  }
+  free (map);
+  
+  for (unsigned int i = 0; i < tiles.size(); ++i)
+  {
+    delete tiles.at(i);
+  }
+}

@@ -176,3 +176,8 @@ void Drawable::change_direction(direc dir)
     facing_right = true;
   }
 }
+
+void Drawable::clean(void)
+{
+  delete texture;
+}

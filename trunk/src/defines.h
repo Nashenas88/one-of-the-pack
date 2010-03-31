@@ -21,6 +21,7 @@
 #define POINTER_TEXTURE "pointer.png"
 #define MAP1 "level.bmp"
 #define MAP_IMAGE "level.png"
+#define LOADING_TEXTURE "loading.png"
 
 // character texture files
 #define PLAYER_TEXTURE "Character animation 1.png"
@@ -71,6 +72,22 @@ typedef enum
   BREAKABLE,
   GOAL
 } tile_type;
+
+enum
+{
+  RIGHT_BLOCK_FRAME = 2,
+  LEFT_BLOCK_FRAME,
+  LEFT_CORNER_BLOCK_FRAME,
+  RIGHT_CORNER_BLOCK_FRAME
+};
+
+enum
+{
+  BLOCKS = 1,
+  BREAKS,
+  PLATS,
+  LADDS
+};
 
 typedef enum
 {
