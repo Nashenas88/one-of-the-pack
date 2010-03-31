@@ -62,6 +62,8 @@ public:
   void set_cur_frame(int cf);
   int get_cur_frame(void) {return cur_frame;}
   void change_direction(direc dir);
+  
+  void clean(void);
 };
 
 #endif // FLOCK__DRAWABLE__H

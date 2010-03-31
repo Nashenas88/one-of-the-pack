@@ -84,5 +84,12 @@ void Pause_State::reset_selected(void)
 
 void Pause_State::clean(void)
 {
-  state_clean();
+  background->clean();
+  map->clean();
+  pointer->clean();
+  delete background;
+  delete map;
+  delete pointer;
+  game_state->clean();
+  delete game_state;
 }
