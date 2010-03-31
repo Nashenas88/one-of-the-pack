@@ -351,8 +351,4 @@ void system_clean(void)
 {
   paused->clean();
   delete paused;
-  if (loading)
-  {
-    glutTimerFunc(25, initLevel, level);
-  }
 }
