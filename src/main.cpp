@@ -315,7 +315,15 @@ void update(int delta)
     {
       loading = true;
       system_clean();
-      glutTimerFunc(25, initLevel, ++level);
+      if (++level <= LAST_LEVEL)
+      {
+        glutTimerFunc(25, initLevel, level);
+      }
+      else
+      {
+        printf("You win!\n");
+        exit(0);
+      }
     }
   }
   

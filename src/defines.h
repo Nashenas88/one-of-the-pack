@@ -51,6 +51,8 @@
 
 #define SOUND_CHANNEL 0
 
+#define LAST_LEVEL 3
+
 typedef enum
 {
   UP = 1,
