@@ -18,14 +18,13 @@ following(false), num_abil_frames(abil_frames)
   set_mute(true);
 }
 
-void Special::start_following(Player *p)
+void Special::start_following()
 {
   following = true;
 }
 
-void Special::stop_following(Player *p)
+void Special::stop_following()
 {
-  printf("Stop Following\n");
   following = false;
 }
 

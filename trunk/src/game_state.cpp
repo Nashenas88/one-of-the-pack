@@ -2,12 +2,12 @@
 #include "game_state.h"
 
 Game_State::Game_State(void)
-:p(NULL), m(NULL), gravity(true), collision(true) {}
+:p(NULL), c(NULL), m(NULL), gravity(true), collision(true) {}
 
 Game_State::Game_State(Player *pl, Map *map, vector<Drawable *> mvs,
                        vector<Special *> sps, FMOD_SYSTEM *system)
-:State(system), p(pl), m(map), moveables(mvs), specials(sps), gravity(true),
-collision(true) {}
+:State(system), p(pl), c(pl), m(map), moveables(mvs), specials(sps),
+next_special(0), gravity(true), collision(true) {}
 
 // draw static background, then map, then specials, then moveables, then player
 void Game_State::draw(void)
@@ -30,7 +30,7 @@ void Game_State::draw(void)
 void Game_State::update(int &delta)
 {
   float x, y, mx, my;
-  p->get_top_left(x, y);
+  c->get_top_left(x, y);
   m->get_top_left(mx, my);
   
   bool p_movex = true, m_movex = false;
@@ -46,7 +46,7 @@ void Game_State::update(int &delta)
     float my_val = my/TILE_HEIGHT;
     if (y_val - my_val < m->get_height())
     {
-      p->setVSpeed(GRAVITY_SPEED);
+      c->setVSpeed(GRAVITY_SPEED);
       /*for (unsigned int i = 0; i < specials.size(); ++i)
       {
         specials.at(i)->setVSpeed(GRAVITY_SPEED);
@@ -58,28 +58,32 @@ void Game_State::update(int &delta)
   {
     // if we collide with the goal, no need to do anything else since
     // we're done already
-    if (p->will_collide_tile(m, GOAL))
+    if (c->will_collide_tile(m, GOAL))
     {
       delta = -1;
       return;
     }
     
     // if we are colliding with ladder, then turn off gravity
-    if (gravity)
+    if (gravity && c == p)
     {
-      gravity = !p->will_collide_tile(m, LADDER);
+      gravity = !c->will_collide_tile(m, LADDER);
       if (!gravity)
       {
-        p->setVSpeed(0);
+        c->setVSpeed(0);
       }
+    }
+    else if (c == p)
+    {
+      gravity = !c->will_collide_tile(m, LADDER);
     }
     else
     {
-      gravity = !p->will_collide_tile(m, LADDER);
+      gravity = true;
     }
     
     // then check for collision
-    p_movex = !p->will_collide_x(m);
+    p_movex = !c->will_collide_x(m);
     
     /* this is to deal with the case where the player has climbed the ladder
      * and then falls off. While both PLAYER_SPEED and GRAVITY_SPEED can
@@ -87,30 +91,30 @@ void Game_State::update(int &delta)
      * the player seems to "hover" above the floor. The following fixes this
      * hover issue.
      */
-    if (!(p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m)) &&
-        p->getVSpeed() == GRAVITY_SPEED)
+    if (!(p_movey = !c->will_collide_y(m) && !c->will_collide_platform(m)) &&
+        c->getVSpeed() == GRAVITY_SPEED)
     {
-      p->setVSpeed(PLAYER_SPEED);
-      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m);
+      c->setVSpeed(PLAYER_SPEED);
+      p_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
     }
   }
   
   // mxs and mys and the map movement speed in x and y
-  float mxs = p->getHSpeed(), mys = p->getVSpeed();
+  float mxs = c->getHSpeed(), mys = c->getVSpeed();
   
   // if we collide with the map movement boundary
   // then freeze the player and move the map
   if (p_movex &&
-      ((p->getHSpeed() > 0 && x + p->get_width() > SCREEN_WIDTH - BORDER) ||
-      (p->getHSpeed() < 0 && x < BORDER)))
+      ((c->getHSpeed() > 0 && x + c->get_width() > SCREEN_WIDTH - BORDER) ||
+      (c->getHSpeed() < 0 && x < BORDER)))
   {
     p_movex = false;
     m_movex = true;
     mxs = -mxs;
   }
   if (p_movey &&
-      ((p->getVSpeed() > 0 && y + p->get_height() > SCREEN_HEIGHT - BORDER) ||
-      (p->getVSpeed() < 0 && y < BORDER)))
+      ((c->getVSpeed() > 0 && y + c->get_height() > SCREEN_HEIGHT - BORDER) ||
+      (c->getVSpeed() < 0 && y < BORDER)))
   {
     p_movey = false;
     m_movey = true;
@@ -123,6 +127,11 @@ void Game_State::update(int &delta)
     m->move(0, mys);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
+      if (c == specials.at(i))
+      {
+        ((Drawable*)p)->move(0, mys);
+        continue;
+      }
       ((Drawable*)specials.at(i))->move(0, mys);
     }
     for (unsigned int i = 0; i < moveables.size(); i++)
@@ -132,7 +141,7 @@ void Game_State::update(int &delta)
   }
   else if (p_movey)
   {
-    p->move(0, p->getVSpeed());
+    c->move(0, c->getVSpeed());
   }
   
   if (m_movex && 0.0 >= mx + mxs &&
@@ -142,6 +151,11 @@ void Game_State::update(int &delta)
     m->move(mxs, 0);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
+      if (c == specials.at(i))
+      {
+        ((Drawable*)p)->move(mxs, 0);
+        continue;
+      }
       ((Drawable*)specials.at(i))->move(mxs, 0);
     }
     for (unsigned int i = 0; i < moveables.size(); i++)
@@ -149,10 +163,10 @@ void Game_State::update(int &delta)
       moveables.at(i)->move(mxs, 0);
     }
   }
-  else if (p_movex && p->getHSpeed() != 0)
+  else if (p_movex && c->getHSpeed() != 0)
   {
     animate = true;
-    p->move(p->getHSpeed(), 0);
+    c->move(c->getHSpeed(), 0);
   }
   
   // player animation
@@ -161,13 +175,13 @@ void Game_State::update(int &delta)
     if (delta > DELTA_DELAY)
     {
       delta = 0;
-      if ((p->get_animdir() == 1 &&
-          p->get_cur_frame() == p->get_num_frames()) ||
-          (p->get_animdir() == -1 && p->get_cur_frame() == 1))
+      if ((c->get_animdir() == 1 &&
+          c->get_cur_frame() == c->get_num_frames()) ||
+          (c->get_animdir() == -1 && c->get_cur_frame() == 1))
       {
-        p->set_animdir(p->get_animdir() * -1);
+        c->set_animdir(c->get_animdir() * -1);
       }
-      p->set_cur_frame(p->get_cur_frame() + p->get_animdir());
+      c->set_cur_frame(c->get_cur_frame() + c->get_animdir());
     }
     else
     {
@@ -177,16 +191,21 @@ void Game_State::update(int &delta)
   else
   {
     delta = 0;
-    p->set_cur_frame(1);
+    c->set_cur_frame(1);
   }
   
   // specials stuff
   float dx, dy, dist;
   unsigned int cur_frame, a_delta;
+  Special *s;
   if (collision)
   {
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
+      if(c == specials.at(i))
+      {
+        continue;
+      }
       if (gravity)
       {
         if (!(specials.at(i)->will_collide_y(m) ||
@@ -201,32 +220,9 @@ void Game_State::update(int &delta)
   
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    dx = (specials.at(i)->get_x()-p->get_x());
-    dy = (specials.at(i)->get_y()-p->get_y());
-    dist = sqrt((dx*dx)+(dy*dy));
-    
-    if (specials.at(i)->is_following() && dist > TOO_CLOSE)
+    if (c == specials.at(i))
     {
-      if (specials.at(i)->get_mute())
-      {
-        specials.at(i)->set_mute(false);
-      }
-      specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
-      if (collision)
-      {
-        if (!(specials.at(i)->will_collide_x(m)))
-        {
-          specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
-        }
-      }
-      else
-      {
-        specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
-      }
-    }
-    else if (dist < FOLLOW_DIST)
-    {
-      specials.at(i)->start_following((Player *)p);
+      continue;
     }
     
     a_delta = specials.at(i)->get_delta();
@@ -251,6 +247,45 @@ void Game_State::update(int &delta)
         specials.at(i)->set_delta(++a_delta);
       }
     }
+    
+    dx = (specials.at(i)->get_x() - p->get_x());
+    dy = (specials.at(i)->get_y() - p->get_y());
+    dist = sqrt((dx*dx)+(dy*dy));
+    
+    if (specials.at(i)->is_following() && dist > TOO_CLOSE)
+    {
+      if (specials.at(i)->get_mute())
+      {
+        specials.at(i)->set_mute(false);
+      }
+      specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
+      if (collision)
+      {
+        if (!(specials.at(i)->will_collide_x(m)))
+        {
+          specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+        }
+      }
+      else
+      {
+        specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+      }
+    }
+    else if (dist < FOLLOW_DIST && !specials.at(i)->is_following())
+    {
+      specials.at(i)->start_following();
+      if (i > (unsigned int) next_special)
+      {
+        s = specials.at(i);
+        specials.at(i) = specials.at(next_special);
+        specials.at(next_special) = s;
+        ++next_special;
+      }
+      else if (i == (unsigned int) next_special)
+      {
+        ++next_special;
+      }
+    }
   }
   
   state_update();
@@ -267,26 +302,53 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
     if (!gravity)
     {
       case 'w':
-        p->setVSpeed(-PLAYER_SPEED);
+        c->setVSpeed(-PLAYER_SPEED);
         break;
       case 's':
-        p->setVSpeed(PLAYER_SPEED);
+        c->setVSpeed(PLAYER_SPEED);
         break;
     }
     case 'a':
-      p->setHSpeed(-PLAYER_SPEED);
+      c->setHSpeed(-PLAYER_SPEED);
       break;
     case 'd':
-      p->setHSpeed(PLAYER_SPEED);
+      c->setHSpeed(PLAYER_SPEED);
       break;
     case 'p':
-      for (unsigned int i = 0; i < specials.size(); ++i)
+      for (unsigned int i = 0; i < next_special && i < specials.size(); ++i)
       {
-        if (specials.at(i)->is_following())
-        {
-          specials.at(i)->set_tex_num(ABILITY);
-        }
+        specials.at(i)->set_tex_num(ABILITY);
       }
+      break;
+    case 'q':
+      if (c != p)
+      {
+        ((Special*)c)->stop_following();
+        ((Special*)c)->set_mute(true);
+        c = p;
+      }
+    case '0':
+      c = p;
+      c->setVSpeed(0);
+      c->setHSpeed(0);
+      break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      if ((unsigned int) (key - 49) < next_special &&
+          (unsigned int) (key - 49) < specials.size())
+      {
+        c = specials.at(key - 49);
+        c->setVSpeed(0);
+        c->setHSpeed(0);
+      }
+      break;
   }
 }
 
@@ -299,16 +361,16 @@ void Game_State::key_released(unsigned char key, int x, int y)
   switch (key)
   {
     case 'w':
-      p->setVSpeed(0);
+      c->setVSpeed(0);
       break;
     case 'a':
-      p->setHSpeed(0);
+      c->setHSpeed(0);
       break;
     case 's':
-      p->setVSpeed(0);
+      c->setVSpeed(0);
       break;
     case 'd':
-      p->setHSpeed(0);
+      c->setHSpeed(0);
       break;
     // below is for debugging only
     // remove for final game version
@@ -318,7 +380,7 @@ void Game_State::key_released(unsigned char key, int x, int y)
     case 'h':
       collision = !collision;
       gravity = false;
-      p->setVSpeed(0);
+      c->setVSpeed(0);
       break;
   }
 }

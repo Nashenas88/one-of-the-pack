@@ -12,10 +12,12 @@ using namespace std;
 class Game_State : public State
 {
 private:
-  Character *p; // human controlled player
+  Player *p; // human controlled player
+  Character *c; // the main character that will be controlled by player
   Map *m; // map object
   vector<Drawable *> moveables; // all moveable entities
   vector<Special *> specials; // all specials that can follow player
+  unsigned int next_special; // num to determine pos in specials
   bool gravity; // is gravity on or off?
   bool collision; // is collision on or off?
   
