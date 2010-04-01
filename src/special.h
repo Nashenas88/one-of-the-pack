@@ -31,6 +31,8 @@ public:
   void stop_following(Player *p);
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
+  void pause_volume(void);
+  void unpause_volume(void);
   void go_home();
 };
 

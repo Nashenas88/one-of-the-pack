@@ -230,6 +230,16 @@ void Character::pause_sound(void)
   ERRCHECK(result);
 }
 
+void Character::pause_volume(void)
+{
+  FMOD_Channel_SetVolume(music_channel, PAUSE_VOLUME);
+}
+
+void Character::unpause_volume(void)
+{
+  FMOD_Channel_SetVolume(music_channel, 1.0f);
+}
+
 // cleans up all garbage data
 void Character::clean(void)
 {

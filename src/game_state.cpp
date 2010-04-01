@@ -329,6 +329,24 @@ void Game_State::special_released(int key, int x, int y)
   }
 }
 
+void Game_State::pause_volume(void)
+{
+  p->pause_volume();
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->pause_volume();
+  }
+}
+
+void Game_State::unpause_volume(void)
+{
+  p->unpause_volume();
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->unpause_volume();
+  }
+}
+
 void Game_State::clean(void)
 {
   p->clean();
