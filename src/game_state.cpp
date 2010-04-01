@@ -182,6 +182,7 @@ void Game_State::update(int &delta)
   
   // specials stuff
   float dx, dy, dist;
+  unsigned int cur_frame, a_delta;
   if (collision)
   {
     for (unsigned int i = 0; i < specials.size(); ++i)
@@ -210,7 +211,7 @@ void Game_State::update(int &delta)
       {
         specials.at(i)->set_mute(false);
       }
-      specials.at(i)->setHSpeed(dx==0?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
+      specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
       if (collision)
       {
         if (!(specials.at(i)->will_collide_x(m)))
@@ -225,7 +226,30 @@ void Game_State::update(int &delta)
     }
     else if (dist < FOLLOW_DIST)
     {
-      specials.at(i)->start_following(p);
+      specials.at(i)->start_following((Player *)p);
+    }
+    
+    a_delta = specials.at(i)->get_delta();
+    if (specials.at(i)->get_tex_num() == ABILITY)
+    {
+      if (a_delta > SPECIAL_DELTA_DELAY)
+      {
+        specials.at(i)->set_delta(0);
+        cur_frame = specials.at(i)->get_cur_frame();
+        if (cur_frame < specials.at(i)->get_abil_frames())
+        {
+          specials.at(i)->set_cur_frame(cur_frame + 1);
+        }
+        else if (cur_frame == specials.at(i)->get_abil_frames())
+        {
+          specials.at(i)->set_cur_frame(1);
+          specials.at(i)->set_tex_num(SPECIAL);
+        }
+      }
+      else
+      {
+        specials.at(i)->set_delta(++a_delta);
+      }
     }
   }
   
@@ -255,6 +279,14 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
     case 'd':
       p->setHSpeed(PLAYER_SPEED);
       break;
+    case 'p':
+      for (unsigned int i = 0; i < specials.size(); ++i)
+      {
+        if (specials.at(i)->is_following())
+        {
+          specials.at(i)->set_tex_num(ABILITY);
+        }
+      }
   }
 }
 

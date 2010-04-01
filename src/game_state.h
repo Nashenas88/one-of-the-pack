@@ -12,7 +12,7 @@ using namespace std;
 class Game_State : public State
 {
 private:
-  Player *p; // human controlled player
+  Character *p; // human controlled player
   Map *m; // map object
   vector<Drawable *> moveables; // all moveable entities
   vector<Special *> specials; // all specials that can follow player
