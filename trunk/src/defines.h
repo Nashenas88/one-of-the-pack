@@ -50,6 +50,7 @@
 #define BORDER 100
 
 #define SOUND_CHANNEL 0
+#define PAUSE_VOLUME 0.25f
 
 #define LAST_LEVEL 3
 

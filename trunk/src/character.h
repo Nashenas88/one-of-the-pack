@@ -65,6 +65,9 @@ public:
   void play_sound(void);
   // you MUST call play_sound before you call pause_sound
   void pause_sound(void);
+  // turns down sound to 50% volume when the game is paused
+  void pause_volume(void);
+  void unpause_volume(void);
   bool is_paused(void) {return sound_paused;}
   
   // return sound system

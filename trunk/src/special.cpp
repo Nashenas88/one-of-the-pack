@@ -34,6 +34,22 @@ void Special::set_mute(bool m)
   FMOD_Channel_SetVolume(get_channel(), mute?0.0f:1.0f);
 }
 
+void Special::pause_volume(void)
+{
+  if (!mute)
+  {
+    ((Character *)this)->pause_volume();
+  }
+}
+
+void Special::unpause_volume(void)
+{
+  if (!mute)
+  {
+    ((Character *)this)->unpause_volume();
+  }
+}
+
 void Special::go_home()
 {
   ((Drawable *)this)->move(loc[0]-get_x(), loc[1]-get_y());

@@ -265,6 +265,7 @@ void handleKeypress(unsigned char key, int x, int y)
         {
           ((Pause_State *)s)->reset_selected();
           s = stack.at(stack.size() - 1);
+          ((Game_State *)s)->unpause_volume();
           stack.pop_back();
         }
         else if (((Pause_State *)s)->get_selected() == 1) // restart
@@ -281,6 +282,7 @@ void handleKeypress(unsigned char key, int x, int y)
       }
       else
       {
+        ((Game_State *)s)->pause_volume();
         stack.push_back(s);
         s = paused;
       }
