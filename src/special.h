@@ -29,9 +29,9 @@ public:
   
   unsigned int get_abil_frames(void) {return num_abil_frames;}
   virtual void use_ability(int dir, Map *m){}
-  void start_following(Player *p);
+  void start_following();
   bool is_following(void) { return following; }
-  void stop_following(Player *p);
+  void stop_following();
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
   void pause_volume(void);
