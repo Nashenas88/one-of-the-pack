@@ -21,6 +21,9 @@ private:
   direc direction;
   int animdir;
   
+  // used for timing animation
+  int anim_delta;
+  
   // vertical and horizontal speed
   int v_speed, h_speed;
   
@@ -50,6 +53,8 @@ public:
   void setHSpeed(int hs) {h_speed = hs;}
   int get_animdir(void) {return animdir;}
   void set_animdir(int d) {animdir = d;}
+  int get_delta(void) {return anim_delta;}
+  void set_delta(int d) {anim_delta = d;}
   
   void move(float x, float y);
   

@@ -6,10 +6,11 @@ Special::Special(void)
 :Character()
 {}
 
-Special::Special(float x, float y, int num, int frames, Texture *tex,
-                 direc dir, int vs, int hs, FMOD_SYSTEM *sys, FMOD_SOUND *so, 
-                 FMOD_CHANNEL *ch)
-:Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch)
+Special::Special(float x, float y, int num, int frames, int abil_frames,
+                 Texture *tex, direc dir, int vs, int hs, FMOD_SYSTEM *sys,
+                 FMOD_SOUND *so, FMOD_CHANNEL *ch)
+:Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch),
+following(false), num_abil_frames(abil_frames)
 {
   loc[0] = x;
   loc[1] = y;

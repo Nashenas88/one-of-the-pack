@@ -190,8 +190,9 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         specials.push_back(new Ahnold(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                      1, 1, texs.at(AHNOLD), LEFT, system,
-                                      sounds.at(sound_num), channel));
+                                      1, 1, AHNOLD_PUNCH_NUM, texs.at(AHNOLD),
+                                      LEFT, system, sounds.at(sound_num),
+                                      channel));
         ++sound_num;
       }
       // jumping helper

@@ -13,8 +13,8 @@ private:
   
 public:
   Ahnold(void);
-  Ahnold(float x, float y, int num, int frames, Texture *tex, direc dir,
-         FMOD_SYSTEM *sys, FMOD_SOUND *music, FMOD_CHANNEL *ch);
+  Ahnold(float x, float y, int num, int frames, int abil_frames, Texture *tex,
+         direc dir, FMOD_SYSTEM *sys, FMOD_SOUND *music, FMOD_CHANNEL *ch);
   
   void use_ability(int dir, Map *m);
   void start_following(Player *p);

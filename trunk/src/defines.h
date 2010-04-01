@@ -46,11 +46,14 @@
 #define POINTER_MOVE 90
 
 #define DELTA_DELAY 4
+#define SPECIAL_DELTA_DELAY 12
 
 #define BORDER 100
 
 #define SOUND_CHANNEL 0
 #define PAUSE_VOLUME 0.25f
+
+#define AHNOLD_PUNCH_NUM 5
 
 #define LAST_LEVEL 3
 
@@ -90,6 +93,12 @@ enum
   BREAKS,
   PLATS,
   LADDS
+};
+
+enum
+{
+  SPECIAL = 1,
+  ABILITY
 };
 
 typedef enum
