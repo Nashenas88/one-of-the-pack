@@ -336,6 +336,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         c = p;
       }
     case '0':
+      c->setVSpeed(GRAVITY_SPEED);
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
