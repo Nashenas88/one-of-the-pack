@@ -40,6 +40,9 @@ public:
   void special_pressed(int key, int x, int y);
   void special_released(int key, int x, int y);
   
+  // centers the map on the controlled character
+  void center(void);
+  
   void pause_volume(void);
   void unpause_volume(void);
   

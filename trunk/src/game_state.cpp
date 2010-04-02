@@ -91,11 +91,19 @@ void Game_State::update(int &delta)
      * the player seems to "hover" above the floor. The following fixes this
      * hover issue.
      */
-    if (!(p_movey = !c->will_collide_y(m) && !c->will_collide_platform(m)) &&
-        c->getVSpeed() == GRAVITY_SPEED)
+    p_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
+    if (c != p)
+    {
+      p_movey = p_movey && !c->will_collide_tile(m, LADDER);
+    }
+    if (!p_movey && c->getVSpeed() == GRAVITY_SPEED)
     {
       c->setVSpeed(PLAYER_SPEED);
       p_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
+      if (c != p)
+      {
+        p_movey = p_movey && !c->will_collide_tile(m, LADDER);
+      }
     }
   }
   
@@ -170,7 +178,7 @@ void Game_State::update(int &delta)
   }
   
   // player animation
-  if (animate)
+  if (animate && c->get_num_frames() > 1)
   {
     if (delta > DELTA_DELAY)
     {
@@ -331,6 +339,8 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
+      
+      center();
       break;
     case '1':
     case '2':
@@ -347,6 +357,8 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         c = specials.at(key - 49);
         c->setVSpeed(0);
         c->setHSpeed(0);
+        
+        center();
       }
       break;
   }
@@ -421,6 +433,36 @@ void Game_State::special_released(int key, int x, int y)
       key_released('a', x, y);
       break;
   }
+}
+
+void Game_State::center(void)
+{
+  float x, y, mx, my, move_x, move_y;
+  
+  c->get_top_left(x, y);
+  m->get_top_left(mx, my);
+  move_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f - x;
+  move_y = SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y;
+  
+  if (move_x + mx > 0 || move_x + mx < -m->get_width() * TILE_WIDTH)
+  {
+    move_x = -mx;
+  }
+  if (move_y + my > 0 || move_y + my < -m->get_height() * TILE_HEIGHT)
+  {
+    move_y = -my;
+  }
+  
+  m->move(move_x,move_y);
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    ((Drawable *)specials.at(i))->move(move_x,move_y);
+  }
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    moveables.at(i)->move(move_x,move_y);
+  }
+  ((Drawable *)p)->move(move_x, move_y);
 }
 
 void Game_State::pause_volume(void)
