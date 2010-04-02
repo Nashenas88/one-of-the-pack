@@ -45,8 +45,8 @@ void Map::draw(void)
 
 bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
                    vector<Special *> &specials, vector<Texture*> texs,
-                   FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
-                   FMOD_CHANNEL *channel)
+                   Character *player, FMOD_SYSTEM *system,
+                   vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];
@@ -143,7 +143,9 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
   }
   
   int sound_num;
+  float y_offset;
   sound_num = 0;
+  y_offset = player->get_col_y_offset();
   
   // start reading data from file
   for (int y = height - 1; y >= 0 && file.good(); --y)
@@ -229,20 +231,20 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
       // player start position
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)
       {
-        // move map so that player start is top left
+        // move map so that player start is centered
         move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f - TILE_WIDTH,
-             -y * TILE_WIDTH + SCREEN_HEIGHT / 2.0f - TILE_HEIGHT);
+             -y * TILE_WIDTH + SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y_offset);
         for (unsigned int i = 0; i < specials.size(); ++i)
         {
           specials.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
                                TILE_WIDTH, -y * TILE_WIDTH +
-                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT);
+                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y_offset);
         }
         for (unsigned int i = 0; i < moveables.size(); ++i)
         {
           moveables.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
                                TILE_WIDTH, -y * TILE_WIDTH +
-                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT);
+                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y_offset);
         }
       }
     }
