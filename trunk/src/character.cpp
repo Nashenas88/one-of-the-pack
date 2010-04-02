@@ -12,8 +12,8 @@ Character::Character(float x, float y, int num, int frames, Texture *tex,
 anim_delta(0), v_speed(vs), h_speed(hs), system(sys), music(mu),
 music_channel(mch)
 {
-  col_width = get_width() * 0.8f;
-  col_height = get_height() * 0.8f;
+  col_width = get_width() * COLLISION_SPACE;
+  col_height = get_height() * COLLISION_SPACE;
   
   col_x_offset = (get_width() - col_width) / 2.0;
   col_y_offset = (get_height() - col_height) / 2.0;

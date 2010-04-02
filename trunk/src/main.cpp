@@ -217,8 +217,8 @@ void initLevel(int level)
   
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
-  m->load_map(temp_string.str().c_str(), moveables, specials, textures, system,
-              sounds, channel);
+  m->load_map(temp_string.str().c_str(), moveables, specials, textures, p,
+              system, sounds, channel);
   s = new Game_State(p, m, moveables, specials, system);
   paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
                            map_image, pointer);

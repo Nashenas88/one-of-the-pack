@@ -49,6 +49,7 @@
 #define SPECIAL_DELTA_DELAY 12
 
 #define BORDER 100
+#define COLLISION_SPACE 0.8f;
 
 #define SOUND_CHANNEL 0
 #define PAUSE_VOLUME 0.25f

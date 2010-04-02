@@ -55,6 +55,8 @@ public:
   void set_animdir(int d) {animdir = d;}
   int get_delta(void) {return anim_delta;}
   void set_delta(int d) {anim_delta = d;}
+  float get_col_y_offset(void) {return col_y_offset;}
+  float get_col_x_offset(void) {return col_x_offset;}
   
   void move(float x, float y);
   

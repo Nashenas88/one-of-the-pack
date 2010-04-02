@@ -7,6 +7,8 @@ using namespace std;
 #include "drawable.h"
 #include "defines.h"
 
+class Character;
+
 #include "FMOD_includes.h"
 
 enum
@@ -45,8 +47,8 @@ public:
   // moveables so that it includes a list of all objects that can move
   bool load_map(const char *map_bmp, vector<Drawable *> &moveables,
                 vector<Special *> &specials, vector<Texture*> texs,
-                FMOD_SYSTEM *system, vector<FMOD_SOUND *> sounds,
-                FMOD_CHANNEL *channel);
+                Character *player, FMOD_SYSTEM *system,
+                vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel);
   
   void clean(void);
 };
