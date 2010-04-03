@@ -352,13 +352,18 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       {
         ((Special*)c)->stop_following();
         ((Special*)c)->set_mute(true);
-        c = p;
       }
     case '0':
       c->setVSpeed(GRAVITY_SPEED);
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
+      
+      c->set_volume(MAX_VOLUME);
+      for (unsigned int i = 0; i < specials.size(); ++i)
+      {
+        specials.at(i)->set_volume(MAX_VOLUME);
+      }
       
       center();
       break;
@@ -377,6 +382,16 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         c = specials.at(key - 49);
         c->setVSpeed(0);
         c->setHSpeed(0);
+        
+        p->set_volume(UNFOCUSED_VOLUME);
+        for (unsigned int i = 0; i < specials.size(); ++i)
+        {
+          if (c == specials.at(i))
+          {
+            continue;
+          }
+          specials.at(i)->set_volume(UNFOCUSED_VOLUME);
+        }
         
         center();
       }
@@ -495,19 +510,34 @@ void Game_State::center(void)
 
 void Game_State::pause_volume(void)
 {
-  p->pause_volume();
+  p->set_volume(PAUSE_VOLUME);
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    specials.at(i)->pause_volume();
+    specials.at(i)->set_volume(PAUSE_VOLUME);
   }
 }
 
 void Game_State::unpause_volume(void)
 {
-  p->unpause_volume();
-  for (unsigned int i = 0; i < specials.size(); ++i)
+  c->set_volume(MAX_VOLUME);
+  if (c == p)
   {
-    specials.at(i)->unpause_volume();
+    for (unsigned int i = 0; i < specials.size(); ++i)
+    {
+      specials.at(i)->set_volume(MAX_VOLUME);
+    }
+  }
+  else
+  {
+    p->set_volume(UNFOCUSED_VOLUME);
+    for (unsigned int i = 0; i < specials.size(); ++i)
+    {
+      if (c == specials.at(i))
+      {
+        continue;
+      }
+      specials.at(i)->set_volume(UNFOCUSED_VOLUME);
+    }
   }
 }
 

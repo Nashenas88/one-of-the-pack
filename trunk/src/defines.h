@@ -53,6 +53,8 @@
 
 #define SOUND_CHANNEL 0
 #define PAUSE_VOLUME 0.25f
+#define UNFOCUSED_VOLUME 0.5f
+#define MAX_VOLUME 1.0f
 
 #define AHNOLD_PUNCH_NUM 5
 
