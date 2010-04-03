@@ -34,8 +34,7 @@ public:
   void stop_following();
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
-  void pause_volume(void);
-  void unpause_volume(void);
+  void set_volume(float volume);
   void go_home();
 };
 
