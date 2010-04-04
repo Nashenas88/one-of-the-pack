@@ -43,6 +43,18 @@ void Map::draw(void)
   }
 }
 
+void Map::remove(int x, int y)
+{
+  printf("BLOCK WOULD BE REMOVED\n");
+  // enter code to remove block from map
+}
+
+void Map::move_block(int x, int y)
+{
+  // enter code to move block 
+}
+
+
 bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
                    vector<Special *> &specials, vector<Texture*> texs,
                    Character *player, FMOD_SYSTEM *system,

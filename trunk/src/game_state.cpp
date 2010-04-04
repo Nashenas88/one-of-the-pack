@@ -32,12 +32,12 @@ void Game_State::update(int &delta)
   float x, y, mx, my;
   c->get_top_left(x, y);
   m->get_top_left(mx, my);
-  
+
   bool c_movex = true, m_movex = false;
   bool c_movey = true, m_movey = false;
   bool p_movey = true;
   bool animate = false;
-  
+
   // if we're not colliding with anything,
   // then FALL MWAHAHA - written on very
   // little sleep
@@ -61,7 +61,7 @@ void Game_State::update(int &delta)
       p->setVSpeed(GRAVITY_SPEED);
     }
   }
-  
+
   if (collision)
   {
     // if player collides with the goal, no need to
@@ -71,7 +71,7 @@ void Game_State::update(int &delta)
       delta = -1;
       return;
     }
-    
+
     // if we are colliding with ladder, then turn off gravity
     if (gravity)
     {
@@ -89,10 +89,10 @@ void Game_State::update(int &delta)
     {
       gravity = true;
     }
-    
+
     // then check for collision
     c_movex = !c->will_collide_x(m);
-    
+
     /* this is to deal with the case where the player has climbed the ladder
      * and then falls off. While both PLAYER_SPEED and GRAVITY_SPEED can
      * align properly by themselves, when used together, they can make it so
@@ -120,10 +120,10 @@ void Game_State::update(int &delta)
       p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m);
     }
   }
-  
+
   // mxs and mys and the map movement speed in x and y
   float mxs = c->getHSpeed(), mys = c->getVSpeed();
-  
+
   // if we collide with the map movement boundary
   // then freeze the player and move the map
   if (c_movex &&
@@ -142,7 +142,7 @@ void Game_State::update(int &delta)
     m_movey = true;
     mys = -mys;
   }
-  
+
   if (m_movey && 0.0 >= my + mys &&
            my + mys + m->get_height() * TILE_HEIGHT >= SCREEN_HEIGHT)
   {
@@ -165,12 +165,12 @@ void Game_State::update(int &delta)
   {
     c->move(0, c->getVSpeed());
   }
-  
+
   if (c != p && p_movey)
   {
     p->move(0, p->getVSpeed());
   }
-  
+
   if (m_movex && 0.0 >= mx + mxs &&
       mx + mxs + m->get_width() * TILE_WIDTH >= SCREEN_WIDTH)
   {
@@ -195,7 +195,7 @@ void Game_State::update(int &delta)
     animate = true;
     c->move(c->getHSpeed(), 0);
   }
-  
+
   // player animation
   if (animate && c->get_num_frames() > 1)
   {
@@ -220,7 +220,7 @@ void Game_State::update(int &delta)
     delta = 0;
     c->set_cur_frame(1);
   }
-  
+
   // specials stuff
   float dx, dy, dist;
   unsigned int cur_frame, a_delta;
@@ -244,14 +244,14 @@ void Game_State::update(int &delta)
       }
     }
   }
-  
+
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     if (c == specials.at(i))
     {
       continue;
     }
-    
+
     a_delta = specials.at(i)->get_delta();
     if (specials.at(i)->get_tex_num() == ABILITY)
     {
@@ -274,11 +274,11 @@ void Game_State::update(int &delta)
         specials.at(i)->set_delta(++a_delta);
       }
     }
-    
+
     dx = (specials.at(i)->get_x() - p->get_x());
     dy = (specials.at(i)->get_y() - p->get_y());
     dist = sqrt((dx*dx)+(dy*dy));
-    
+
     if (specials.at(i)->is_following() && dist > TOO_CLOSE)
     {
       if (specials.at(i)->get_mute())
@@ -314,7 +314,7 @@ void Game_State::update(int &delta)
       }
     }
   }
-  
+
   state_update();
 }
 
@@ -345,6 +345,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       for (unsigned int i = 0; i < next_special && i < specials.size(); ++i)
       {
         specials.at(i)->set_tex_num(ABILITY);
+        specials.at(i)->use_ability(specials.at(i)->getDirection(), m);
       }
       break;
     case 'q':
@@ -358,13 +359,13 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
-      
+
       c->set_volume(MAX_VOLUME);
       for (unsigned int i = 0; i < specials.size(); ++i)
       {
         specials.at(i)->set_volume(MAX_VOLUME);
       }
-      
+
       center();
       break;
     case '1':
@@ -382,7 +383,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         c = specials.at(key - 49);
         c->setVSpeed(0);
         c->setHSpeed(0);
-        
+
         p->set_volume(UNFOCUSED_VOLUME);
         for (unsigned int i = 0; i < specials.size(); ++i)
         {
@@ -392,7 +393,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
           }
           specials.at(i)->set_volume(UNFOCUSED_VOLUME);
         }
-        
+
         center();
       }
       break;
@@ -471,14 +472,14 @@ void Game_State::special_released(int key, int x, int y)
 void Game_State::center(void)
 {
   float x, y, mx, my, move_x, move_y, map_width, map_height;
-  
+
   c->get_top_left(x, y);
   m->get_top_left(mx, my);
   move_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f - x;
   move_y = SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y;
   map_width = m->get_width() * TILE_WIDTH;
   map_height = m->get_height() * TILE_HEIGHT;
-  
+
   if (move_x + mx > 0)
   {
     move_x = -mx;
@@ -495,7 +496,7 @@ void Game_State::center(void)
   {
     move_y = map_height + my - SCREEN_HEIGHT;
   }
-  
+
   m->move(move_x,move_y);
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
