@@ -59,7 +59,8 @@ void Map::move_block(int x, int y)
 bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
                    vector<Special *> &specials, vector<Texture*> texs,
                    Character *player, FMOD_SYSTEM *system,
-                   vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel)
+                   vector<FMOD_SOUND *> musics, FMOD_CHANNEL *m_channel,
+                   vector<FMOD_SOUND *> effects, FMOD_CHANNEL *a_channel)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];
@@ -206,8 +207,9 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
         get_top_left(mx, my);
         specials.push_back(new Ahnold(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
                                       1, 1, AHNOLD_PUNCH_NUM, texs.at(AHNOLD),
-                                      LEFT, system, sounds.at(sound_num),
-                                      channel));
+                                      LEFT, system, musics.at(sound_num),
+                                      m_channel, effects.at(AHNOLD),
+                                      a_channel));
         ++sound_num;
       }
       // jumping helper

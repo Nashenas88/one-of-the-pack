@@ -121,8 +121,8 @@ void initLevel(int level)
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound, *temp_sound;
-  vector<FMOD_SOUND *> sounds;
-  FMOD_CHANNEL *channel = 0;
+  vector<FMOD_SOUND *> musics, effects;
+  FMOD_CHANNEL *m_channel = 0, *a_channel = 0;
   FMOD_RESULT result;
   FMOD_DSP *pe;
   
@@ -171,13 +171,19 @@ void initLevel(int level)
     result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_NORMAL);
     ERRCHECK(result);
     
-    sounds.push_back(temp_sound);
+    musics.push_back(temp_sound);
   }
+  result = FMOD_System_CreateSound(system, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  effects.push_back(temp_sound);
   
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
                  SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
-                 5, t, RIGHT, false, system, s_sound, channel);
+                 5, t, RIGHT, false, system, s_sound, m_channel);
   block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   left_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   left_block->set_cur_frame(LEFT_BLOCK_FRAME);
@@ -218,7 +224,7 @@ void initLevel(int level)
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, textures, p,
-              system, sounds, channel);
+              system, musics, m_channel, effects, a_channel);
   s = new Game_State(p, m, moveables, specials, system);
   paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
                            map_image, pointer);

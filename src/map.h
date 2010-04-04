@@ -50,7 +50,8 @@ public:
   bool load_map(const char *map_bmp, vector<Drawable *> &moveables,
                 vector<Special *> &specials, vector<Texture*> texs,
                 Character *player, FMOD_SYSTEM *system,
-                vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel);
+                vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel,
+                vector<FMOD_SOUND *> effects, FMOD_CHANNEL *a_channel);
   
   void clean(void);
 };
