@@ -23,7 +23,7 @@ void Ahnold::use_ability(int dir, Map *m)
 {
   int xd = 0;
   if (dir == RIGHT) xd = 1;
-  else if (dir == LEFT) xd == -1;
+  else if (dir == LEFT) xd = -1;
   
   tile_type tile_in_dir = m->get_tile(get_x() + xd, get_y());
   if (tile_in_dir == BREAKABLE)
