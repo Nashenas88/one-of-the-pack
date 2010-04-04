@@ -57,6 +57,7 @@
 #define MAX_VOLUME 1.0f
 
 #define AHNOLD_PUNCH_NUM 5
+#define PUNCH_RANGE 50
 
 #define LAST_LEVEL 3
 

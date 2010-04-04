@@ -345,7 +345,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       for (unsigned int i = 0; i < next_special && i < specials.size(); ++i)
       {
         specials.at(i)->set_tex_num(ABILITY);
-        specials.at(i)->use_ability(specials.at(i)->getDirection(), m);
+        specials.at(i)->use_ability(m);
       }
       break;
     case 'q':

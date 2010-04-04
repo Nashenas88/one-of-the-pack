@@ -28,7 +28,7 @@ public:
          FMOD_CHANNEL *ch);
   
   unsigned int get_abil_frames(void) {return num_abil_frames;}
-  virtual void use_ability(int dir, Map *m){}
+  virtual void use_ability(Map *m);
   void start_following();
   bool is_following(void) { return following; }
   void stop_following();

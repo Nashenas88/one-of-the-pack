@@ -46,3 +46,5 @@ void Special::go_home()
 {
   ((Drawable *)this)->move(loc[0]-get_x(), loc[1]-get_y());
 }
+
+void Special::use_ability(Map *m) {}
