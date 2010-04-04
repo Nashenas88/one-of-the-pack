@@ -66,7 +66,7 @@ public:
   bool will_collide_x(Map *m);
   bool will_collide_y(Map *m);
   bool will_collide_platform(Map *m);
-  bool will_collide_tile(Map *m, tile_type tile);
+  bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
   
   // sound function
   void play_sound(void);

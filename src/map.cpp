@@ -45,7 +45,8 @@ void Map::draw(void)
 
 void Map::remove(int x, int y)
 {
-  printf("BLOCK WOULD BE REMOVED\n");
+  map[x][y][M_TILE] = BG;
+  map[x][y][M_COLL] = 0;
   // enter code to remove block from map
 }
 

@@ -22,14 +22,19 @@ Ahnold::Ahnold(float x, float y, int num, int frames, int abil_frames,
 void Ahnold::use_ability(int dir, Map *m)
 {
   int xd = 0;
-  if (dir == RIGHT) xd = 1;
-  else if (dir == LEFT) xd = -1;
-  
-  tile_type tile_in_dir = m->get_tile(get_x() + xd, get_y());
-  if (tile_in_dir == BREAKABLE)
+  int hit[2];
+  if (dir == RIGHT)
   {
-    printf("BREAK BLOCK\n");
-    m->remove(get_x() + xd, get_y());
+    xd = 1;
+  }
+  else if (dir == LEFT)
+  {
+    xd = -1;
+  }
+  
+  if (will_collide_tile(m, BREAKABLE, hit))
+  {
+    m->remove(hit[0], hit[1]);
   }
   // else if (tile_in_dir == MOVEABLE)
   // {
