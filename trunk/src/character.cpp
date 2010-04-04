@@ -160,14 +160,14 @@ bool Character::will_collide_y(Map *m)
  */
 bool Character::will_collide_platform(Map *m)
 {
-  return will_collide_tile(m, PLATFORM) && getVSpeed() > 0;
+  return will_collide_tile(m, PLATFORM, NULL) && getVSpeed() > 0;
 }
 
 /* checks collision with the map
  * on a tile which is of type
  * "tile"
  */
-bool Character::will_collide_tile(Map *m, tile_type tile)
+bool Character::will_collide_tile(Map *m, tile_type tile, int coordinates[2])
 {
   int lx, rx, ty, by;
   
@@ -195,6 +195,11 @@ bool Character::will_collide_tile(Map *m, tile_type tile)
     {
       if(m->get_tile(i,j) == tile)
       {
+        if (coordinates != NULL)
+        {
+          coordinates[0] = i;
+          coordinates[1] = j;
+        }
         return true;
       }
     }
