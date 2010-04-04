@@ -9,12 +9,12 @@ class Ahnold : public Special
 private:
   float loc[2];
   bool following;
-  FMOD_SOUND *sfx;
   
 public:
   Ahnold(void);
   Ahnold(float x, float y, int num, int frames, int abil_frames, Texture *tex,
-         direc dir, FMOD_SYSTEM *sys, FMOD_SOUND *music, FMOD_CHANNEL *ch);
+         direc dir, FMOD_SYSTEM *sys, FMOD_SOUND *music, FMOD_CHANNEL *ch,
+         FMOD_SOUND *as, FMOD_CHANNEL *ac);
   
   void use_ability(Map *m);
   void start_following(Player *p);

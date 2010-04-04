@@ -7,22 +7,19 @@ Ahnold::Ahnold(void)
 
 Ahnold::Ahnold(float x, float y, int num, int frames, int abil_frames,
                Texture *tex, direc dir, FMOD_SYSTEM *sys, FMOD_SOUND *music,
-               FMOD_CHANNEL *ch)
-:Special(x, y, num, frames, abil_frames, tex, dir, 0, 0, sys, music, ch)
+               FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac)
+:Special(x, y, num, frames, abil_frames, tex, dir, 0, 0, sys, music, ch, as, ac)
 {
   loc[0] = x;
   loc[1] = y;
-  
-  FMOD_RESULT result;
-  
-  result = FMOD_System_CreateSound(sys, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE, 0, &sfx);
-  ERRCHECK(result);
 }
 
 void Ahnold::use_ability(Map *m)
 {
   float old_speed;
   int hit[2];
+  
+  play_effect();
   
   old_speed = getHSpeed();
   if (getDirection() == RIGHT)
