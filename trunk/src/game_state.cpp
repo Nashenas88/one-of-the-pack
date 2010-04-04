@@ -281,21 +281,38 @@ void Game_State::update(int &delta)
 
     if (specials.at(i)->is_following() && dist > TOO_CLOSE)
     {
-      if (specials.at(i)->get_mute())
+      unsigned int j = 0;
+      do
       {
-        specials.at(i)->set_mute(false);
-      }
-      specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
-      if (collision)
+        if (!specials.at(j)->is_following())
+        {
+          ++j;
+          continue;
+        }
+        if (i != j && specials.at(i)->will_collide(specials.at(j)))
+        {
+          break;
+        }
+        ++j;
+      } while (j < specials.size());
+      if (j >= specials.size())
       {
-        if (!(specials.at(i)->will_collide_x(m)))
+        if (specials.at(i)->get_mute())
+        {
+          specials.at(i)->set_mute(false);
+        }
+        specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
+        if (collision)
+        {
+          if (!(specials.at(i)->will_collide_x(m)))
+          {
+            specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+          }
+        }
+        else
         {
           specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
         }
-      }
-      else
-      {
-        specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
       }
     }
     else if (dist < FOLLOW_DIST && !specials.at(i)->is_following())
