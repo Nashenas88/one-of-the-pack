@@ -209,7 +209,7 @@ void initLevel(int level)
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
   map_image = new Drawable(300, 300, 1, 1, VARIABLE, mi);
   pointer = new Drawable(650, 270, 1, 1, VARIABLE, pi);
-  goal = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  goal = new Drawable(0.0f, 0.0f, GOALT, 1, TILE, tiles);
   
   // place all drawables into vector
   // this order MUST match the order
