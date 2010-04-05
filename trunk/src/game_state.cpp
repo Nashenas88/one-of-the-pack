@@ -30,14 +30,14 @@ void Game_State::draw(void)
 // needs to be updated
 void Game_State::update(int &delta)
 {
-  float x, y, mx, my;
+  float x, y, map_x, map_y;
   int num_following = 0;
   c->get_top_left(x, y);
-  m->get_top_left(mx, my);
+  m->get_top_left(map_x, map_y);
 
-  bool c_movex = true, m_movex = false;
-  bool c_movey = true, m_movey = false;
-  bool p_movey = true;
+  bool control_movex = true, map_movex = false;
+  bool control_movey = true, map_movey = false;
+  bool player_movey = true;
   bool animate = false;
   bool link = false;
   
@@ -69,11 +69,11 @@ void Game_State::update(int &delta)
   if (gravity)
   {
     // for the case of a special
-    float my_val = my/TILE_HEIGHT;
+    float map_y_val = map_y/TILE_HEIGHT;
     if (c != p)
     {
       float y_val = y/TILE_HEIGHT;
-      if (y_val - my_val < m->get_height())
+      if (y_val - map_y_val < m->get_height())
       {
         if (((Special*)c)->get_type() != JUMPER || !(c->getVSpeed() < 0))
         c->setVSpeed(GRAVITY_SPEED);
@@ -86,7 +86,7 @@ void Game_State::update(int &delta)
       float px, py;
       p->get_top_left(px, py);
       float py_val = py / TILE_HEIGHT;
-      if (py_val - my_val < m->get_height())
+      if (py_val - map_y_val < m->get_height())
       {
         p->setVSpeed(GRAVITY_SPEED);
       }
@@ -122,7 +122,7 @@ void Game_State::update(int &delta)
     }
 
     // then check for collision
-    c_movex = !c->will_collide_x(m);
+    control_movex = !c->will_collide_x(m);
 
     /* this is to deal with the case where the player has climbed the ladder
      * and then falls off. While both PLAYER_SPEED and GRAVITY_SPEED can
@@ -130,100 +130,100 @@ void Game_State::update(int &delta)
      * the player seems to "hover" above the floor. The following fixes this
      * hover issue.
      */
-    c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m) &&
+    control_movey = !c->will_collide_y(m) && !c->will_collide_platform(m) &&
               !c->will_collide_specials(specials);
     if (c != p)
     {
-      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m) &&
+      player_movey = !p->will_collide_y(m) && !p->will_collide_platform(m) &&
                 !p->will_collide_specials(specials);
-      c_movey = c_movey && !c->will_collide_tile(m, LADDER, NULL) &&
+      control_movey = control_movey && !c->will_collide_tile(m, LADDER, NULL) &&
                 !c->will_collide_specials(specials);
     }
-    if (c == p && !c_movey && c->getVSpeed() == GRAVITY_SPEED)
+    if (c == p && !control_movey && c->getVSpeed() == GRAVITY_SPEED)
     {
       c->setVSpeed(PLAYER_SPEED);
-      c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m) &&
+      control_movey = !c->will_collide_y(m) && !c->will_collide_platform(m) &&
                 !c->will_collide_specials(specials);
     }
-    if (c != p && !p_movey && p->getVSpeed() == GRAVITY_SPEED)
+    if (c != p && !player_movey && p->getVSpeed() == GRAVITY_SPEED)
     {
       p->setVSpeed(PLAYER_SPEED);
-      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m) &&
+      player_movey = !p->will_collide_y(m) && !p->will_collide_platform(m) &&
                 !p->will_collide_specials(specials);
     }
   }
 
-  // mxs and mys and the map movement speed in x and y
-  float mxs = c->getHSpeed(), mys = c->getVSpeed();
+  // map_xs and map_ys and the map movement speed in x and y
+  float map_xs = c->getHSpeed(), map_ys = c->getVSpeed();
 
   // if we collide with the map movement boundary
   // then freeze the player and move the map
-  if (c_movex &&
+  if (control_movex &&
       ((c->getHSpeed() > 0 && x + c->get_width() > SCREEN_WIDTH - BORDER) ||
       (c->getHSpeed() < 0 && x < BORDER)))
   {
-    c_movex = false;
-    m_movex = true;
-    mxs = -mxs;
+    control_movex = false;
+    map_movex = true;
+    map_xs = -map_xs;
   }
-  if (c_movey &&
+  if (control_movey &&
       ((c->getVSpeed() > 0 && y + c->get_height() > SCREEN_HEIGHT - BORDER) ||
       (c->getVSpeed() < 0 && y < BORDER)))
   {
-    c_movey = false;
-    m_movey = true;
-    mys = -mys;
+    control_movey = false;
+    map_movey = true;
+    map_ys = -map_ys;
   }
   
   // move the map if necesary and also move the player
-  if (m_movey && 0.0 >= my + mys &&
-           my + mys + m->get_height() * TILE_HEIGHT >= SCREEN_HEIGHT)
+  if (map_movey && 0.0 >= map_y + map_ys &&
+           map_y + map_ys + m->get_height() * TILE_HEIGHT >= SCREEN_HEIGHT)
   {
-    m->move(0, mys);
+    m->move(0, map_ys);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
       if (c == specials.at(i))
       {
-        ((Drawable*)p)->move(0, mys);
+        ((Drawable*)p)->move(0, map_ys);
         continue;
       }
-      ((Drawable*)specials.at(i))->move(0, mys);
+      ((Drawable*)specials.at(i))->move(0, map_ys);
     }
     for (unsigned int i = 0; i < moveables.size(); i++)
     {
-      moveables.at(i)->move(0, mys);
+      moveables.at(i)->move(0, map_ys);
     }
   }
-  else if (c_movey)
+  else if (control_movey)
   {
     c->move(0, c->getVSpeed());
   }
 
-  if (c != p && p_movey)
+  if (c != p && player_movey)
   {
     p->move(0, p->getVSpeed());
   }
 
-  if (m_movex && 0.0 >= mx + mxs &&
-      mx + mxs + m->get_width() * TILE_WIDTH >= SCREEN_WIDTH)
+  if (map_movex && 0.0 >= map_x + map_xs &&
+      map_x + map_xs + m->get_width() * TILE_WIDTH >= SCREEN_WIDTH)
   {
     animate = true;
-    m->move(mxs, 0);
+    m->move(map_xs, 0);
     for (unsigned int i = 0; i < specials.size(); i++)
     {
       if (c == specials.at(i))
       {
-        ((Drawable*)p)->move(mxs, 0);
+        ((Drawable*)p)->move(map_xs, 0);
         continue;
       }
-      ((Drawable*)specials.at(i))->move(mxs, 0);
+      ((Drawable*)specials.at(i))->move(map_xs, 0);
     }
     for (unsigned int i = 0; i < moveables.size(); i++)
     {
-      moveables.at(i)->move(mxs, 0);
+      moveables.at(i)->move(map_xs, 0);
     }
   }
-  else if (c_movex && c->getHSpeed() != 0)
+  else if (control_movex && c->getHSpeed() != 0)
   {
     animate = true;
     c->move(c->getHSpeed(), 0);
@@ -550,30 +550,30 @@ void Game_State::special_released(int key, int x, int y)
 
 void Game_State::center(void)
 {
-  float x, y, mx, my, move_x, move_y, map_width, map_height;
+  float x, y, map_x, map_y, move_x, move_y, map_width, map_height;
 
   c->get_top_left(x, y);
-  m->get_top_left(mx, my);
+  m->get_top_left(map_x, map_y);
   move_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f - x;
   move_y = SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y;
   map_width = m->get_width() * TILE_WIDTH;
   map_height = m->get_height() * TILE_HEIGHT;
 
-  if (move_x + mx > 0)
+  if (move_x + map_x > 0)
   {
-    move_x = -mx;
+    move_x = -map_x;
   }
-  else if (move_x + mx - SCREEN_WIDTH < -map_width)
+  else if (move_x + map_x - SCREEN_WIDTH < -map_width)
   {
-    move_x = map_width + mx - SCREEN_WIDTH;
+    move_x = map_width + map_x - SCREEN_WIDTH;
   }
-  if (move_y + my > 0)
+  if (move_y + map_y > 0)
   {
-    move_y = -my;
+    move_y = -map_y;
   }
-  else if (move_y + my - SCREEN_HEIGHT < -map_height)
+  else if (move_y + map_y - SCREEN_HEIGHT < -map_height)
   {
-    move_y = map_height + my - SCREEN_HEIGHT;
+    move_y = map_height + map_y - SCREEN_HEIGHT;
   }
 
   m->move(move_x,move_y);
