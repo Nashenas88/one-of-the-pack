@@ -101,7 +101,8 @@ enum
   BLOCKS = 1,
   BREAKS,
   PLATS,
-  LADDS
+  LADDS,
+  GOALT
 };
 
 enum
