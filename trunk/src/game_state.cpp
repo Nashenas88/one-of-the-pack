@@ -1,5 +1,6 @@
 #include "math.h"
 #include "game_state.h"
+#include "jumper.h"
 
 Game_State::Game_State(void)
 :p(NULL), c(NULL), m(NULL), gravity(true), collision(true) {}
@@ -38,28 +39,52 @@ void Game_State::update(int &delta)
   bool c_movey = true, m_movey = false;
   bool p_movey = true;
   bool animate = false;
+  bool link = false;
+  
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if (c == p && c->will_collide(specials.at(i)))
+    {
+      specials.at(i)->stop_following();
+    }
+    if (specials.at(i)->get_type() == JUMPER)
+    {
+      if (((Jumper *)specials.at(i))->get_link() != NULL)
+      {
+        ((Jumper *)specials.at(i))->get_link()->setVSpeed(specials.at(i)->getVSpeed());
+        ((Jumper *)specials.at(i))->get_link()->setHSpeed(specials.at(i)->getHSpeed());
+        if (((Jumper *)specials.at(i))->get_link() == p)
+        {
+          link = true;
+        }
+      }
+    }
+  }
 
   // if we're not colliding with anything,
   // then FALL MWAHAHA - written on very
   // little sleep
   if (gravity)
   {
-    float y_val = y/TILE_HEIGHT;
     float my_val = my/TILE_HEIGHT;
-    if (y_val - my_val < m->get_height())
+    if (c != p)
     {
-      c->setVSpeed(GRAVITY_SPEED);
-      /*for (unsigned int i = 0; i < specials.size(); ++i)
+      float y_val = y/TILE_HEIGHT;
+      if (y_val - my_val < m->get_height())
       {
-        specials.at(i)->setVSpeed(GRAVITY_SPEED);
-      }*/
+        c->setVSpeed(GRAVITY_SPEED);
+      }
     }
-    float px, py;
-    p->get_top_left(px, py);
-    float py_val = py / TILE_HEIGHT;
-    if (py_val - my_val < m->get_height())
+    
+    if (!link)
     {
-      p->setVSpeed(GRAVITY_SPEED);
+      float px, py;
+      p->get_top_left(px, py);
+      float py_val = py / TILE_HEIGHT;
+      if (py_val - my_val < m->get_height())
+      {
+        p->setVSpeed(GRAVITY_SPEED);
+      }
     }
   }
 
@@ -101,24 +126,67 @@ void Game_State::update(int &delta)
      * hover issue.
      */
     c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
+    if (c->getVSpeed() > 0)
+    {
+      for (unsigned int i = 0; c_movey && i < specials.size(); ++i)
+      {
+        if (c == specials.at(i))
+        {
+          continue;
+        }
+        c_movey = c_movey && (!c->will_collide(specials.at(i)));
+      }
+    }
     if (c != p)
     {
       p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m);
+      if (p->getVSpeed() > 0)
+      {
+        for (unsigned int i = 0; p_movey && i < specials.size(); ++i)
+        {
+          p_movey = p_movey && (!c->will_collide(specials.at(i)));
+        }
+      }
       c_movey = c_movey && !c->will_collide_tile(m, LADDER, NULL);
+      if (c->getVSpeed() > 0)
+      {
+        for (unsigned int i = 0; c_movey && i < specials.size(); ++i)
+        {
+          if (c == specials.at(i))
+          {
+            continue;
+          }
+          c_movey = c_movey && (!c->will_collide(specials.at(i)));
+        }
+      }
     }
     if (c == p && !c_movey && c->getVSpeed() == GRAVITY_SPEED)
     {
       c->setVSpeed(PLAYER_SPEED);
       c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
-      if (c != p)
+      if (c->getVSpeed() > 0)
       {
-        c_movey = c_movey && !c->will_collide_tile(m, LADDER, NULL);
+        for (unsigned int i = 0; c_movey && i < specials.size(); ++i)
+        {
+          if (c == specials.at(i))
+          {
+            continue;
+          }
+          c_movey = c_movey && (!c->will_collide(specials.at(i)));
+        }
       }
     }
     if (c != p && !p_movey && p->getVSpeed() == GRAVITY_SPEED)
     {
       p->setVSpeed(PLAYER_SPEED);
       p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m);
+      if (p->getVSpeed() > 0)
+      {
+        for (unsigned int i = 0; p_movey && i < specials.size(); ++i)
+        {
+          p_movey = p_movey && (!c->will_collide(specials.at(i)));
+        }
+      }
     }
   }
 
@@ -355,11 +423,47 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         specials.at(i)->use_ability(m);
       }
       break;
+    case 'g':
+      if (c != p && ((Special *)c)->get_type() == JUMPER)
+      {
+        if (c->will_collide(p))
+        {
+          ((Jumper *)c)->set_link(p);
+        }
+        else
+        {
+          for (unsigned int i = 0; i < specials.size(); ++i)
+          {
+            if (c == specials.at(i))
+            {
+              continue;
+            }
+            if (c->will_collide(specials.at(i)))
+            {
+              ((Jumper *)c)->set_link(specials.at(i));
+              break;
+            }
+          }
+        }
+        if (((Jumper *)c)->get_link() != NULL)
+        {
+          float lx, ly, cx, cy;
+          c->get_top_left(cx, cy);
+          ((Jumper *)c)->get_link()->get_top_left(lx, ly);
+          ((Drawable *)((Jumper *)c)->get_link())->move(cx - lx, cy - ly - 80);
+          ((Jumper *)c)->get_link()->setVSpeed(0);
+        }
+      }
+      break;
     case 'q':
       if (c != p)
       {
         ((Special*)c)->stop_following();
         ((Special*)c)->set_mute(true);
+        if (((Special *)c)->get_type() == JUMPER)
+        {
+          ((Jumper *)c)->set_link(NULL);
+        }
       }
     case '0':
       c->setVSpeed(GRAVITY_SPEED);

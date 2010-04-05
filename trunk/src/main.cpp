@@ -113,7 +113,7 @@ void initLevel(int level)
   Player *p;
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
-  Drawable *right_corner_block, *goal;
+  Drawable *right_corner_block, *moveable, *goal;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper;
   vector<Texture*> textures;
   vector<Drawable*> moveables;
@@ -193,17 +193,19 @@ void initLevel(int level)
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
                  SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
                  5, t, RIGHT, false, system, s_sound, m_channel);
-  block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
-  left_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
-  left_block->set_cur_frame(LEFT_BLOCK_FRAME);
-  right_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
-  right_block->set_cur_frame(RIGHT_BLOCK_FRAME);
-  left_corner_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
-  left_corner_block->set_cur_frame(LEFT_CORNER_BLOCK_FRAME);
-  right_corner_block = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
-  right_corner_block->set_cur_frame(RIGHT_CORNER_BLOCK_FRAME);
+  block = new Drawable(0.0f, 0.0f, WALLS, 1, TILE, tiles);
+  left_block = new Drawable(0.0f, 0.0f, WALLS, 1, TILE, tiles);
+  left_block->set_cur_frame(LEFT_WALL_FRAME);
+  right_block = new Drawable(0.0f, 0.0f, WALLS, 1, TILE, tiles);
+  right_block->set_cur_frame(RIGHT_WALL_FRAME);
+  left_corner_block = new Drawable(0.0f, 0.0f, WALLS, 1, TILE, tiles);
+  left_corner_block->set_cur_frame(LEFT_CORNER_WALL_FRAME);
+  right_corner_block = new Drawable(0.0f, 0.0f, WALLS, 1, TILE, tiles);
+  right_corner_block->set_cur_frame(RIGHT_CORNER_WALL_FRAME);
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
-  breakable = new Drawable(0.0f, 0.0f, BREAKS, 1, TILE, tiles);
+  breakable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  moveable = new Drawable(0.0f, 0.0f, BLOCK, 1, TILE, tiles);
+  moveable->set_cur_frame(MOVEABLE_BLOCK);
   plat = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
   ladder = new Drawable(0.0f, 0.0f, LADDS, 1, TILE, tiles);
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
