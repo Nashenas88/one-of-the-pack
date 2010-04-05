@@ -16,8 +16,13 @@ Jumper::Jumper(float x, float y, int num, int frames, int abil_frames,
 
 void Jumper::use_ability(Map *m)
 {
-  play_effect();
-  setVSpeed(-JUMP_HEIGHT);
+  if (will_collide_y(m) ||
+      will_collide_platform(m) ||
+      will_collide_tile(m, LADDER, NULL))
+  {
+    play_effect();
+    setVSpeed(-JUMP_HEIGHT);
+  }
 }
 
 void Jumper::start_following(Player *p)
