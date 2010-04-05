@@ -26,6 +26,12 @@ music_channel(mch)
   pause_sound();
 }
 
+void Character::change_direction(direc dir)
+{
+  direction = dir;
+  ((Drawable *)this)->change_direction(dir);
+}
+
 // moves the player and also changes the direction
 // in which he moves
 void Character::move(float x, float y)

@@ -24,11 +24,11 @@ void Ahnold::use_ability(Map *m)
   old_speed = getHSpeed();
   if (getDirection() == RIGHT)
   {
-    setHSpeed(-PUNCH_RANGE);
+    setHSpeed(PUNCH_RANGE);
   }
   else if (getDirection() == LEFT)
   {
-    setHSpeed(PUNCH_RANGE);
+    setHSpeed(-PUNCH_RANGE);
   }
   
   if (will_collide_tile(m, BREAKABLE, hit))

@@ -58,6 +58,8 @@ public:
   float get_col_y_offset(void) {return col_y_offset;}
   float get_col_x_offset(void) {return col_x_offset;}
   
+  void change_direction(direc dir);
+  
   void move(float x, float y);
   
   // check collision with other possible objects
