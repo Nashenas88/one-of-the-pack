@@ -31,6 +31,7 @@ public:
          FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac);
   
   unsigned int get_abil_frames(void) {return num_abil_frames;}
+  special_type get_type(void) {return type;}
   virtual void use_ability(Map *m);
   void start_following();
   bool is_following(void) { return following; }

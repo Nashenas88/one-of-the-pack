@@ -14,11 +14,11 @@ void Game_State::draw(void)
 {
   m->get_background()->draw();
   m->draw();
-  for (unsigned int i = 0; i < specials.size(); i++)
+  for (unsigned int i = specials.size() - 1; i >= 0; --i)
   {
     specials.at(i)->draw();
   }
-  for (unsigned int i = 0; i < moveables.size(); i++)
+  for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     moveables.at(i)->draw();
   }
@@ -268,6 +268,10 @@ void Game_State::update(int &delta)
         {
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
+          if (specials.at(i)->get_type() == JUMPER)
+          {
+            specials.at(i)->setVSpeed(GRAVITY_SPEED);
+          }
         }
       }
       else
@@ -320,7 +324,7 @@ void Game_State::update(int &delta)
       }
     }
   }
-
+  
   state_update();
 }
 
