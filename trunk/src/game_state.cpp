@@ -282,32 +282,10 @@ void Game_State::update(int &delta)
     
     if (specials.at(i)->is_following())
     {
-<<<<<<< .mine
       num_following++;
       if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH)
-=======
-      unsigned int j = 0;
-      do
->>>>>>> .r73
-      {
-<<<<<<< .mine
-        if (specials.at(i)->get_mute())
-=======
-        if (!specials.at(j)->is_following())
-        {
-          ++j;
-          continue;
-        }
-        if (i != j && specials.at(i)->will_collide(specials.at(j)))
-        {
-          break;
-        }
-        ++j;
-      } while (j < specials.size());
-      if (j >= specials.size())
       {
         if (specials.at(i)->get_mute())
->>>>>>> .r73
         {
           specials.at(i)->set_mute(false);
         }
