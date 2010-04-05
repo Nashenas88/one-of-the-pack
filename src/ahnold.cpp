@@ -57,20 +57,3 @@ void Ahnold::go_home()
 {
   ((Drawable *)this)->move(loc[0]-get_x(), loc[1]-get_y());
 }
-
-// moves the player and also changes the direction
-// in which he moves
-void Ahnold::move(int x, int y)
-{
-  ((Drawable *)this)->move(x, y);
-  if (x > 0)
-  {
-    setDirection(RIGHT);
-    set_tex_num(SPECIAL_RIGHT);
-  }
-  else if (x < 0)
-  {
-    setDirection(LEFT);
-    set_tex_num(SPECIAL_RIGHT);
-  }
-}

@@ -19,8 +19,7 @@ public:
   void use_ability(Map *m);
   void start_following(Player *p);
   void stop_following(Player *p);
-  void go_home();
-  void move(int x, int y);
+  void go_home(void);
 };
 
 #endif // FLOCK__AHNOLD__H
