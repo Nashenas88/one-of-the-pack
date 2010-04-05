@@ -283,6 +283,7 @@ void Game_State::update(int &delta)
     if (specials.at(i)->is_following())
     {
       num_following++;
+      // alter distance based on number of specials following
       if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH)
       {
         if (specials.at(i)->get_mute())

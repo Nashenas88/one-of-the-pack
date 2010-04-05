@@ -26,6 +26,7 @@
 // character texture files
 #define PLAYER_TEXTURE "Character animation 1.png"
 #define AHNOLD_TEXTURE "Ahnold.png"
+#define JUMPER_TEXTURE "Funblob.png"
 
 // sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
@@ -34,6 +35,7 @@
 // sound files
 #define PLAYER_SOUND "Default.mp3"
 #define AHNOLD_SFX "punch sound.wav"
+#define JUMPER_SFX "jump sound (not final).wav"
 
 // widths and heights
 #define TILE_WIDTH 100
@@ -58,6 +60,9 @@
 
 #define AHNOLD_PUNCH_NUM 5
 #define PUNCH_RANGE 50
+
+#define JUMPER_JUMP_NUM 5
+#define JUMP_HEIGHT 100
 
 #define LAST_LEVEL 3
 
@@ -107,7 +112,8 @@ enum
 
 typedef enum
 {
-  AHNOLD
-} specials;
+  AHNOLD,
+  JUMPER
+} special_type;
 
 #endif // FLOCK__DEFINES__H

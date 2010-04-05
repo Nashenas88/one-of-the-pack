@@ -114,7 +114,7 @@ void initLevel(int level)
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *goal;
-  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold;
+  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper;
   vector<Texture*> textures;
   vector<Drawable*> moveables;
   vector<Special *> specials;
@@ -146,6 +146,8 @@ void initLevel(int level)
   pi = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << AHNOLD_TEXTURE;
   ahnold = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << JUMPER_TEXTURE;
+  jumper = new Texture(temp_string.str().c_str());
   
   // initializing the sound system and the sounds
   initSound(&system);
@@ -174,6 +176,9 @@ void initLevel(int level)
     musics.push_back(temp_sound);
   }
   result = FMOD_System_CreateSound(system, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -220,6 +225,7 @@ void initLevel(int level)
   
   textures.clear();
   textures.push_back(ahnold);
+  textures.push_back(jumper);
   
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;

@@ -19,6 +19,7 @@ private:
   bool following;
   // for ability animation
   unsigned int num_abil_frames;
+  special_type type;
   bool mute;
   FMOD_SOUND *abil_sound;
   FMOD_CHANNEL *abil_channel;
@@ -26,7 +27,7 @@ private:
 public:
   Special(void);
   Special(float x, float y, int num, int frames, int abil_frames, Texture *tex,
-         direc dir, int vs, int hs, FMOD_SYSTEM *sys, FMOD_SOUND *so,
+         direc dir, int vs, int hs, special_type t, FMOD_SYSTEM *sys, FMOD_SOUND *so,
          FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac);
   
   unsigned int get_abil_frames(void) {return num_abil_frames;}
