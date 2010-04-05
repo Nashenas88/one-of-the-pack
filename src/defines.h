@@ -48,7 +48,7 @@
 #define POINTER_MOVE 90
 
 #define DELTA_DELAY 4
-#define SPECIAL_DELTA_DELAY 12
+#define SPECIAL_DELTA_DELAY 4
 
 #define BORDER 100
 #define COLLISION_SPACE 0.8f;

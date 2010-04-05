@@ -14,7 +14,7 @@ void Game_State::draw(void)
 {
   m->get_background()->draw();
   m->draw();
-  for (unsigned int i = specials.size() - 1; i >= 0; --i)
+  for (unsigned int i = specials.size() - 1; i < specials.size() ; --i)
   {
     specials.at(i)->draw();
   }
@@ -234,14 +234,11 @@ void Game_State::update(int &delta)
       {
         continue;
       }
-      if (gravity)
+      if (!(specials.at(i)->will_collide_y(m) ||
+            specials.at(i)->will_collide_tile(m, LADDER, NULL) ||
+            specials.at(i)->will_collide_platform(m)))
       {
-        if (!(specials.at(i)->will_collide_y(m) ||
-              specials.at(i)->will_collide_tile(m, LADDER, NULL) ||
-              specials.at(i)->will_collide_platform(m)))
-        {
-          specials.at(i)->move(0, specials.at(i)->getVSpeed());
-        }
+        specials.at(i)->move(0, specials.at(i)->getVSpeed());
       }
     }
   }
