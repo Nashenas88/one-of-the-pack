@@ -17,10 +17,7 @@ Jumper::Jumper(float x, float y, int num, int frames, int abil_frames,
 void Jumper::use_ability(Map *m)
 {
   play_effect();
-  if (!will_collide_y(m))
-  {
-    setVSpeed(JUMP_HEIGHT);
-  }
+  setVSpeed(-JUMP_HEIGHT);
 }
 
 void Jumper::start_following(Player *p)

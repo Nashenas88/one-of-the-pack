@@ -62,7 +62,7 @@
 #define PUNCH_RANGE 50
 
 #define JUMPER_JUMP_NUM 5
-#define JUMP_HEIGHT 100
+#define JUMP_HEIGHT 20
 
 #define LAST_LEVEL 3
 
