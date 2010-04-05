@@ -178,6 +178,10 @@ void initLevel(int level)
   result = FMOD_System_CreateSound(system, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  effects.push_back(temp_sound);
+  
   result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
