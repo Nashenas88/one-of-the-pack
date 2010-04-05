@@ -43,20 +43,22 @@ void Game_State::update(int &delta)
   
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
+    // if the player collides with the special, tell him to
+    // stop following temporarily
     if (c == p && c->will_collide(specials.at(i)))
     {
       specials.at(i)->stop_following();
     }
-    if (specials.at(i)->get_type() == JUMPER)
+    // if the special's a jumper, and it has a link
+    // move the link the same as the jumper
+    if (specials.at(i)->get_type() == JUMPER &&
+        ((Jumper *)specials.at(i))->get_link() != NULL)
     {
-      if (((Jumper *)specials.at(i))->get_link() != NULL)
+      ((Jumper *)specials.at(i))->get_link()->setVSpeed(specials.at(i)->getVSpeed());
+      ((Jumper *)specials.at(i))->get_link()->move(specials.at(i)->getHSpeed(), 0);
+      if (((Jumper *)specials.at(i))->get_link() == p)
       {
-        ((Jumper *)specials.at(i))->get_link()->setVSpeed(specials.at(i)->getVSpeed());
-        ((Jumper *)specials.at(i))->get_link()->setHSpeed(specials.at(i)->getHSpeed());
-        if (((Jumper *)specials.at(i))->get_link() == p)
-        {
-          link = true;
-        }
+        link = true;
       }
     }
   }
@@ -66,16 +68,19 @@ void Game_State::update(int &delta)
   // little sleep
   if (gravity)
   {
+    // for the case of a special
     float my_val = my/TILE_HEIGHT;
     if (c != p)
     {
       float y_val = y/TILE_HEIGHT;
       if (y_val - my_val < m->get_height())
       {
+        if (((Special*)c)->get_type() != JUMPER || !(c->getVSpeed() < 0))
         c->setVSpeed(GRAVITY_SPEED);
       }
     }
     
+    // for the player, when he's not part of a link
     if (!link)
     {
       float px, py;
@@ -125,68 +130,26 @@ void Game_State::update(int &delta)
      * the player seems to "hover" above the floor. The following fixes this
      * hover issue.
      */
-    c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
-    if (c->getVSpeed() > 0)
-    {
-      for (unsigned int i = 0; c_movey && i < specials.size(); ++i)
-      {
-        if (c == specials.at(i))
-        {
-          continue;
-        }
-        c_movey = c_movey && (!c->will_collide(specials.at(i)));
-      }
-    }
+    c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m) &&
+              !c->will_collide_specials(specials);
     if (c != p)
     {
-      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m);
-      if (p->getVSpeed() > 0)
-      {
-        for (unsigned int i = 0; p_movey && i < specials.size(); ++i)
-        {
-          p_movey = p_movey && (!c->will_collide(specials.at(i)));
-        }
-      }
-      c_movey = c_movey && !c->will_collide_tile(m, LADDER, NULL);
-      if (c->getVSpeed() > 0)
-      {
-        for (unsigned int i = 0; c_movey && i < specials.size(); ++i)
-        {
-          if (c == specials.at(i))
-          {
-            continue;
-          }
-          c_movey = c_movey && (!c->will_collide(specials.at(i)));
-        }
-      }
+      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m) &&
+                !p->will_collide_specials(specials);
+      c_movey = c_movey && !c->will_collide_tile(m, LADDER, NULL) &&
+                !c->will_collide_specials(specials);
     }
     if (c == p && !c_movey && c->getVSpeed() == GRAVITY_SPEED)
     {
       c->setVSpeed(PLAYER_SPEED);
-      c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m);
-      if (c->getVSpeed() > 0)
-      {
-        for (unsigned int i = 0; c_movey && i < specials.size(); ++i)
-        {
-          if (c == specials.at(i))
-          {
-            continue;
-          }
-          c_movey = c_movey && (!c->will_collide(specials.at(i)));
-        }
-      }
+      c_movey = !c->will_collide_y(m) && !c->will_collide_platform(m) &&
+                !c->will_collide_specials(specials);
     }
     if (c != p && !p_movey && p->getVSpeed() == GRAVITY_SPEED)
     {
       p->setVSpeed(PLAYER_SPEED);
-      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m);
-      if (p->getVSpeed() > 0)
-      {
-        for (unsigned int i = 0; p_movey && i < specials.size(); ++i)
-        {
-          p_movey = p_movey && (!c->will_collide(specials.at(i)));
-        }
-      }
+      p_movey = !p->will_collide_y(m) && !p->will_collide_platform(m) &&
+                !p->will_collide_specials(specials);
     }
   }
 
@@ -211,7 +174,8 @@ void Game_State::update(int &delta)
     m_movey = true;
     mys = -mys;
   }
-
+  
+  // move the map if necesary and also move the player
   if (m_movey && 0.0 >= my + mys &&
            my + mys + m->get_height() * TILE_HEIGHT >= SCREEN_HEIGHT)
   {
@@ -290,7 +254,7 @@ void Game_State::update(int &delta)
     c->set_cur_frame(1);
   }
 
-  // specials stuff
+  // specials gravity
   float dx, dy, dist;
   unsigned int cur_frame, a_delta;
   Special *s;
@@ -310,7 +274,10 @@ void Game_State::update(int &delta)
       }
     }
   }
-
+  
+  // special animations
+  // for the jumper, when jumping and at the last animation
+  // turn gravity back on
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     if (c == specials.at(i))
@@ -344,7 +311,8 @@ void Game_State::update(int &delta)
         specials.at(i)->set_delta(++a_delta);
       }
     }
-
+    
+    // for following the player
     dx = (specials.at(i)->get_x() - p->get_x());
     dy = (specials.at(i)->get_y() - p->get_y());
     dist = sqrt((dx*dx)+(dy*dy));

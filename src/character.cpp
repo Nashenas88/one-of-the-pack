@@ -166,7 +166,7 @@ bool Character::will_collide_y(Map *m)
  */
 bool Character::will_collide_platform(Map *m)
 {
-  return will_collide_tile(m, PLATFORM, NULL) && getVSpeed() > 0;
+  return getVSpeed() > 0 && will_collide_tile(m, PLATFORM, NULL);
 }
 
 /* checks collision with the map
@@ -211,6 +211,26 @@ bool Character::will_collide_tile(Map *m, tile_type tile, int coordinates[2])
     }
   }
   
+  return false;
+}
+
+bool Character::will_collide_specials(vector<Special *>specials)
+{
+  if (getVSpeed() <= 0)
+  {
+    return false;
+  }
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if (this == (Character *)specials.at(i))
+    {
+      continue;
+    }
+    if (will_collide((Drawable*)specials.at(i)))
+    {
+      return true;
+    }
+  }
   return false;
 }
 
