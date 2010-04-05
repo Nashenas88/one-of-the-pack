@@ -7,15 +7,15 @@ Special::Special(void)
 {}
 
 Special::Special(float x, float y, int num, int frames, int abil_frames,
-                 Texture *tex, direc dir, int vs, int hs, FMOD_SYSTEM *sys,
-                 FMOD_SOUND *so, FMOD_CHANNEL *ch, FMOD_SOUND *as,
-                 FMOD_CHANNEL *ac)
+                 Texture *tex, direc dir, int vs, int hs, special_type t, 
+                 FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch, 
+                 FMOD_SOUND *as, FMOD_CHANNEL *ac)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch),
 following(false), num_abil_frames(abil_frames), abil_sound(as), abil_channel(ac)
 {
   loc[0] = x;
   loc[1] = y;
-  
+  type = t;
   set_mute(true);
 }
 

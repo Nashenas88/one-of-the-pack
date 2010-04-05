@@ -4,6 +4,7 @@
 using namespace std;
 
 #include "ahnold.h"
+#include "jumper.h"
 #include "map.h"
 #include "defines.h"
 #include "character.h"
@@ -215,7 +216,14 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
       // jumping helper
       else if(red[0] == 0 && green[0] == 255 && blue[0] == 0)
       {
-        //moveables.push_back(new Jumper(x * TILE_WIDTH, y * TILE_HEIGHT);
+        float mx, my;
+        get_top_left(mx, my);
+        specials.push_back(new Jumper(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                                      1, 1, JUMPER_JUMP_NUM, texs.at(JUMPER),
+                                      LEFT, system, musics.at(sound_num),
+                                      m_channel, effects.at(JUMPER),
+                                      a_channel));
+        ++sound_num;
       }
       // ladder
       else if(red[0] == 128 && green[0] == 128 && blue[0] == 0)
