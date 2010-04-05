@@ -30,6 +30,7 @@ void Game_State::draw(void)
 void Game_State::update(int &delta)
 {
   float x, y, mx, my;
+  int num_following = 0;
   c->get_top_left(x, y);
   m->get_top_left(mx, my);
 
@@ -278,12 +279,20 @@ void Game_State::update(int &delta)
     dx = (specials.at(i)->get_x() - p->get_x());
     dy = (specials.at(i)->get_y() - p->get_y());
     dist = sqrt((dx*dx)+(dy*dy));
-
-    if (specials.at(i)->is_following() && dist > TOO_CLOSE)
+    
+    if (specials.at(i)->is_following())
     {
+<<<<<<< .mine
+      num_following++;
+      if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH)
+=======
       unsigned int j = 0;
       do
+>>>>>>> .r73
       {
+<<<<<<< .mine
+        if (specials.at(i)->get_mute())
+=======
         if (!specials.at(j)->is_following())
         {
           ++j;
@@ -298,6 +307,7 @@ void Game_State::update(int &delta)
       if (j >= specials.size())
       {
         if (specials.at(i)->get_mute())
+>>>>>>> .r73
         {
           specials.at(i)->set_mute(false);
         }
