@@ -45,6 +45,13 @@ void Game_State::update(int &delta)
   c->get_top_left(x, y);
   map->get_top_left(map_x, map_y);
   
+  // reset everything's horizontal speeds
+  p->setHSpeed(0);
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specials.at(i)->setHSpeed(0);
+  }
+  
   if (last_x && a)
   {
     c->setHSpeed(-PLAYER_SPEED);
@@ -82,6 +89,8 @@ void Game_State::update(int &delta)
     }
   }
   
+  bool follow_spec = false;
+  int follow = -1;
   // check for collision on everyone
   if (collision)
   {
@@ -106,21 +115,6 @@ void Game_State::update(int &delta)
         p->setVSpeed(0);
       }
     }
-    // change falling speed to PLAYER_SPEED when too close to floor
-    // this is to deal with case when you are 10 + 20 * i pixels from
-    // the ground and you leave the ladder
-    player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
-                   !p->will_collide_specials(specials);
-    if (!player_movey && p->getVSpeed() == GRAVITY_SPEED)
-    {
-      p->setVSpeed(PLAYER_SPEED);
-      player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
-                     !p->will_collide_specials(specials);
-    }
-    if (!player_movey)
-    {
-      p->setVSpeed(0);
-    }
     
     // check vertical collision for specials
     for (unsigned int i = 0; i < specials.size(); ++i)
@@ -132,7 +126,7 @@ void Game_State::update(int &delta)
         if (specials.at(i)->will_collide_y(map) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
             specials.at(i)->will_collide_platform(map) ||
-            specials.at(i)->will_collide_specials(specials))
+            specials.at(i)->will_collide_specials(specials, i, NULL))
         {
           c->setVSpeed(0);
         }
@@ -142,10 +136,38 @@ void Game_State::update(int &delta)
       if (!(specials.at(i)->will_collide_y(map) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
             specials.at(i)->will_collide_platform(map) ||
-            specials.at(i)->will_collide_specials(specials)))
+            specials.at(i)->will_collide_specials(specials, i, NULL)))
       {
         specials.at(i)->move(0, specials.at(i)->getVSpeed());
       }
+      else
+      {
+        specials.at(i)->setVSpeed(0);
+      }
+    }
+    
+    // change falling speed to PLAYER_SPEED when too close to floor
+    // this is to deal with case when you are 10 + 20 * i pixels from
+    // the ground and you leave the ladder
+    // alse check to see if we should follow any specials (standing on)
+    player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
+                   !p->will_collide_specials(specials, -1, NULL);
+    if (!player_movey && p->getVSpeed() == GRAVITY_SPEED)
+    {
+      p->setVSpeed(PLAYER_SPEED);
+      // check here to see if we'll follow a special
+      follow_spec = p->will_collide_specials(specials, -1, &follow);
+      player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map);
+    }
+    if (!player_movey)
+    {
+      p->setVSpeed(0);
+    }
+    player_movey = player_movey && !follow_spec;
+    if (follow_spec && follow >= 0)
+    {
+      p->setHSpeed(p->getHSpeed() + specials.at(follow)->getHSpeed());
+      p->setVSpeed(specials.at(follow)->getVSpeed());
     }
   }
   
@@ -169,7 +191,7 @@ void Game_State::update(int &delta)
       
       // if the special is not too close and it's not colliding with anything
       // then change its speed
-      if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH)
+      if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH && follow != (int)i)
       {
         specials.at(i)->setHSpeed(specials.at(i)->will_collide_x(map)? 0 :
                                   (!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED)));
@@ -271,6 +293,10 @@ void Game_State::update(int &delta)
   {
     c->move(0, c->getVSpeed());
   }
+  if (c != p)
+  {
+    p->move(p->getHSpeed(), p->getVSpeed());
+  }
   
   // animation for plyer
   if (p->get_num_frames() > 1 && p->getHSpeed() != 0)
@@ -356,14 +382,12 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       if (c != p)
       {
         ((Special *)c)->use_ability(map);
-        ((Special *)c)->set_tex_num(ABILITY);
       }
       break;
     case 'p':
       for (unsigned int i = 0; i < next_special && i < specials.size(); ++i)
       {
         specials.at(i)->use_ability(map);
-        specials.at(i)->set_tex_num(ABILITY);
       }
       break;
     case 'g':
@@ -434,6 +458,11 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       if ((unsigned int) (key - 49) < next_special &&
           (unsigned int) (key - 49) < specials.size())
       {
+        if (c == specials.at(key - 49))
+        {
+          center();
+          break;
+        }
         c = specials.at(key - 49);
         c->setVSpeed(0);
         c->setHSpeed(0);
