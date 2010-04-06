@@ -6,6 +6,7 @@ using namespace std;
 
 #include "drawable.h"
 #include "defines.h"
+#include "moveable.h"
 
 class Character;
 
@@ -47,11 +48,12 @@ public:
   
   // loads map from a binary image, returns false on fail, also modifies
   // moveables so that it includes a list of all objects that can move
-  bool load_map(const char *map_bmp, vector<Drawable *> &moveables,
-                vector<Special *> &specials, vector<Texture*> texs,
-                Character *player, FMOD_SYSTEM *system,
-                vector<FMOD_SOUND *> sounds, FMOD_CHANNEL *channel,
-                vector<FMOD_SOUND *> effects, FMOD_CHANNEL *a_channel);
+  bool load_map(const char *map_bmp, vector<Moveable *> &moveables,
+                vector<Special *> &specials, Texture *tiles,
+                vector<Texture*> texs, Character *player,
+                FMOD_SYSTEM *system, vector<FMOD_SOUND *> musics,
+                FMOD_CHANNEL *m_channel, vector<FMOD_SOUND *> effects,
+                FMOD_CHANNEL *a_channel);
   
   void clean(void);
 };

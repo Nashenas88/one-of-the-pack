@@ -22,6 +22,8 @@ void Map::draw(void)
 {
   float x, y, tx, ty;
   
+  get_background()->draw();
+  
   ((Drawable *)this)->get_top_left(x, y);
   
   for (int i = 0; i < get_width(); ++i)
@@ -57,11 +59,12 @@ void Map::move_block(int x, int y)
 }
 
 
-bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
-                   vector<Special *> &specials, vector<Texture*> texs,
-                   Character *player, FMOD_SYSTEM *system,
-                   vector<FMOD_SOUND *> musics, FMOD_CHANNEL *m_channel,
-                   vector<FMOD_SOUND *> effects, FMOD_CHANNEL *a_channel)
+bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
+                   vector<Special *> &specials, Texture *tiles,
+                   vector<Texture*> texs, Character *player,
+                   FMOD_SYSTEM *system, vector<FMOD_SOUND *> musics,
+                   FMOD_CHANNEL *m_channel, vector<FMOD_SOUND *> effects,
+                   FMOD_CHANNEL *a_channel)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];
@@ -225,6 +228,17 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
                                       a_channel));
         ++sound_num;
       }
+      // moveable block
+      else if(red[0] == 128 && green[0] == 0 && blue[0] == 0)
+      {
+        float mx, my;
+        Moveable *move;
+        get_top_left(mx, my);
+        move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                            BLOCKS, MOVEABLE_BLOCK, tiles, true);
+        move->set_cur_frame(MOVEABLE_BLOCK);
+        moveables.push_back(move);
+      }
       // ladder
       else if(red[0] == 128 && green[0] == 128 && blue[0] == 0)
       {
@@ -249,7 +263,10 @@ bool Map::load_map(const char *map_bmp, vector<Drawable *> &moveables,
       // moving platform
       else if(red[0] == 128 && green[0] == 0 && blue[0] == 128)
       {
-        //moveables.push_back(new Floater(x * TILE_WIDTH, y * TILE_HEIGHT));
+        float mx, my;
+        get_top_left(mx, my);
+        moveables.push_back(new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                                         BLOCKS, MOVEABLE_BLOCK, tiles, false));
       }
       // player start position
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)

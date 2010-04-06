@@ -1,5 +1,6 @@
 #include "character.h"
 #include "defines.h"
+#include "special.h"
 
 Character::Character(void)
 :Drawable(), direction(RIGHT), animdir(1), v_speed(0), h_speed(0), col_width(0.0),
@@ -222,14 +223,43 @@ bool Character::will_collide_specials(vector<Special *>specials)
   }
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    if (this == (Character *)specials.at(i))
+    if ((Special *)this == specials.at(i))
     {
       continue;
     }
-    if (will_collide((Drawable*)specials.at(i)))
+    if (will_collide(specials.at(i)))
     {
+      printf("Colliding\n");
       return true;
     }
+  }
+  return false;
+}
+
+bool Character::will_collide_screen_x(void)
+{
+  float char_x, char_y;
+  
+  get_top_left(char_x, char_y);
+  
+  if((getHSpeed() > 0 && char_x + get_width() > SCREEN_WIDTH - BORDER) ||
+     (getHSpeed() < 0 && char_x < BORDER))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool Character::will_collide_screen_y(void)
+{
+  float char_x, char_y;
+  
+  get_top_left(char_x, char_y);
+  
+  if((getVSpeed() > 0 && char_y + get_height() > SCREEN_HEIGHT - BORDER) ||
+     (getVSpeed() < 0 && char_y < BORDER))
+  {
+    return true;
   }
   return false;
 }

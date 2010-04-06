@@ -12,6 +12,7 @@ using namespace std;
 #include "state.h"
 #include "game_state.h"
 #include "pause_state.h"
+#include "moveable.h"
 
 State *s;
 State *paused;
@@ -116,8 +117,8 @@ void initLevel(int level)
   Drawable *right_corner_block, *moveable, *goal;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper;
   vector<Texture*> textures;
-  vector<Drawable*> moveables;
-  vector<Special *> specials;
+  vector<Moveable*> moveables;
+  vector<Special*> specials;
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound, *temp_sound;
@@ -235,8 +236,8 @@ void initLevel(int level)
   
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
-  m->load_map(temp_string.str().c_str(), moveables, specials, textures, p,
-              system, musics, m_channel, effects, a_channel);
+  m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
+              p, system, musics, m_channel, effects, a_channel);
   s = new Game_State(p, m, moveables, specials, system);
   paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
                            map_image, pointer);

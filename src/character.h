@@ -1,13 +1,6 @@
 #ifndef FLOCK__CHARACTER__H
 #define FLOCK__CHARACTER__H
 
-#ifdef __APPLE__
-  #include <OpenGL/OpenGL.h>
-  #include <GLUT/glut.h>
-#else
-  #include <GL/glut.h>
-#endif
-
 #include "FMOD_includes.h"
 
 #include "drawable.h"
@@ -70,6 +63,8 @@ public:
   bool will_collide_platform(Map *m);
   bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
   bool will_collide_specials(vector<Special *>specials);
+  bool will_collide_screen_x(void);
+  bool will_collide_screen_y(void);
   
   // sound function
   void play_sound(void);
