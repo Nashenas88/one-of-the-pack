@@ -62,7 +62,7 @@ public:
   bool will_collide_y(Map *m);
   bool will_collide_platform(Map *m);
   bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
-  bool will_collide_specials(vector<Special *>specials);
+  bool will_collide_specials(vector<Special *>specials, int cur, int *collide);
   bool will_collide_screen_x(void);
   bool will_collide_screen_y(void);
   

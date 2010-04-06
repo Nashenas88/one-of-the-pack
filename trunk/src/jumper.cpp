@@ -17,20 +17,25 @@ Jumper::Jumper(float x, float y, int num, int frames, int abil_frames,
 
 void Jumper::use_ability(Map *m)
 {
-  int old_speed;
-  
-  old_speed = getVSpeed();
-  setVSpeed(-JUMP_HEIGHT);
-  
-  if (!(will_collide_y(m) ||
-      will_collide_platform(m) ||
-      will_collide_tile(m, LADDER, NULL)))
+  if (get_tex_num() != ABILITY)
   {
-    play_effect();
-    setVSpeed(-JUMP_HEIGHT);
-    return;
+    int old_speed;
+    
+    old_speed = getVSpeed();
+    setVSpeed(GRAVITY_SPEED);
+    
+    if (will_collide_y(m) ||
+        will_collide_platform(m) ||
+        will_collide_tile(m, LADDER, NULL))
+    {
+      play_effect();
+      setVSpeed(-JUMP_HEIGHT);
+      set_tex_num(ABILITY);
+      set_cur_frame(1);
+      return;
+    }
+    setVSpeed(old_speed);
   }
-  setVSpeed(old_speed);
 }
 
 void Jumper::start_following(Player *p)

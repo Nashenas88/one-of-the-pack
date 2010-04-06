@@ -215,7 +215,8 @@ bool Character::will_collide_tile(Map *m, tile_type tile, int coordinates[2])
   return false;
 }
 
-bool Character::will_collide_specials(vector<Special *>specials)
+bool Character::will_collide_specials(vector<Special *>specials, int cur,
+                                      int *collide)
 {
   if (getVSpeed() <= 0)
   {
@@ -223,13 +224,16 @@ bool Character::will_collide_specials(vector<Special *>specials)
   }
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    if ((Special *)this == specials.at(i))
+    if (cur == (int)i)
     {
       continue;
     }
     if (will_collide(specials.at(i)))
     {
-      printf("Colliding\n");
+      if (collide)
+      {
+        *collide = i;
+      }
       return true;
     }
   }

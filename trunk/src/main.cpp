@@ -345,6 +345,7 @@ void update(int delta)
         printf("You win!\n");
         exit(0);
       }
+      delta = 0;
     }
   }
   

@@ -36,6 +36,8 @@ void Ahnold::use_ability(Map *m)
     if (will_collide_tile(m, BREAKABLE, hit))
     {
       m->remove(hit[0], hit[1]);
+      set_tex_num(ABILITY);
+      set_cur_frame(1);
     }
     // else if (tile_in_dir == MOVEABLE)
     // {
