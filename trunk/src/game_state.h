@@ -14,16 +14,18 @@ class Game_State : public State
 private:
   Player *p; // human controlled player
   Character *c; // the main character that will be controlled by player
-  Map *m; // map object
-  vector<Drawable *> moveables; // all moveable entities
+  Map *map; // map object
+  vector<Moveable *> moveables; // all moveable entities
   vector<Special *> specials; // all specials that can follow player
   unsigned int next_special; // num to determine pos in specials
   bool gravity; // is gravity on or off?
   bool collision; // is collision on or off?
+  bool w, a, s, d; // are the arrows keys being pressed?
+  bool last_x, last_y; // last directional keys pressed in x and y
   
 public:
   Game_State(void);
-  Game_State(Player *pl, Map *map, vector<Drawable *> mvs,
+  Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
              vector<Special *> sps, FMOD_SYSTEM *system);
   
   // does all drawing for each level

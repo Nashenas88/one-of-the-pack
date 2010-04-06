@@ -16,31 +16,34 @@ Ahnold::Ahnold(float x, float y, int num, int frames, int abil_frames,
 
 void Ahnold::use_ability(Map *m)
 {
-  float old_speed;
-  int hit[2];
-  
-  play_effect();
-  
-  old_speed = getHSpeed();
-  if (getDirection() == RIGHT)
+  if (get_tex_num() != ABILITY)
   {
-    setHSpeed(PUNCH_RANGE);
+    float old_speed;
+    int hit[2];
+    
+    play_effect();
+    
+    old_speed = getHSpeed();
+    if (getDirection() == RIGHT)
+    {
+      setHSpeed(PUNCH_RANGE);
+    }
+    else if (getDirection() == LEFT)
+    {
+      setHSpeed(-PUNCH_RANGE);
+    }
+    
+    if (will_collide_tile(m, BREAKABLE, hit))
+    {
+      m->remove(hit[0], hit[1]);
+    }
+    // else if (tile_in_dir == MOVEABLE)
+    // {
+      // m->move_block(get_x() + xd, get_y());
+    // }
+    
+    setHSpeed(old_speed);
   }
-  else if (getDirection() == LEFT)
-  {
-    setHSpeed(-PUNCH_RANGE);
-  }
-  
-  if (will_collide_tile(m, BREAKABLE, hit))
-  {
-    m->remove(hit[0], hit[1]);
-  }
-  // else if (tile_in_dir == MOVEABLE)
-  // {
-    // m->move_block(get_x() + xd, get_y());
-  // }
-  
-  setHSpeed(old_speed);
 }
 
 void Ahnold::start_following(Player *p)
