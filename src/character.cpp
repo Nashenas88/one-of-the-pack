@@ -240,6 +240,27 @@ bool Character::will_collide_specials(vector<Special *>specials, int cur,
   return false;
 }
 
+bool Character::will_collide_moveables(vector<Moveable *>moveables, int cur,
+                                       int *collide)
+{
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    if (cur == (int)i)
+    {
+      continue;
+    }
+    if (will_collide(moveables.at(i)))
+    {
+      if (collide)
+      {
+        *collide = (int)i;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 bool Character::will_collide_screen_x(void)
 {
   float char_x, char_y;

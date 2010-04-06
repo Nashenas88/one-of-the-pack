@@ -60,6 +60,7 @@
 
 #define AHNOLD_PUNCH_NUM 5
 #define PUNCH_RANGE 50
+#define BLOCK_SLIDE_SPEED 20
 
 #define JUMPER_JUMP_NUM 5
 #define JUMP_HEIGHT 20

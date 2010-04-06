@@ -3,6 +3,7 @@
 
 #include "drawable.h"
 #include "defines.h"
+#include "map.h"
 
 class Moveable: public Drawable
 {
@@ -26,6 +27,9 @@ public:
   void setHSpeed(int hs) {h_speed = hs;}
   bool get_gravity(void) {return gravity;}
   void set_gravity(bool g) {gravity = g;}
+  
+  bool will_collide_x(Map *m);
+  bool will_collide_y(Map *m);
   
 };
 #endif // FLOCK__MOVEABLE__H
