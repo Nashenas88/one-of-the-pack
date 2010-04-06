@@ -309,6 +309,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   set_width(width);
   set_height(height);
   
+  moves = moveables;
+  
   return true;
 }
 

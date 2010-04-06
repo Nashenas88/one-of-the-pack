@@ -6,7 +6,6 @@ using namespace std;
 
 #include "drawable.h"
 #include "defines.h"
-#include "moveable.h"
 
 class Character;
 
@@ -19,6 +18,7 @@ enum
 };
 
 class Special;
+class Moveable;
 
 class Map: public Drawable
 {
@@ -29,6 +29,7 @@ private:
   unsigned char ***map;
   // list of all types of tiles that will be used for drawing
   vector<Drawable *> tiles;
+  vector<Moveable *> moves;
   
 public:
   Map(void);
@@ -39,6 +40,7 @@ public:
   
   // getting background
   Drawable *get_background(void) {return tiles.at((int)BG);}
+  vector<Moveable *> get_moveables(void) {return moves;}
   
   // simple methods for adding, getting, and removing blockers
   bool get_blocker(int x, int y) {return map[x][y][M_COLL]==1?true:false;}
