@@ -40,10 +40,18 @@ void Ahnold::use_ability(Map *m)
     {
       m->remove(hit[0], hit[1]);
     }
-    else if (will_collide_moveables(m->get_moveables(), -1, &block))
+    else if (will_collide_moveables_x(m->get_moveables(), -1, &block))
     {
-      printf ("hit\n");
-      m->get_moveables().at(block)->setHSpeed(getHSpeed() / PUNCH_RANGE * BLOCK_SLIDE_SPEED);
+      Moveable *move;
+      move = m->get_moveables().at(block);
+      if (move->get_gravity())
+      {
+        move->setHSpeed(getHSpeed() / PUNCH_RANGE * BLOCK_SLIDE_SPEED);
+      }
+      else
+      {
+        move->setHSpeed(getHSpeed() / PUNCH_RANGE * HOVER_SLIDE_SPEED);
+      }
     }
     
     setHSpeed(old_speed);

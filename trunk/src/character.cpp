@@ -51,27 +51,52 @@ void Character::move(float x, float y)
 // this is collision detection which checks
 // collision between a character and a drawable
 // currently it isn't being used
-bool Character::will_collide(Drawable *d)
+bool Character::will_collide_Dx(Drawable *d)
 {
-  float lx1, lx2;
-  float rx1, rx2;
-  float ty1, ty2;
-  float by1, by2;
+  float left_x1, left_x2;
+  float right_x1, right_x2;
+  float top_y1, top_y2;
+  float bottom_y1, bottom_y2;
   
-  get_top_left(lx1, ty1);
-  lx1 += getHSpeed() + col_x_offset;
-  ty1 += getVSpeed() + col_y_offset;
-  d->get_top_left(lx2, ty2);
-  rx1 = lx1 + col_width;
-  rx2 = lx2 + d->get_width();
-  by1 = ty1 + col_height;
-  by2 = ty2 + d->get_height();
+  get_top_left(left_x1, top_y1);
+  left_x1 += getHSpeed() + 2 * col_x_offset;
+  top_y1 += col_y_offset;
+  d->get_top_left(left_x2, top_y2);
+  right_x1 = left_x1 + col_width - 2*col_x_offset;
+  right_x2 = left_x2 + d->get_width();
+  bottom_y1 = top_y1 + col_height - 2*col_y_offset;
+  bottom_y2 = top_y2 + d->get_height();
   
-  if (by1 < ty2) return false;
-  if (ty1 > by2) return false;
+  if (bottom_y1 < top_y2) return false;
+  if (top_y1 > bottom_y2) return false;
   
-  if (rx1 < lx2) return false;
-  if (lx1 > rx2) return false;
+  if (right_x1 < left_x2) return false;
+  if (left_x1 > right_x2) return false;
+  
+  return true;
+}
+
+bool Character::will_collide_Dy(Drawable *d)
+{
+  float left_x1, left_x2;
+  float right_x1, right_x2;
+  float top_y1, top_y2;
+  float bottom_y1, bottom_y2;
+  
+  get_top_left(left_x1, top_y1);
+  left_x1 += col_x_offset;
+  top_y1 += getVSpeed() + col_y_offset;
+  d->get_top_left(left_x2, top_y2);
+  right_x1 = left_x1 + col_width - 2*col_x_offset;
+  right_x2 = left_x2 + d->get_width();
+  bottom_y1 = top_y1 + col_height - 2*col_y_offset;
+  bottom_y2 = top_y2 + d->get_height();
+  
+  if (bottom_y1 < top_y2) return false;
+  if (top_y1 > bottom_y2) return false;
+  
+  if (right_x1 < left_x2) return false;
+  if (left_x1 > right_x2) return false;
   
   return true;
 }
@@ -215,7 +240,7 @@ bool Character::will_collide_tile(Map *m, tile_type tile, int coordinates[2])
   return false;
 }
 
-bool Character::will_collide_specials(vector<Special *>specials, int cur,
+bool Character::will_collide_specials_x(vector<Special *>specials, int cur,
                                       int *collide)
 {
   if (getVSpeed() <= 0)
@@ -228,7 +253,7 @@ bool Character::will_collide_specials(vector<Special *>specials, int cur,
     {
       continue;
     }
-    if (will_collide(specials.at(i)))
+    if (will_collide_Dx(specials.at(i)))
     {
       if (collide)
       {
@@ -240,7 +265,32 @@ bool Character::will_collide_specials(vector<Special *>specials, int cur,
   return false;
 }
 
-bool Character::will_collide_moveables(vector<Moveable *>moveables, int cur,
+bool Character::will_collide_specials_y(vector<Special *>specials, int cur,
+                                      int *collide)
+{
+  if (getVSpeed() <= 0)
+  {
+    return false;
+  }
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if (cur == (int)i)
+    {
+      continue;
+    }
+    if (will_collide_Dy(specials.at(i)))
+    {
+      if (collide)
+      {
+        *collide = i;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Character::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
   for (unsigned int i = 0; i < moveables.size(); ++i)
@@ -249,7 +299,28 @@ bool Character::will_collide_moveables(vector<Moveable *>moveables, int cur,
     {
       continue;
     }
-    if (will_collide(moveables.at(i)))
+    if (will_collide_Dx(moveables.at(i)))
+    {
+      if (collide)
+      {
+        *collide = (int)i;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Character::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
+                                       int *collide)
+{
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    if (cur == (int)i)
+    {
+      continue;
+    }
+    if (will_collide_Dy(moveables.at(i)))
     {
       if (collide)
       {
