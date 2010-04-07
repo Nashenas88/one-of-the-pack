@@ -9,7 +9,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
                        vector<Special *> sps, FMOD_SYSTEM *system)
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 next_special(0), gravity(true), collision(true), w(0), a(0), s(0), d(0),
-last_x(0), last_y(0) {}
+last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER) {}
 
 // draw static background, then map, then specials, then moveables, then player
 void Game_State::draw(void)
@@ -299,59 +299,63 @@ void Game_State::update(int &delta)
   
   // move map if controlled character is at edge of map boundary
   
-  // movement in x
-  if (c->will_collide_screen_x())
-  {
-    map->move(-c->getHSpeed(), 0);
-    if(c != p)
-    {
-      ((Drawable*)p)->move(-c->getHSpeed(), 0);
-    }
-    for (unsigned int i = 0; i < specials.size(); ++i)
-    {
-      if (c == specials.at(i))
-      {
-        continue;
-      }
-      ((Drawable*)specials.at(i))->move(-c->getHSpeed(), 0);
-    }
-    for (unsigned int i = 0; i < moveables.size(); ++i)
-    {
-      moveables.at(i)->move(-c->getHSpeed(), 0);
-    }
-  }
-  else
-  {
-    c->move(c->getHSpeed(), 0);
-  }
-  // movement in y
-  if(c->will_collide_screen_y())
-  {
-    map->move(0, -c->getVSpeed());
-    if(c != p)
-    {
-      ((Drawable*)p)->move(0, -c->getVSpeed());
-    }
-    for (unsigned int i = 0; i < specials.size(); ++i)
-    {
-      if (c == specials.at(i))
-      {
-        continue;
-      }
-      ((Drawable*)specials.at(i))->move(0, -c->getVSpeed());
-    }
-    for (unsigned int i = 0; i < moveables.size(); ++i)
-    {
-      moveables.at(i)->move(0, -c->getVSpeed());
-    }
-  }
-  else
-  {
-    c->move(0, c->getVSpeed());
-  }
+  c->move(c->getHSpeed(), c->getVSpeed());
   if (c != p)
   {
     p->move(p->getHSpeed(), p->getVSpeed());
+  }
+  
+  if(map_slide_effect)
+  {
+    float center_x, center_y;
+    float control_x, control_y;
+    float move_x, move_y;
+    float offset_x, offset_y;
+    int mx, my;
+    
+    c->get_top_left(control_x, control_y);
+    center_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f;
+    center_y = SCREEN_HEIGHT / 2.0f - TILE_HEIGHT;
+    offset_x = center_x - control_x;
+    offset_y = center_y - control_y;
+    
+    if (map_slide_effect > 3 * SLIDE_COUNTER / 4)
+    {
+      move_x = offset_x / (2 * map_slide_effect);
+      move_y = offset_y / (2 * map_slide_effect);
+      --map_slide_effect;
+    }
+    else
+    {
+      move_x = offset_x / map_slide_effect;
+      move_y = offset_y / map_slide_effect;
+    }
+    
+    mx = (int)move_x;
+    my = (int)move_y;
+    
+    if (mx < SMALLEST_MOVEMENT && mx > -SMALLEST_MOVEMENT)
+    {
+      mx = 0;
+    }
+    if (my < SMALLEST_MOVEMENT && my > -SMALLEST_MOVEMENT)
+    {
+      my = 0;
+    }
+    
+    if (mx || my)
+    {
+      map->move(mx, my);
+      ((Drawable *)p)->move(mx, my);
+      for (unsigned int i = 0; i < specials.size(); ++i)
+      {
+        ((Drawable *)specials.at(i))->move(mx, my);
+      }
+      for (unsigned int i = 0; i < moveables.size(); ++i)
+      {
+        moveables.at(i)->move(mx, my);
+      }
+    }
   }
   
   // animation for plyer
@@ -493,14 +497,15 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
-
+      
       c->set_volume(MAX_VOLUME);
       for (unsigned int i = 0; i < specials.size(); ++i)
       {
         specials.at(i)->set_volume(MAX_VOLUME);
       }
-
-      center();
+      
+      map_slide_effect = SLIDE_COUNTER;
+      //center();
       break;
     case '1':
     case '2':
@@ -516,13 +521,14 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       {
         if (c == specials.at(key - 49))
         {
-          center();
+          map_slide_effect = SLIDE_COUNTER;
+          //center();
           break;
         }
         c = specials.at(key - 49);
         c->setVSpeed(0);
         c->setHSpeed(0);
-
+        
         p->set_volume(UNFOCUSED_VOLUME);
         for (unsigned int i = 0; i < specials.size(); ++i)
         {
@@ -532,8 +538,9 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
           }
           specials.at(i)->set_volume(UNFOCUSED_VOLUME);
         }
-
-        center();
+        
+        map_slide_effect = SLIDE_COUNTER;
+        //center();
       }
       break;
   }

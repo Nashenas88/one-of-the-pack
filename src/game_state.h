@@ -22,6 +22,7 @@ private:
   bool collision; // is collision on or off?
   bool w, a, s, d; // are the arrows keys being pressed?
   bool last_x, last_y; // last directional keys pressed in x and y
+  unsigned int map_slide_effect; // are we changing the view to another character?
   
 public:
   Game_State(void);
