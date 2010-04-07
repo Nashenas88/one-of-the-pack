@@ -58,13 +58,16 @@ public:
   
   // check collision with other possible objects
   // (moving players are not collideables)
-  bool will_collide(Drawable *o);
+  bool will_collide_Dx(Drawable *o);
+  bool will_collide_Dy(Drawable *o);
   bool will_collide_x(Map *m);
   bool will_collide_y(Map *m);
   bool will_collide_platform(Map *m);
   bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
-  bool will_collide_specials(vector<Special *>specials, int cur, int *collide);
-  bool will_collide_moveables(vector<Moveable *>specials, int cur, int *collide);
+  bool will_collide_specials_x(vector<Special *>specials, int cur, int *collide);
+  bool will_collide_specials_y(vector<Special *>specials, int cur, int *collide);
+  bool will_collide_moveables_x(vector<Moveable *>specials, int cur, int *collide);
+  bool will_collide_moveables_y(vector<Moveable *>specials, int cur, int *collide);
   bool will_collide_screen_x(void);
   bool will_collide_screen_y(void);
   

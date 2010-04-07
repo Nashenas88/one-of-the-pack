@@ -26,7 +26,8 @@ void Jumper::use_ability(Map *m)
     
     if (will_collide_y(m) ||
         will_collide_platform(m) ||
-        will_collide_tile(m, LADDER, NULL))
+        will_collide_tile(m, LADDER, NULL) ||
+        will_collide_moveables_y(m->get_moveables(), -1, NULL))
     {
       play_effect();
       setVSpeed(-JUMP_HEIGHT);
