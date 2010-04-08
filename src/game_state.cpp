@@ -92,6 +92,7 @@ void Game_State::update(int &delta)
   bool follow_spec = false, follow_move = false;;
   int follow = -1;
   int mov_follow = -1;
+  int temp_speed;
   Moveable *temp_move, *temp2;
   
   // check for collision on everyone
@@ -196,8 +197,11 @@ void Game_State::update(int &delta)
     // alse check to see if we should follow any specials or moveables
     // because we are standing on them
     
+    temp_speed = p->getVSpeed();
+    p->setVSpeed(GRAVITY_SPEED);
     follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
     follow_spec = p->will_collide_specials_y(specials, -1, &follow);
+    p->setVSpeed(temp_speed);
     
     // if on special or moveable, move with them
     if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
