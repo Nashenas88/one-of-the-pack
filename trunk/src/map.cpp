@@ -184,7 +184,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = BLOCK;
       }
-      if(red[0] == 1 && green[0] == 0 && blue[0] == 0)
+      /*if(red[0] == 1 && green[0] == 0 && blue[0] == 0)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = R_BLOCK;
@@ -203,7 +203,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = RC_BLOCK;
-      }
+      }*/
       // strong helper
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
       {
@@ -300,7 +300,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     {
       file.read((char *)alpha, 1);
     }*/
-    // commented out because this issues magically dissapeared
+    // commented out because this issue magically dissapeared
   }
   
   file.close();
@@ -308,6 +308,74 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   // don't forget to save the width and height
   set_width(width);
   set_height(height);
+  
+  int current, left, right, top;
+  
+  // now we dynamically change the wall tiles to walls and the corner tiles to corners
+  for (unsigned int i = 1; i < width - 1; ++i)
+  {
+    for (unsigned int j = 1; j < height - 1; ++j)
+    {
+      current = map[i][j][M_TILE];
+      left = map[i-1][j][M_TILE];
+      right = map[i+1][j][M_TILE];
+      top = map[i][j-1][M_TILE];
+      
+      if (current == BLOCK)
+      {
+        if (left != BLOCK &&
+            left != R_BLOCK &&
+            left != L_BLOCK &&
+            left != RC_BLOCK &&
+            left != LC_BLOCK)
+        {
+          if (top != BLOCK &&
+              top != R_BLOCK &&
+              top != L_BLOCK &&
+              top != RC_BLOCK &&
+              top != LC_BLOCK)
+          {
+            map[i][j][M_TILE] = LC_BLOCK;
+          }
+          else if (top == LC_BLOCK ||
+                   top == L_BLOCK)
+          {
+            map[i][j][M_TILE] = L_BLOCK;
+          }
+          else if (top == RC_BLOCK ||
+                   top == R_BLOCK)
+          {
+            map[i][j][M_TILE] = R_BLOCK;
+          }
+        }
+        else if (right != BLOCK &&
+                 right != R_BLOCK &&
+                 right != L_BLOCK &&
+                 right != RC_BLOCK &&
+                 right != LC_BLOCK)
+        {
+          if(top != BLOCK &&
+             top != R_BLOCK &&
+             top != L_BLOCK &&
+             top != RC_BLOCK &&
+             top != LC_BLOCK)
+          {
+            map[i][j][M_TILE] = RC_BLOCK;
+          }
+          else if (top == RC_BLOCK ||
+                   top == R_BLOCK)
+          {
+            map[i][j][M_TILE] = R_BLOCK;
+          }
+          else if (top == LC_BLOCK ||
+                   top == L_BLOCK)
+          {
+            map[i][j][M_TILE] = L_BLOCK;
+          }
+        }
+      }
+    }
+  }
   
   moves = moveables;
   
