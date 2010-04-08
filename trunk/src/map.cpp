@@ -30,7 +30,8 @@ void Map::draw(void)
   {
     for (int j = 0; j < get_height(); ++j)
     {
-      if (map[i][j][M_TILE] == BG)
+      if (map[i][j][M_TILE] == BG ||
+          map[i][j][M_TILE] == OUTSIDE)
       {
         continue;
       }
@@ -184,26 +185,12 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = BLOCK;
       }
-      /*if(red[0] == 1 && green[0] == 0 && blue[0] == 0)
+      // outside of the playable area
+      if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
       {
         map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = R_BLOCK;
+        map[x][y][M_TILE] = OUTSIDE;
       }
-      if(red[0] == 2 && green[0] == 0 && blue[0] == 0)
-      {
-        map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = L_BLOCK;
-      }
-      if(red[0] == 3 && green[0] == 0 && blue[0] == 0)
-      {
-        map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = LC_BLOCK;
-      }
-      if(red[0] == 4 && green[0] == 0 && blue[0] == 0)
-      {
-        map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = RC_BLOCK;
-      }*/
       // strong helper
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
       {
@@ -323,17 +310,19 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       
       if (current == BLOCK)
       {
-        if (left != BLOCK &&
-            left != R_BLOCK &&
-            left != L_BLOCK &&
-            left != RC_BLOCK &&
-            left != LC_BLOCK)
+        if (left == OUTSIDE)
         {
-          if (top != BLOCK &&
-              top != R_BLOCK &&
-              top != L_BLOCK &&
-              top != RC_BLOCK &&
-              top != LC_BLOCK)
+          map[i][j][M_TILE] = R_BLOCK;
+        }
+        else if (right == OUTSIDE)
+        {
+          map[i][j][M_TILE] = L_BLOCK;
+        }
+        else if (left < BLOCK ||
+                 left > RC_BLOCK)
+        {
+          if (top < BLOCK ||
+              top > RC_BLOCK)
           {
             map[i][j][M_TILE] = LC_BLOCK;
           }
@@ -348,17 +337,11 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
             map[i][j][M_TILE] = R_BLOCK;
           }
         }
-        else if (right != BLOCK &&
-                 right != R_BLOCK &&
-                 right != L_BLOCK &&
-                 right != RC_BLOCK &&
-                 right != LC_BLOCK)
+        else if (right < BLOCK ||
+                 right > RC_BLOCK)
         {
-          if(top != BLOCK &&
-             top != R_BLOCK &&
-             top != L_BLOCK &&
-             top != RC_BLOCK &&
-             top != LC_BLOCK)
+          if(top < BLOCK ||
+             top > RC_BLOCK)
           {
             map[i][j][M_TILE] = RC_BLOCK;
           }

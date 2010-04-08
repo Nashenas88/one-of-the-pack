@@ -47,7 +47,7 @@
 #define MENU_ITEMS 3
 #define POINTER_MOVE 90
 
-#define DELTA_DELAY 4
+#define DELTA_DELAY 2
 #define SPECIAL_DELTA_DELAY 4
 
 #define BORDER 100
@@ -90,7 +90,8 @@ typedef enum
   LADDER,
   PLATFORM,
   BREAKABLE,
-  GOAL
+  GOAL,
+  OUTSIDE
 } tile_type;
 
 enum

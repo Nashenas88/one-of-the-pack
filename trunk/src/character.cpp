@@ -3,14 +3,14 @@
 #include "special.h"
 
 Character::Character(void)
-:Drawable(), direction(RIGHT), animdir(1), v_speed(0), h_speed(0), col_width(0.0),
+:Drawable(), direction(RIGHT), v_speed(0), h_speed(0), col_width(0.0),
 col_height(0.0), col_x_offset(0.0), col_y_offset(0.0) {}
 
 Character::Character(float x, float y, int num, int frames, Texture *tex,
                      direc dir, int vs, int hs, FMOD_SYSTEM *sys,
                      FMOD_SOUND *mu, FMOD_CHANNEL *mch)
-:Drawable(x, y, num, frames, TILE, tex), direction(dir), animdir(1),
-anim_delta(0), v_speed(vs), h_speed(hs), system(sys), music(mu),
+:Drawable(x, y, num, frames, TILE, tex), direction(dir), anim_delta(0),
+v_speed(vs), h_speed(hs), system(sys), music(mu),
 music_channel(mch)
 {
   col_width = get_width() * COLLISION_SPACE;

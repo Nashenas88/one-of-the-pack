@@ -13,7 +13,6 @@ class Character: public Drawable
 private:
   // direction the character is facing
   direc direction;
-  int animdir;
   
   // used for timing animation
   int anim_delta;
@@ -45,8 +44,6 @@ public:
   void setVSpeed(int vs) {v_speed = vs;}
   int getHSpeed(void) {return h_speed;}
   void setHSpeed(int hs) {h_speed = hs;}
-  int get_animdir(void) {return animdir;}
-  void set_animdir(int d) {animdir = d;}
   int get_delta(void) {return anim_delta;}
   void set_delta(int d) {anim_delta = d;}
   float get_col_y_offset(void) {return col_y_offset;}
