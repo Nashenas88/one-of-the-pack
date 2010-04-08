@@ -110,7 +110,7 @@ void initLoading(void)
 
 void initLevel(int level)
 {
-    // objects that are needed by the state
+  // objects that are needed by the state
   Player *p;
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
