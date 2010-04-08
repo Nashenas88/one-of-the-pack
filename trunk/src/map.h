@@ -43,7 +43,7 @@ public:
   vector<Moveable *> get_moveables(void) {return moves;}
   
   // simple methods for adding, getting, and removing blockers
-  bool get_blocker(int x, int y) {return map[x][y][M_COLL]==1?true:false;}
+  bool get_blocker(int x, int y) {return map[x][y][M_COLL]==1;}
   tile_type get_tile(int x, int y) {return (tile_type) map[x][y][M_TILE];}
   void remove(int x, int y);
   void move_block(int x, int y);

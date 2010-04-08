@@ -133,31 +133,12 @@ void Game_State::update(int &delta)
   }
   if (collision)
   {
-    bool ladder = false;
-    
     // check for horizontal collision with human controlled character
     c->setHSpeed(c->will_collide_x(map) ||
                  c->will_collide_moveables_x(moveables, -1, NULL)?
                  0 : c->getHSpeed());
     
     // check for vertical collision with everyone
-    gravity = !p->will_collide_tile(map, LADDER, NULL);
-    ladder = !gravity;
-    if (!gravity)
-    {
-      if (c == p && last_y && w)
-      {
-        p->setVSpeed(-PLAYER_SPEED);
-      }
-      else if (c == p && s)
-      {
-        p->setVSpeed(PLAYER_SPEED);
-      }
-      else
-      {
-        p->setVSpeed(0);
-      }
-    }
     
     // check vertical collision for specials
     for (unsigned int i = 0; i < specials.size(); ++i)
@@ -251,7 +232,8 @@ void Game_State::update(int &delta)
         p->setHSpeed(p->getHSpeed() + moveables.at(mov_follow)->getHSpeed());
         p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
-      player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map);
+      player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
+                     !p->will_collide_tile(map, LADDER, NULL);
     }
     if (!player_movey)
     {
@@ -265,8 +247,22 @@ void Game_State::update(int &delta)
                    0 : p->getHSpeed());
     }
     
-    if (ladder)
+    gravity = !p->will_collide_tile(map, LADDER, NULL);
+    if (!gravity)
     {
+      if (c == p && last_y && w)
+      {
+        p->setVSpeed(-PLAYER_SPEED);
+      }
+      else if (c == p && s)
+      {
+        p->setVSpeed(PLAYER_SPEED);
+      }
+      else
+      {
+        p->setVSpeed(0);
+      }
+      
       int temp;
       temp = p->getVSpeed();
       p->move(0, temp);
