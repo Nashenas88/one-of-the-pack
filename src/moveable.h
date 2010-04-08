@@ -15,6 +15,8 @@ private:
   // vertical and horizontal speed
   int v_speed, h_speed;
   
+  Moveable *link;
+  
 public:
   // constructors
   Moveable(void);
@@ -27,6 +29,8 @@ public:
   void setHSpeed(int hs) {h_speed = hs;}
   bool get_gravity(void) {return gravity;}
   void set_gravity(bool g) {gravity = g;}
+  Moveable *get_link(void) {return link;}
+  void set_link(Moveable *l) {link = l;}
   
   bool will_collide_Dx(Drawable *o);
   bool will_collide_Dy(Drawable *o);

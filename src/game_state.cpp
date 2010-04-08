@@ -92,6 +92,7 @@ void Game_State::update(int &delta)
   bool follow_spec = false;
   int follow = -1;
   int mov_follow = -1;
+  Moveable *temp_move, *temp2;
   
   // check for collision on everyone
   // collision is always on for moveables
@@ -110,15 +111,29 @@ void Game_State::update(int &delta)
     if(moveables.at(i)->will_collide_x(map))
     {
       moveables.at(i)->setHSpeed(0);
+      temp_move = moveables.at(i)->get_link();
+      while(temp_move)
+      {
+        temp_move->setHSpeed(0);
+        temp2 = temp_move;
+        temp_move = temp_move->get_link();
+        temp2->set_link(NULL);
+        if (temp_move == moveables.at(i))
+        {
+          break;
+        }
+      }
     }
     
     if(moveables.at(i)->will_collide_moveables_x(moveables, i, &mov_follow))
     {
       moveables.at(mov_follow)->setHSpeed(moveables.at(i)->getHSpeed());
+      moveables.at(mov_follow)->set_link(moveables.at(i));
     }
   }
   if (collision)
   {
+    bool ladder = false;
     
     // check for horizontal collision with human controlled character
     c->setHSpeed(c->will_collide_x(map) ||
@@ -127,6 +142,7 @@ void Game_State::update(int &delta)
     
     // check for vertical collision with everyone
     gravity = !p->will_collide_tile(map, LADDER, NULL);
+    ladder = !gravity;
     if (!gravity)
     {
       if (c == p && last_y && w)
@@ -160,7 +176,7 @@ void Game_State::update(int &delta)
         }
         continue;
       }
-      // move specials if they can
+      // move specials in the y if they can
       if (!(specials.at(i)->will_collide_y(map) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
             specials.at(i)->will_collide_platform(map) ||
@@ -212,6 +228,23 @@ void Game_State::update(int &delta)
     }
     player_movey = player_movey && !follow_spec;
     player_movey = player_movey && !follow_move;
+    
+    if (ladder)
+    {
+      int temp;
+      temp = p->getVSpeed();
+      p->move(0, temp);
+      p->setVSpeed(PLAYER_SPEED);
+      if (!p->will_collide_tile(map, LADDER, NULL))
+      {
+        p->setVSpeed(0);
+      }
+      else
+      {
+        p->setVSpeed(temp);
+      }
+      p->move(0, -temp);
+    }
   }
   
   // check for following in specials
@@ -363,14 +396,17 @@ void Game_State::update(int &delta)
   {
     if (delta > DELTA_DELAY)
     {
+      int current_frame;
+      
       delta = 0;
-      if ((p->get_animdir() == 1 &&
-          p->get_cur_frame() == p->get_num_frames()) ||
-          (p->get_animdir() == -1 && p->get_cur_frame() == 1))
+      current_frame = p->get_cur_frame();
+      ++current_frame;
+      current_frame %= p->get_num_frames() + 1;
+      if(!current_frame)
       {
-        p->set_animdir(p->get_animdir() * -1);
+        ++current_frame;
       }
-      p->set_cur_frame(p->get_cur_frame() + p->get_animdir());
+      p->set_cur_frame(current_frame);
     }
     else
     {
@@ -493,6 +529,10 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         }
       }
     case '0':
+      if (c == p)
+      {
+        break;
+      }
       c->setVSpeed(GRAVITY_SPEED);
       c = p;
       c->setVSpeed(0);
@@ -505,7 +545,6 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       }
       
       map_slide_effect = SLIDE_COUNTER;
-      //center();
       break;
     case '1':
     case '2':
@@ -517,14 +556,9 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
     case '8':
     case '9':
       if ((unsigned int) (key - 49) < next_special &&
-          (unsigned int) (key - 49) < specials.size())
+          (unsigned int) (key - 49) < specials.size() &&
+          c != specials.at(key - 49))
       {
-        if (c == specials.at(key - 49))
-        {
-          map_slide_effect = SLIDE_COUNTER;
-          //center();
-          break;
-        }
         c = specials.at(key - 49);
         c->setVSpeed(0);
         c->setHSpeed(0);
