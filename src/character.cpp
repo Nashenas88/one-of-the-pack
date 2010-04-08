@@ -134,7 +134,7 @@ bool Character::will_collide_x(Map *m)
   {
     for (int j = ty; j <= by; ++j)
     {
-      if(m->get_blocker(i,j))
+      if(m->get_blocker(i,j) && m->get_tile(i, j) != LADDER)
       {
         return true;
       }
