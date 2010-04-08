@@ -23,6 +23,8 @@ private:
   bool w, a, s, d; // are the arrows keys being pressed?
   bool last_x, last_y; // last directional keys pressed in x and y
   unsigned int map_slide_effect; // are we changing the view to another character?
+  char last_key; // last key that was pressed
+  char key_held; // used for activating specials ability/switching to special
   
 public:
   Game_State(void);
@@ -44,7 +46,6 @@ public:
   void special_released(int key, int x, int y);
   
   // centers the map on the controlled character
-  void center(void);
   
   void pause_volume(void);
   void unpause_volume(void);

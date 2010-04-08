@@ -9,7 +9,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
                        vector<Special *> sps, FMOD_SYSTEM *system)
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 next_special(0), gravity(true), collision(true), w(0), a(0), s(0), d(0),
-last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER) {}
+last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0), key_held(0) {}
 
 // draw static background, then map, then specials, then moveables, then player
 void Game_State::draw(void)
@@ -89,7 +89,7 @@ void Game_State::update(int &delta)
     }
   }
   
-  bool follow_spec = false;
+  bool follow_spec = false, follow_move = false;;
   int follow = -1;
   int mov_follow = -1;
   Moveable *temp_move, *temp2;
@@ -176,12 +176,30 @@ void Game_State::update(int &delta)
         }
         continue;
       }
+      
+    follow_move = specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
+    follow_spec = specials.at(i)->will_collide_specials_y(specials, i, &follow);
+    
+    // if on special or moveable, move with them
+    if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
+    {
+      specials.at(i)->setHSpeed(specials.at(i)->getHSpeed() +
+                                specials.at(follow)->getHSpeed());
+      specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
+    }
+    else if (follow_move && mov_follow >= 0)
+    {
+      specials.at(i)->setHSpeed(specials.at(i)->getHSpeed() +
+                                moveables.at(mov_follow)->getHSpeed());
+      specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+    }
+      
       // move specials in the y if they can
       if (!(specials.at(i)->will_collide_y(map) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-            specials.at(i)->will_collide_platform(map) ||
-            specials.at(i)->will_collide_specials_y(specials, i, NULL) ||
-            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
+            specials.at(i)->will_collide_platform(map)// ||
+/*            specials.at(i)->will_collide_specials_y(specials, i, NULL) ||
+            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)*/))
       {
         specials.at(i)->move(0, specials.at(i)->getVSpeed());
       }
@@ -194,13 +212,11 @@ void Game_State::update(int &delta)
     // change falling speed to PLAYER_SPEED when too close to floor
     // this is to deal with case when you are 10 + 20 * i pixels from
     // the ground and you leave the ladder
-    // alse check to see if we should follow any specials (standing on)
-    bool follow_move = false;
+    // alse check to see if we should follow any specials or moveables
+    // because we are standing on them
     
     follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
     follow_spec = p->will_collide_specials_y(specials, -1, &follow);
-    player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
-                   !follow_move && !follow_spec;
     
     // if on special or moveable, move with them
     if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
@@ -214,20 +230,40 @@ void Game_State::update(int &delta)
       p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
     }
     
-    if (!player_movey && p->getVSpeed() == GRAVITY_SPEED)
+    player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map);
+    
+    if (!player_movey && !follow_spec && !follow_move &&
+        p->getVSpeed() == GRAVITY_SPEED)
     {
       p->setVSpeed(PLAYER_SPEED);
       // check here to see if we'll follow a special
       follow_spec = p->will_collide_specials_y(specials, -1, &follow);
       follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
+      
+      // if on special or moveable, move with them
+      if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
+      {
+        p->setHSpeed(p->getHSpeed() + specials.at(follow)->getHSpeed());
+        p->setVSpeed(specials.at(follow)->getVSpeed());
+      }
+      else if (follow_move && mov_follow >= 0)
+      {
+        p->setHSpeed(p->getHSpeed() + moveables.at(mov_follow)->getHSpeed());
+        p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+      }
       player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map);
     }
     if (!player_movey)
     {
       p->setVSpeed(0);
     }
-    player_movey = player_movey && !follow_spec;
-    player_movey = player_movey && !follow_move;
+    
+    if (c != p)
+    {
+      p->setHSpeed(p->will_collide_x(map) ||
+                   p->will_collide_moveables_x(moveables, -1, NULL)?
+                   0 : p->getHSpeed());
+    }
     
     if (ladder)
     {
@@ -555,29 +591,33 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
     case '7':
     case '8':
     case '9':
-      if ((unsigned int) (key - 49) < next_special &&
-          (unsigned int) (key - 49) < specials.size() &&
-          c != specials.at(key - 49))
+      if (last_key == key)
       {
-        c = specials.at(key - 49);
-        c->setVSpeed(0);
-        c->setHSpeed(0);
-        
-        p->set_volume(UNFOCUSED_VOLUME);
-        for (unsigned int i = 0; i < specials.size(); ++i)
+        key_held = key;
+        if ((unsigned int) (key - 49) < next_special &&
+            (unsigned int) (key - 49) < specials.size() &&
+            c != specials.at(key - 49))
         {
-          if (c == specials.at(i))
+          c = specials.at(key - 49);
+          c->setVSpeed(0);
+          c->setHSpeed(0);
+          
+          p->set_volume(UNFOCUSED_VOLUME);
+          for (unsigned int i = 0; i < specials.size(); ++i)
           {
-            continue;
+            if (c == specials.at(i))
+            {
+              continue;
+            }
+            specials.at(i)->set_volume(UNFOCUSED_VOLUME);
           }
-          specials.at(i)->set_volume(UNFOCUSED_VOLUME);
+          
+          map_slide_effect = SLIDE_COUNTER;
         }
-        
-        map_slide_effect = SLIDE_COUNTER;
-        //center();
       }
       break;
   }
+  last_key = key;
 }
 
 void Game_State::key_released(unsigned char key, int x, int y)
@@ -611,6 +651,25 @@ void Game_State::key_released(unsigned char key, int x, int y)
       gravity = false;
       c->setVSpeed(0);
       p->setVSpeed(0);
+      break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      if (key_held != key && c != specials.at(key - 49))
+      {
+        specials.at(key - 49)->use_ability(map);
+        last_key = 0;
+      }
+      else
+      {
+        key_held = 0;
+      }
       break;
   }
 }
@@ -651,46 +710,6 @@ void Game_State::special_released(int key, int x, int y)
       key_released('a', x, y);
       break;
   }
-}
-
-void Game_State::center(void)
-{
-  float x, y, map_x, map_y, move_x, move_y, map_width, map_height;
-
-  c->get_top_left(x, y);
-  map->get_top_left(map_x, map_y);
-  move_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f - x;
-  move_y = SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y;
-  map_width = map->get_width() * TILE_WIDTH;
-  map_height = map->get_height() * TILE_HEIGHT;
-
-  if (move_x + map_x > 0)
-  {
-    move_x = -map_x;
-  }
-  else if (move_x + map_x - SCREEN_WIDTH < -map_width)
-  {
-    move_x = map_width + map_x - SCREEN_WIDTH;
-  }
-  if (move_y + map_y > 0)
-  {
-    move_y = -map_y;
-  }
-  else if (move_y + map_y - SCREEN_HEIGHT < -map_height)
-  {
-    move_y = map_height + map_y - SCREEN_HEIGHT;
-  }
-
-  map->move(move_x,move_y);
-  for (unsigned int i = 0; i < specials.size(); ++i)
-  {
-    ((Drawable *)specials.at(i))->move(move_x,move_y);
-  }
-  for (unsigned int i = 0; i < moveables.size(); ++i)
-  {
-    moveables.at(i)->move(move_x,move_y);
-  }
-  ((Drawable *)p)->move(move_x, move_y);
 }
 
 void Game_State::pause_volume(void)
