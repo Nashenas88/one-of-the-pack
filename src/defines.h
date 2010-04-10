@@ -15,6 +15,7 @@
 #define LEVEL "Level "
 
 // texture files
+#define NUMBER_TEXTURE "numbers.png"
 #define TILE_TEXTURE "tiles.png"
 #define BACKGROUND_TEXTURE "bg.png"
 #define PAUSED_BACKGROUND "pause_background.png"
@@ -43,6 +44,9 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 800
+
+#define NUM_WIDTH 50
+#define NUM_HEIGHT 50
 
 #define MENU_ITEMS 3
 #define POINTER_MOVE 90

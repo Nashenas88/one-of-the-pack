@@ -23,6 +23,7 @@ private:
   bool mute;
   FMOD_SOUND *abil_sound;
   FMOD_CHANNEL *abil_channel;
+  Drawable *number; // number that will be displayed above special
   
 public:
   Special(void);
@@ -33,16 +34,22 @@ public:
   unsigned int get_abil_frames(void) {return num_abil_frames;}
   special_type get_type(void) {return type;}
   virtual void use_ability(Map *m);
-  void start_following();
+  void start_following(void);
   bool is_following(void) { return following; }
-  void stop_following();
+  void stop_following(void);
   
   void play_effect(void);
   
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
   void set_volume(float volume);
-  void go_home();
+  void go_home(void);
+  
+  Drawable *get_number(void) {return number;}
+  void set_number(Drawable *num);
+  
+  void draw(void);
+  void move(float x, float y);
 };
 
 #endif // FLOCK__SPECIAL__H
