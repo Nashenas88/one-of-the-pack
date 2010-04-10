@@ -115,10 +115,11 @@ void initLevel(int level)
   Drawable *block, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal;
-  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper;
+  Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums;
   vector<Texture*> textures;
   vector<Moveable*> moveables;
   vector<Special*> specials;
+  vector<Drawable*> numbers;
   Map *m;
   FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound, *temp_sound;
@@ -149,6 +150,14 @@ void initLevel(int level)
   ahnold = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << JUMPER_TEXTURE;
   jumper = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << NUMBER_TEXTURE;
+  nums = new Texture(temp_string.str().c_str());
+  
+  for (unsigned int i = 1; i < 10; ++i)
+  {
+    numbers.push_back(new Drawable(0.0f, 0.0f, 1, 1, NUM, nums));
+    numbers.at(i-1)->set_cur_frame(i);
+  }
   
   // initializing the sound system and the sounds
   initSound(&system);
@@ -238,7 +247,7 @@ void initLevel(int level)
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
               p, system, musics, m_channel, effects, a_channel);
-  s = new Game_State(p, m, moveables, specials, system);
+  s = new Game_State(p, m, moveables, specials, numbers, system);
   paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
                            map_image, pointer);
   

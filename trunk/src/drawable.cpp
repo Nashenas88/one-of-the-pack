@@ -47,6 +47,11 @@ facing_right(true)
     width = texture->get_width();
     height = texture->get_height();
   }
+  else if (type == NUM)
+  {
+    width = NUM_WIDTH;
+    height = NUM_HEIGHT;
+  }
   reset_corners();
 }
 

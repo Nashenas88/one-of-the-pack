@@ -16,6 +16,7 @@ typedef enum
 {
   TILE,
   VARIABLE,
+  NUM,
   BACKGROUND
 } D_TYPE;
 

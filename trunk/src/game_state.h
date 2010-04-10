@@ -17,6 +17,7 @@ private:
   Map *map; // map object
   vector<Moveable *> moveables; // all moveable entities
   vector<Special *> specials; // all specials that can follow player
+  vector<Drawable *> numbers; // numbers to place above specials
   unsigned int next_special; // num to determine pos in specials
   bool gravity; // is gravity on or off?
   bool collision; // is collision on or off?
@@ -29,7 +30,8 @@ private:
 public:
   Game_State(void);
   Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
-             vector<Special *> sps, FMOD_SYSTEM *system);
+             vector<Special *> sps, vector<Drawable*> nums,
+             FMOD_SYSTEM *system);
   
   // does all drawing for each level
   void draw(void);
