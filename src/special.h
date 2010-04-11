@@ -17,6 +17,7 @@ class Special: public Character
 private:
   float loc[2];
   bool following;
+  bool controllable;
   // for ability animation
   unsigned int num_abil_frames;
   special_type type;
@@ -37,6 +38,7 @@ public:
   void start_following(void);
   bool is_following(void) { return following; }
   void stop_following(void);
+  bool is_controllable(void) {return controllable;}
   
   void play_effect(void);
   
