@@ -667,7 +667,8 @@ void Game_State::key_released(unsigned char key, int x, int y)
     case '7':
     case '8':
     case '9':
-      if (key_held != key && c != specials.at(key - 49))
+      if (key_held != key && key - 49 < (int) specials.size() &&
+          c != specials.at(key - 49) && specials.at(key - 49)->is_controllable())
       {
         specials.at(key - 49)->use_ability(map);
         last_key = 0;
