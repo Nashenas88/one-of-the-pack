@@ -54,6 +54,8 @@ void Game_State::update(int &delta)
     specials.at(i)->setHSpeed(0);
   }
   
+  // change speed of controlled player
+  // if keys are being pressed
   if (last_x && a)
   {
     c->setHSpeed(-PLAYER_SPEED);
@@ -62,6 +64,9 @@ void Game_State::update(int &delta)
   {
     c->setHSpeed(PLAYER_SPEED);
   }
+  
+  // if there is no collision, allow the
+  // controlled character to fly around
   if (!collision)
   {
     if (last_y && w)
@@ -74,16 +79,18 @@ void Game_State::update(int &delta)
     }
   }
   
-  // reset gravity for everything except the jumpers
+  // reset gravity for everything
   if (gravity)
   {
     p->setVSpeed(GRAVITY_SPEED);
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
+      // if we are not a jumper reset gravity
       if (specials.at(i)->get_type() != JUMPER)
       {
         specials.at(i)->setVSpeed(GRAVITY_SPEED);
       }
+      // if we are a jumper and we are not jumping, reset gravity
       else if (specials.at(i)->get_tex_num() == SPECIAL)
       {
         specials.at(i)->setVSpeed(GRAVITY_SPEED);
@@ -160,8 +167,7 @@ void Game_State::update(int &delta)
       // if on special or moveable, move with them
       if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
       {
-        specials.at(i)->setHSpeed(specials.at(i)->getHSpeed() +
-                                  specials.at(follow)->getHSpeed());
+        specials.at(i)->setHSpeed(specials.at(follow)->getHSpeed());
         specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
       }
       else if (follow_move && mov_follow >= 0)
@@ -172,18 +178,49 @@ void Game_State::update(int &delta)
       }
       
       // move specials in the y if they can
-      if (!(specials.at(i)->will_collide_y(map) ||
+      if (specials.at(i)->will_collide_y(map) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-            specials.at(i)->will_collide_platform(map)// ||
-            /*specials.at(i)->will_collide_specials_y(specials, i, NULL) ||
-            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)*/))
-      {
-        specials.at(i)->move(0, specials.at(i)->getVSpeed());
-      }
-      else
+            specials.at(i)->will_collide_platform(map))
       {
         specials.at(i)->setVSpeed(0);
+        //specials.at(i)->move(0, specials.at(i)->getVSpeed());
       }
+      //else
+      //{
+      //  specials.at(i)->setVSpeed(0);
+      //}
+    }
+    // we need to check for following again
+    for (unsigned int i = 0; i < specials.size();  ++i)
+    {
+      if (c == specials.at(i))
+      {
+        continue;
+      }
+      follow_move = specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
+      follow_spec = specials.at(i)->will_collide_specials_y(specials, i, &follow);
+      
+      // if on special or moveable, move with them
+      if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
+      {
+        specials.at(i)->setHSpeed(specials.at(follow)->getHSpeed());
+        specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
+      }
+      else if (follow_move && mov_follow >= 0)
+      {
+        specials.at(i)->setHSpeed(specials.at(i)->getHSpeed() +
+                                  moveables.at(mov_follow)->getHSpeed());
+        specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+      }
+    }
+    // move them in the y now
+    for (unsigned int i = 0; i < specials.size(); ++i)
+    {
+      if (c == specials.at(i))
+      {
+        continue;
+      }
+      specials.at(i)->move(0, specials.at(i)->getVSpeed());
     }
     
     // change falling speed to PLAYER_SPEED when too close to floor
