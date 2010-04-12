@@ -358,7 +358,10 @@ void Game_State::update(int &delta)
     {
       continue;
     }
-    specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+    if (!specials.at(i)->will_collide_x(map))
+    {
+      specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+    }
   }
   
   // move moveables
