@@ -531,32 +531,24 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
     case 'g':
       if (c != p && ((Special *)c)->get_type() == JUMPER)
       {
-        if (c->will_collide_Dy(p))
+        float lx, ly, cx, cy;
+        c->get_top_left(cx, cy);
+        if (c->will_collide_Dy(p, false))
         {
-          ((Jumper *)c)->set_link(p);
+          p->get_top_left(lx, ly);
+          p->move(cx - lx, cy - ly - TILE_HEIGHT);
         }
-        else
+        for (unsigned int i = 0; i < specials.size(); ++i)
         {
-          for (unsigned int i = 0; i < specials.size(); ++i)
+          if (c == specials.at(i))
           {
-            if (c == specials.at(i))
-            {
-              continue;
-            }
-            if (c->will_collide_Dy(specials.at(i)))
-            {
-              ((Jumper *)c)->set_link(specials.at(i));
-              break;
-            }
+            continue;
           }
-        }
-        if (((Jumper *)c)->get_link() != NULL)
-        {
-          float lx, ly, cx, cy;
-          c->get_top_left(cx, cy);
-          ((Jumper *)c)->get_link()->get_top_left(lx, ly);
-          ((Drawable *)((Jumper *)c)->get_link())->move(cx - lx, cy - ly - 80);
-          ((Jumper *)c)->get_link()->setVSpeed(0);
+          if (c->will_collide_Dy(specials.at(i), false))
+          {
+            specials.at(i)->get_top_left(lx, ly);
+            specials.at(i)->move(cx - lx, cy - ly - TILE_HEIGHT);
+          }
         }
       }
       break;
@@ -565,10 +557,6 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       {
         ((Special*)c)->stop_following();
         //((Special*)c)->set_mute(true);
-        if (((Special *)c)->get_type() == JUMPER)
-        {
-          ((Jumper *)c)->set_link(NULL);
-        }
       }
     case '0':
       if (c == p)

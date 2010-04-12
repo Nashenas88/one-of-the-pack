@@ -9,7 +9,6 @@ class Jumper : public Special
 private:
   float loc[2];
   bool following;
-  Character *link;
   
 public:
   Jumper(void);
@@ -21,9 +20,6 @@ public:
   void start_following(Player *p);
   void stop_following(Player *p);
   void go_home(void);
-  
-  void set_link(Character *c) {link = c;}
-  Character *get_link(void) {return link;}
 };
 
 #endif // FLOCK__JUMPER__H
