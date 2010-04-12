@@ -278,6 +278,10 @@ void handleResize(int w, int h)
 // called when a normal key is pressed
 void handleKeypress(unsigned char key, int x, int y)
 {
+  if (loading)
+  {
+    return;
+  }
   switch(key)
   {
     case 27: // escape key
@@ -321,16 +325,28 @@ void handleKeypress(unsigned char key, int x, int y)
 
 void handleKeyrelease(unsigned char key, int x, int y)
 {
+  if (loading)
+  {
+    return;
+  }
   s->key_released(key, x, y);
 }
 
 void handleSpecialpress(int key, int x, int y)
 {
+  if (loading)
+  {
+    return;
+  }
   s->special_pressed(key, x, y);
 }
 
 void handleSpecialrelease(int key, int x, int y)
 {
+  if (loading)
+  {
+    return;
+  }
   s->special_released(key, x, y);
 }
 
