@@ -792,6 +792,16 @@ void Game_State::unpause_volume(void)
   }
 }
 
+void Game_State::reset_keys(void)
+{
+  a = false;
+  w = false;
+  s = false;
+  d = false;
+  last_key = 0;
+  key_held = 0;
+}
+
 void Game_State::clean(void)
 {
   p->clean();

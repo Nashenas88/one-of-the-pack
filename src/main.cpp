@@ -315,6 +315,7 @@ void handleKeypress(unsigned char key, int x, int y)
       else
       {
         ((Game_State *)s)->pause_volume();
+        ((Game_State *)s)->reset_keys();
         stack.push_back(s);
         s = paused;
       }

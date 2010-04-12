@@ -36,21 +36,22 @@ public:
   // does all drawing for each level
   void draw(void);
   
-  // handles a LOT of crap
-  // collisions / movement / gravity
+  // this is basically the game
+  // it should probably be split up into more functions
   void update(int &delta);
   
-  // deals with keyboard presses
+  // keyboard functions
   void key_pressed(unsigned char key, int x, int y);
-  // deals with keyboard releases
   void key_released(unsigned char key, int x, int y);
   void special_pressed(int key, int x, int y);
   void special_released(int key, int x, int y);
   
-  // centers the map on the controlled character
-  
+  // changes the volume, should be used when
+  // entering and exiting the pause state
   void pause_volume(void);
   void unpause_volume(void);
+  
+  void reset_keys(void);
   
   // cleans all data from state
   void clean(void);
