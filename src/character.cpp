@@ -76,7 +76,7 @@ bool Character::will_collide_Dx(Drawable *d)
   return true;
 }
 
-bool Character::will_collide_Dy(Drawable *d)
+bool Character::will_collide_Dy(Drawable *d, bool top)
 {
   float left_x1, left_x2;
   float right_x1, right_x2;
@@ -91,6 +91,12 @@ bool Character::will_collide_Dy(Drawable *d)
   right_x2 = left_x2 + d->get_width();
   bottom_y1 = top_y1 + col_height - 2*col_y_offset;
   bottom_y2 = top_y2 + d->get_height();
+  
+  if (top)
+  {
+    top_y1 = bottom_y1 - PLAYER_SPEED;
+    bottom_y2 = top_y2 + PLAYER_SPEED;
+  }
   
   if (bottom_y1 < top_y2) return false;
   if (top_y1 > bottom_y2) return false;
@@ -278,7 +284,7 @@ bool Character::will_collide_specials_y(vector<Special *>specials, int cur,
     {
       continue;
     }
-    if (will_collide_Dy(specials.at(i)))
+    if (will_collide_Dy(specials.at(i), true))
     {
       if (collide)
       {
@@ -320,7 +326,7 @@ bool Character::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
     {
       continue;
     }
-    if (will_collide_Dy(moveables.at(i)))
+    if (will_collide_Dy(moveables.at(i), true))
     {
       if (collide)
       {

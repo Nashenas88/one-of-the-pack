@@ -56,7 +56,8 @@ public:
   // check collision with other possible objects
   // (moving players are not collideables)
   bool will_collide_Dx(Drawable *o);
-  bool will_collide_Dy(Drawable *o);
+  // if top is true, only check collision on the upper border
+  bool will_collide_Dy(Drawable *o, bool top);
   bool will_collide_x(Map *m);
   bool will_collide_y(Map *m);
   bool will_collide_platform(Map *m);
