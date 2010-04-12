@@ -13,19 +13,35 @@ numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
 key_held(0) {}
 
-// draw static background, then map, then specials, then moveables, then player
+// this draws everything to the screen
 void Game_State::draw(void)
 {
+  // first the map
   map->draw();
+  // then the moveables
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     moveables.at(i)->draw();
   }
+  // then the specials, except for the one you are controlling
+  // the closer to the player, the higher up they should be drawn
+  // (1st special should be drawn over 2nd special, etc.)
   for (unsigned int i = specials.size() - 1; i < specials.size() ; --i)
   {
+    if (c == specials.at(i))
+    {
+      continue;
+    }
     specials.at(i)->draw();
   }
+  // then the player
   p->draw();
+  // if you're controlling a special
+  // draw him over the player
+  if (c != p)
+  {
+    c->draw();
+  }
 }
 
 // this is called every time the scene
@@ -183,12 +199,7 @@ void Game_State::update(int &delta)
             specials.at(i)->will_collide_platform(map))
       {
         specials.at(i)->setVSpeed(0);
-        //specials.at(i)->move(0, specials.at(i)->getVSpeed());
       }
-      //else
-      //{
-      //  specials.at(i)->setVSpeed(0);
-      //}
     }
     // we need to check for following again
     for (unsigned int i = 0; i < specials.size();  ++i)
