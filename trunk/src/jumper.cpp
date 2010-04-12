@@ -20,14 +20,27 @@ void Jumper::use_ability(Map *m)
   if (get_tex_num() != ABILITY)
   {
     int old_speed;
+    int i;
     
     old_speed = getVSpeed();
     setVSpeed(GRAVITY_SPEED);
+    for (i = 0; i < (int) m->get_specials().size(); ++i)
+    {
+      if ((Special*)this == m->get_specials().at(i))
+      {
+        break;
+      }
+    }
+    if (i == (int) m->get_specials().size())
+    {
+      i = -1;
+    }
     
     if (will_collide_y(m) ||
         will_collide_platform(m) ||
         will_collide_tile(m, LADDER, NULL) ||
-        will_collide_moveables_y(m->get_moveables(), -1, NULL))
+        will_collide_moveables_y(m->get_moveables(), -1, NULL) ||
+        will_collide_specials_y(m->get_specials(), i, NULL))
     {
       play_effect();
       setVSpeed(-JUMP_HEIGHT);
