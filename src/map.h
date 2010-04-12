@@ -30,6 +30,7 @@ private:
   // list of all types of tiles that will be used for drawing
   vector<Drawable *> tiles;
   vector<Moveable *> moves;
+  vector<Special *> specs;
   
 public:
   Map(void);
@@ -41,6 +42,7 @@ public:
   // getting background
   Drawable *get_background(void) {return tiles.at((int)BG);}
   vector<Moveable *> get_moveables(void) {return moves;}
+  vector<Special *> get_specials(void) {return specs;}
   
   // simple methods for adding, getting, and removing blockers
   bool get_blocker(int x, int y) {return map[x][y][M_COLL]==1;}
