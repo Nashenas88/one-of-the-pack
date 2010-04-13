@@ -174,6 +174,11 @@ void Game_State::update(int &delta)
         {
           c->setVSpeed(0);
         }
+        if (specials.at(i)->will_collide_x(map) ||
+            specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+        {
+          c->setHSpeed(0);
+        }
         continue;
       }
       
@@ -224,7 +229,7 @@ void Game_State::update(int &delta)
         specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
     }
-    // move them in the y now
+    // move specials in the y
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
       if (c == specials.at(i))
@@ -353,12 +358,9 @@ void Game_State::update(int &delta)
       // then change its speed
       if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH && follow != (int)i)
       {
-        if (!specials.at(i)->will_collide_x(map) &&
-            !specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
-        {
-          specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
-        }
-        else
+        specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
+        if (specials.at(i)->will_collide_x(map) ||
+            specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
         {
           specials.at(i)->setHSpeed(0);
         }
@@ -406,10 +408,10 @@ void Game_State::update(int &delta)
     {
       continue;
     }
-    if (!specials.at(i)->will_collide_x(map))
-    {
+    //if (!specials.at(i)->will_collide_x(map))
+    //{
       specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
-    }
+    //}
   }
   
   // move moveables

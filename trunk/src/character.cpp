@@ -320,13 +320,18 @@ bool Character::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
 bool Character::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
+  bool only_top = true;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     if (cur == (int)i)
     {
       continue;
     }
-    if (will_collide_Dy(moveables.at(i), true))
+    if (getVSpeed() <= 0)
+    {
+      only_top = false;
+    }
+    if (will_collide_Dy(moveables.at(i), only_top))
     {
       if (collide)
       {
@@ -334,6 +339,7 @@ bool Character::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
       }
       return true;
     }
+    only_top = true;
   }
   return false;
 }
