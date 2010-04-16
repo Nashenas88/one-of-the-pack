@@ -23,6 +23,7 @@
 #define MAP1 "level.bmp"
 #define MAP_IMAGE "level.png"
 #define LOADING_TEXTURE "loading.png"
+#define PAUSE_ICONS_TEXTURE "pause_icons.png"
 
 // character texture files
 #define PLAYER_TEXTURE "Character animation 1.png"
@@ -47,6 +48,9 @@
 
 #define NUM_WIDTH 50
 #define NUM_HEIGHT 50
+
+#define ICON_WIDTH 8
+#define ICON_HEIGHT 8
 
 #define MENU_ITEMS 3
 #define POINTER_MOVE 90
@@ -127,5 +131,21 @@ typedef enum
   AHNOLD,
   JUMPER
 } special_type;
+
+#define PAUSE_ICON_FRAMES 4
+typedef enum
+{
+  PLAYER_ICON = 1,
+  AHNOLD_ICON,
+  JUMPER_ICON,
+  BREAK_ICON,
+  PUSH_ICON,
+  GOAL_ICON,
+  HOVER_ICON
+} pause_icon;
+
+#define PAUSE_MAP_X 300
+#define PAUSE_MAP_Y 300
+#define PAUSE_ANIM_DELAY 4
 
 #endif // FLOCK__DEFINES__H

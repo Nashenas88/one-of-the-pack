@@ -33,6 +33,11 @@ public:
              vector<Special *> sps, vector<Drawable*> nums,
              FMOD_SYSTEM *system);
   
+  Player *get_player(void) {return p;}
+  vector<Special *> get_specials(void) {return specials;}
+  vector<Moveable *> get_moveables(void) {return moveables;}
+  Map *get_map(void) {return map;}
+  
   // does all drawing for each level
   void draw(void);
   
