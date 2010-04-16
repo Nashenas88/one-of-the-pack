@@ -4,20 +4,111 @@ Pause_State::Pause_State(void)
 : State(), dspparameq(0) {}
 
 Pause_State::Pause_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              Drawable *b, Drawable *m, Drawable *p)
+              Drawable *b, Drawable *m, Drawable *p, Texture *icons)
 :State(system), dspparameq(pe), game_state(gs), background(b),
-map(m), pointer(p), selected(0) {}
+map(m), pointer(p), selected(0), anim_timer(0)
+{
+  movers = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);
+  statics = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);
+}
 
 void Pause_State::draw(void)
 {
+  Special *spec;
+  Moveable *move;
+  Map *m;
+  int x, y;
+  
   game_state->draw();
   background->draw();
   map->draw();
+  
+  m = game_state->get_map();
+  for (int i = 0; i < m->get_width(); ++i)
+  {
+    for (int j = 0; j < m->get_height(); ++j)
+    {
+      switch(m->get_tile(i, j))
+      {
+        case BREAKABLE:
+          statics->set_tex_num(BREAK_ICON);
+          statics->move(-statics->get_x() + PAUSE_MAP_X + (i - 1) * 2,
+                        -statics->get_y() + PAUSE_MAP_Y + (j - 1) * 2);
+          statics->draw();
+          break;
+        case GOAL:
+          statics->set_tex_num(GOAL_ICON);
+          statics->move(-statics->get_x() + PAUSE_MAP_X + (i - 1) * 2,
+                        -statics->get_y() + PAUSE_MAP_Y + (j - 1) * 2);
+          statics->draw();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  
+  for (unsigned int i = 0; i < game_state->get_moveables().size(); ++i)
+  {
+    move = game_state->get_moveables().at(i);
+    if (move->get_gravity())
+    {
+      statics->set_tex_num(PUSH_ICON);
+    }
+    else
+    {
+      statics->set_tex_num(HOVER_ICON);
+    }
+    statics->move(-statics->get_x() + PAUSE_MAP_X, -statics->get_y() + PAUSE_MAP_Y);
+    m->calculate_location(move, x, y);
+    statics->move((x - 1) * 2, (y - 1) * 2);
+    statics->draw();
+  }
+  for (unsigned int i = game_state->get_specials().size() - 1;
+       i < game_state->get_specials().size(); --i)
+  {
+    spec = game_state->get_specials().at(i);
+    switch (spec->get_type())
+    {
+      case AHNOLD:
+        movers->set_tex_num(AHNOLD_ICON);
+        break;
+      case JUMPER:
+        movers->set_tex_num(JUMPER_ICON);
+        break;
+    }
+    movers->move(-movers->get_x() + PAUSE_MAP_X, -movers->get_y() + PAUSE_MAP_Y);
+    m->calculate_location(spec, x, y);
+    movers->move((x - 1) * 2, (y - 1) * 2);
+    movers->draw();
+  }
+  movers->set_tex_num(PLAYER_ICON);
+  movers->move(-movers->get_x() + PAUSE_MAP_X, -movers->get_y() + PAUSE_MAP_Y);
+  m->calculate_location(game_state->get_player(), x, y);
+  movers->move((x - 1) * 2, (y - 1) * 2);
+  movers->draw();
+  
   pointer->draw();
 }
 
 void Pause_State::update(int &delta)
 {
+  if (anim_timer == PAUSE_ANIM_DELAY)
+  {
+    anim_timer = 0;
+    int current;
+    current = movers->get_cur_frame();
+    ++current;
+    if (current > PAUSE_ICON_FRAMES)
+    {
+      current = 1;
+    }
+    movers->set_cur_frame(current);
+  }
+  else
+  {
+    ++anim_timer;
+  }
   state_update();
 }
 

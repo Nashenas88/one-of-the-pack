@@ -50,6 +50,8 @@ public:
   void remove(int x, int y);
   void move_block(int x, int y);
   
+  void calculate_location(Drawable *d, int &x, int &y);
+  
   // loads map from a binary image, returns false on fail, also modifies
   // moveables so that it includes a list of all objects that can move
   bool load_map(const char *map_bmp, vector<Moveable *> &moveables,

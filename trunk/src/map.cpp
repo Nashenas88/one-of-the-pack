@@ -54,6 +54,17 @@ void Map::remove(int x, int y)
   // enter code to remove block from map
 }
 
+void Map::calculate_location(Drawable *d, int &x, int &y)
+{
+  float lxm, tym;
+  float lxo, tyo;
+  
+  get_top_left(lxm, tym);
+  d->get_top_left(lxo, tyo);
+  x = (int) (lxo - lxm) / TILE_WIDTH;
+  y = (int) (tyo - tym) / TILE_HEIGHT;
+}
+
 void Map::move_block(int x, int y)
 {
   // enter code to move block 

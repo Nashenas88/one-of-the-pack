@@ -27,30 +27,33 @@ Drawable::Drawable(float x, float y, int num, int frames, D_TYPE type, Texture *
 :tl_x(x), tl_y(y), tex_num(num), num_frames(frames), cur_frame(1), texture(tex),
 facing_right(true)
 {
-  // this is for drawing purposes
-  // a tile only needs to take up a small space
-  // and should be moved
-  if(type == TILE)
+  switch (type)
   {
-    width = TILE_WIDTH;
-    height = TILE_HEIGHT;
-  }
-  // background will never move and takes
-  // up the entire screen
-  else if (type == BACKGROUND)
-  {
-    width = SCREEN_WIDTH;
-    height = SCREEN_HEIGHT;
-  }
-  else if (type == VARIABLE)
-  {
-    width = texture->get_width();
-    height = texture->get_height();
-  }
-  else if (type == NUM)
-  {
-    width = NUM_WIDTH;
-    height = NUM_HEIGHT;
+    // this is for drawing purposes
+    // a tile only needs to take up a small space
+    // and should be moved
+    case TILE:
+      width = TILE_WIDTH;
+      height = TILE_HEIGHT;
+      break;
+    // background will never move and takes
+    // up the entire screen
+    case BACKGROUND:
+      width = SCREEN_WIDTH;
+      height = SCREEN_HEIGHT;
+      break;
+    case VARIABLE:
+      width = texture->get_width();
+      height = texture->get_height();
+      break;
+    case NUM:
+      width = NUM_WIDTH;
+      height = NUM_HEIGHT;
+      break;
+    case MAP_ICON:
+      width = ICON_WIDTH;
+      height = ICON_HEIGHT;
+      break;
   }
   reset_corners();
 }

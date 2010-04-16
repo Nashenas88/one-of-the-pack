@@ -17,6 +17,7 @@ typedef enum
   TILE,
   VARIABLE,
   NUM,
+  MAP_ICON,
   BACKGROUND
 } D_TYPE;
 
