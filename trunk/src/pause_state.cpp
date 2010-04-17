@@ -23,6 +23,14 @@ void Pause_State::draw(void)
   background->draw();
   map->draw();
   
+  for (unsigned int i = 0; i < HOVER_ICON; ++i)
+  {
+    statics->set_tex_num(i+1);
+    statics->move(-statics->get_x() + PAUSE_MAP_X + 256,
+                  -statics->get_y() + PAUSE_MAP_Y + 16 * i);
+    statics->draw();
+  }
+  
   m = game_state->get_map();
   for (int i = 0; i < m->get_width(); ++i)
   {
