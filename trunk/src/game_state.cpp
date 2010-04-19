@@ -193,11 +193,6 @@ void Game_State::update(int &delta)
     // we need to check for following again
     for (unsigned int i = 0; i < specials.size();  ++i)
     {
-      /*if (c == specials.at(i))
-      {
-        continue;
-      }*/
-      
       temp_speed = specials.at(i)->getVSpeed();
       specials.at(i)->setVSpeed(GRAVITY_SPEED);
       follow_move = specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
@@ -207,8 +202,16 @@ void Game_State::update(int &delta)
       // if on special or moveable, move with them
       if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
       {
-        specials.at(i)->setHSpeed(specials.at(follow)->getHSpeed());
-        specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
+        if (c != specials.at(i))
+        {
+          specials.at(i)->setHSpeed(specials.at(follow)->getHSpeed());
+          specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
+        }
+        else
+        {
+          c->setHSpeed(c->getHSpeed() + specials.at(follow)->getHSpeed());
+          c->setVSpeed(c->getVSpeed() + specials.at(follow)->getVSpeed());
+        }
       }
       else if (follow_move && mov_follow >= 0)
       {
