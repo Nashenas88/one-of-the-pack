@@ -11,7 +11,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0) {}
+key_held(0), debug(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -239,6 +239,37 @@ void Game_State::update(int &delta)
       specials.at(i)->move(0, specials.at(i)->getVSpeed());
     }
     
+    gravity = !p->will_collide_tile(map, LADDER, NULL);
+    if (!gravity)
+    {
+      if (c == p && last_y && w)
+      {
+        p->setVSpeed(-PLAYER_SPEED);
+      }
+      else if (c == p && s)
+      {
+        p->setVSpeed(PLAYER_SPEED);
+      }
+      else
+      {
+        p->setVSpeed(0);
+      }
+      
+      int temp;
+      temp = p->getVSpeed();
+      p->move(0, temp);
+      p->setVSpeed(PLAYER_SPEED);
+      if (!p->will_collide_tile(map, LADDER, NULL))
+      {
+        p->setVSpeed(0);
+      }
+      else
+      {
+        p->setVSpeed(temp);
+      }
+      p->move(0, -temp);
+    }
+    
     // change falling speed to PLAYER_SPEED when too close to floor
     // this is to deal with case when you are 10 + 20 * i pixels from
     // the ground and you leave the ladder
@@ -284,6 +315,7 @@ void Game_State::update(int &delta)
         p->setHSpeed(p->getHSpeed() + moveables.at(mov_follow)->getHSpeed());
         p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
+      
       player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
                      !p->will_collide_tile(map, LADDER, NULL);
     }
@@ -297,37 +329,6 @@ void Game_State::update(int &delta)
       p->setHSpeed(p->will_collide_x(map) ||
                    p->will_collide_moveables_x(moveables, -1, NULL)?
                    0 : p->getHSpeed());
-    }
-    
-    gravity = !p->will_collide_tile(map, LADDER, NULL);
-    if (!gravity)
-    {
-      if (c == p && last_y && w)
-      {
-        p->setVSpeed(-PLAYER_SPEED);
-      }
-      else if (c == p && s)
-      {
-        p->setVSpeed(PLAYER_SPEED);
-      }
-      else
-      {
-        p->setVSpeed(0);
-      }
-      
-      int temp;
-      temp = p->getVSpeed();
-      p->move(0, temp);
-      p->setVSpeed(PLAYER_SPEED);
-      if (!p->will_collide_tile(map, LADDER, NULL))
-      {
-        p->setVSpeed(0);
-      }
-      else
-      {
-        p->setVSpeed(temp);
-      }
-      p->move(0, -temp);
     }
     
     // check for horizontal collision with human controlled character
@@ -419,8 +420,6 @@ void Game_State::update(int &delta)
   {
     moveables.at(i)->move(moveables.at(i)->getHSpeed(), 0);
   }
-  
-  // move map if controlled character is at edge of map boundary
   
   c->move(c->getHSpeed(), c->getVSpeed());
   if (c != p)
@@ -662,6 +661,9 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
           map_slide_effect = SLIDE_COUNTER;
         }
       }
+      break;
+    case 'z':
+      debug = !debug;
       break;
   }
   last_key = key;

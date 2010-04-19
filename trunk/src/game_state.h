@@ -26,6 +26,7 @@ private:
   unsigned int map_slide_effect; // are we changing the view to another character?
   char last_key; // last key that was pressed
   char key_held; // used for activating specials ability/switching to special
+  bool debug;
   
 public:
   Game_State(void);
