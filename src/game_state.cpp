@@ -529,6 +529,12 @@ void Game_State::update(int &delta)
     }
   }
   
+  // reset gravity for next run
+  if (collision)
+  {
+    gravity = true;
+  }
+  
   state_update();
 }
 
