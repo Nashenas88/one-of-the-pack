@@ -182,22 +182,6 @@ void Game_State::update(int &delta)
         continue;
       }
       
-      follow_move = specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
-      follow_spec = specials.at(i)->will_collide_specials_y(specials, i, &follow);
-      
-      // if on special or moveable, move with them
-      if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
-      {
-        specials.at(i)->setHSpeed(specials.at(follow)->getHSpeed());
-        specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
-      }
-      else if (follow_move && mov_follow >= 0)
-      {
-        specials.at(i)->setHSpeed(specials.at(i)->getHSpeed() +
-                                  moveables.at(mov_follow)->getHSpeed());
-        specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
-      }
-      
       // move specials in the y if they can
       if (specials.at(i)->will_collide_y(map) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
@@ -209,12 +193,16 @@ void Game_State::update(int &delta)
     // we need to check for following again
     for (unsigned int i = 0; i < specials.size();  ++i)
     {
-      if (c == specials.at(i))
+      /*if (c == specials.at(i))
       {
         continue;
-      }
+      }*/
+      
+      temp_speed = specials.at(i)->getVSpeed();
+      specials.at(i)->setVSpeed(GRAVITY_SPEED);
       follow_move = specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
       follow_spec = specials.at(i)->will_collide_specials_y(specials, i, &follow);
+      specials.at(i)->setVSpeed(temp_speed);
       
       // if on special or moveable, move with them
       if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
@@ -359,7 +347,7 @@ void Game_State::update(int &delta)
       // then change its speed
       if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH && follow != (int)i)
       {
-        specials.at(i)->setHSpeed(!dx?0:(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
+        specials.at(i)->setHSpeed(!dx?specials.at(i)->getHSpeed():(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
         if (specials.at(i)->will_collide_x(map) ||
             specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
         {
@@ -367,10 +355,10 @@ void Game_State::update(int &delta)
         }
       }
       // if it's too close, stop it from moving
-      else
-      {
-        specials.at(i)->setHSpeed(0);
-      }
+      // else
+      // {
+        // specials.at(i)->setHSpeed(0);
+      // }
     }
     // if it isn't following and it's close enough, then make it start
     // following the player
