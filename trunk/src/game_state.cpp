@@ -525,15 +525,17 @@ void Game_State::update(int &delta)
         if (cur_frame < specials.at(i)->get_abil_frames())
         {
           specials.at(i)->set_cur_frame(++cur_frame);
-          if(specials.at(i)->get_type() == AHNOLD &&
-             cur_frame == specials.at(i)->get_num_frames())
+          if(specials.at(i)->get_type() == AHNOLD)
           {
-            ((Ahnold *)specials.at(i))->enable_ability(map);
+            specials.at(i)->set_cur_frame(++cur_frame);
+            if(cur_frame == specials.at(i)->get_num_frames())
+            {
+              ((Ahnold *)specials.at(i))->enable_ability(map);
+            }
           }
         }
         else if (cur_frame == specials.at(i)->get_abil_frames())
         {
-          if(debug)printf("testing\n");
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
         }
