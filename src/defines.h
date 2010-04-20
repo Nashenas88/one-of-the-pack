@@ -67,7 +67,7 @@
 #define MAX_VOLUME 1.0f
 
 #define AHNOLD_PUNCH_NUM 5
-#define PUNCH_RANGE 50
+#define PUNCH_RANGE 15
 #define BLOCK_SLIDE_SPEED 20
 #define HOVER_SLIDE_SPEED 2
 
