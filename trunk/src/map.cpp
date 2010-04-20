@@ -220,7 +220,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         specials.push_back(new Jumper(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                      1, 1, JUMPER_JUMP_NUM, texs.at(JUMPER),
+                                      1, 5, JUMPER_JUMP_NUM, texs.at(JUMPER),
                                       LEFT, system, musics.at(sound_num),
                                       m_channel, effects.at(JUMPER),
                                       a_channel));

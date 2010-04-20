@@ -43,7 +43,6 @@ void Jumper::use_ability(Map *m)
         will_collide_specials_y(m->get_specials(), i, NULL))
     {
       play_effect();
-      setVSpeed(-JUMP_HEIGHT);
       set_tex_num(ABILITY);
       set_cur_frame(1);
       return;
