@@ -17,6 +17,7 @@ public:
          FMOD_SOUND *as, FMOD_CHANNEL *ac);
   
   void use_ability(Map *m);
+  void enable_ability(Map *m);
   void start_following(Player *p);
   void stop_following(Player *p);
   void go_home(void);

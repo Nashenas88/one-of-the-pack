@@ -1,6 +1,7 @@
 #include "math.h"
 #include "game_state.h"
 #include "jumper.h"
+#include "ahnold.h"
 
 Game_State::Game_State(void)
 :p(NULL), c(NULL), map(NULL), gravity(true), collision(true) {}
@@ -271,6 +272,10 @@ void Game_State::update(int &delta)
     p->setVSpeed(GRAVITY_SPEED);
     follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
     follow_spec = p->will_collide_specials_y(specials, -1, &follow);
+    if (c == p)
+    {
+      follow_spec = follow_spec && !p->will_collide_tile(map, LADDER, NULL);
+    }
     p->setVSpeed(temp_speed);
     
     // if on special or moveable, move with them
@@ -293,6 +298,10 @@ void Game_State::update(int &delta)
       p->setVSpeed(PLAYER_SPEED);
       // check here to see if we'll follow a special
       follow_spec = p->will_collide_specials_y(specials, -1, &follow);
+      if (c == p)
+      {
+        follow_spec = follow_spec && !p->will_collide_tile(map, LADDER, NULL);
+      }
       follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
       
       // if on special or moveable, move with them
@@ -477,7 +486,8 @@ void Game_State::update(int &delta)
   }
   
   // animation for plyer
-  if (c == p && p->get_num_frames() > 1 && p->getHSpeed() != 0)
+  if (c == p && p->get_num_frames() > 1 && p->getHSpeed() != 0 &&
+      (a || d))
   {
     if (delta > DELTA_DELAY)
     {
@@ -514,13 +524,42 @@ void Game_State::update(int &delta)
         cur_frame = specials.at(i)->get_cur_frame();
         if (cur_frame < specials.at(i)->get_abil_frames())
         {
-          specials.at(i)->set_cur_frame(cur_frame + 1);
+          specials.at(i)->set_cur_frame(++cur_frame);
+          if(specials.at(i)->get_type() == AHNOLD &&
+             cur_frame == specials.at(i)->get_num_frames())
+          {
+            ((Ahnold *)specials.at(i))->enable_ability(map);
+          }
         }
         else if (cur_frame == specials.at(i)->get_abil_frames())
         {
+          if(debug)printf("testing\n");
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
         }
+      }
+      else
+      {
+        specials.at(i)->set_delta(++a_delta);
+      }
+    }
+    else if (specials.at(i)->get_num_frames() > 1 &&
+             !(specials.at(i)->getHSpeed() < PLAYER_SPEED &&
+               specials.at(i)->getHSpeed() > -PLAYER_SPEED))
+    {
+      if (a_delta > DELTA_DELAY)
+      {
+        int current_frame;
+        
+        specials.at(i)->set_delta(0);
+        current_frame = specials.at(i)->get_cur_frame();
+        ++current_frame;
+        current_frame %= specials.at(i)->get_num_frames() + 1;
+        if(!current_frame)
+        {
+          ++current_frame;
+        }
+        specials.at(i)->set_cur_frame(current_frame);
       }
       else
       {
