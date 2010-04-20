@@ -29,7 +29,7 @@ private:
   int tex_num; // texture number on texture (sprite from top starting at 1)
                // this number is also for the y-coordinate on a non-animation
                // sprite sheet
-  int num_frames; // number of frames (for animation, starts from 1)
+  unsigned int num_frames; // number of frames (for animation, starts from 1)
                   // this number is also for the x-coordinate on a non-animation
                   // sprite sheet
   int cur_frame; // current frame of animation
@@ -60,7 +60,7 @@ public:
   void set_tex_num(int tn);
   int get_tex_num(void) {return tex_num;}
   void set_num_frames(int nf) {num_frames = nf;}
-  int get_num_frames(void) {return num_frames;}
+  unsigned int get_num_frames(void) {return num_frames;}
   void set_cur_frame(int cf);
   int get_cur_frame(void) {return cur_frame;}
   void change_direction(direc dir);

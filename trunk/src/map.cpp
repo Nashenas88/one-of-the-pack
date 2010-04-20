@@ -208,7 +208,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         specials.push_back(new Ahnold(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                      1, 1, AHNOLD_PUNCH_NUM, texs.at(AHNOLD),
+                                      1, 5, AHNOLD_PUNCH_NUM, texs.at(AHNOLD),
                                       LEFT, system, musics.at(sound_num),
                                       m_channel, effects.at(AHNOLD),
                                       a_channel));
