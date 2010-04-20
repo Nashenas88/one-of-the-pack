@@ -220,6 +220,11 @@ void Game_State::update(int &delta)
                                   moveables.at(mov_follow)->getHSpeed());
         specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
+      if (specials.at(i)->get_type() == JUMPER &&
+          specials.at(i)->get_tex_num() == ABILITY)
+      {
+        specials.at(i)->setVSpeed(-JUMP_HEIGHT);
+      }
     }
     // move specials in the y
     for (unsigned int i = 0; i < specials.size(); ++i)
