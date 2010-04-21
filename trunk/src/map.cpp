@@ -70,9 +70,17 @@ void Map::move_block(int x, int y)
   // enter code to move block 
 }
 
+void Map::move(float x, float y)
+{
+  Drawable *bg = tiles.at((int)BG);
+  ((Drawable *)this)->move(x, y);
+  bg->move(x / (get_width() * TILE_WIDTH) * (bg->get_width() - SCREEN_WIDTH * 2),
+           y / (get_height() * TILE_HEIGHT) * (bg->get_height() - SCREEN_HEIGHT * 2));
+}
+
 
 bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
-                   vector<Special *> &specials, Texture *tiles,
+                   vector<Special *> &specials, Texture *ts,
                    vector<Texture*> texs, Character *player,
                    FMOD_SYSTEM *system, vector<FMOD_SOUND *> musics,
                    FMOD_CHANNEL *m_channel, vector<FMOD_SOUND *> effects,
@@ -233,7 +241,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         Moveable *move;
         get_top_left(mx, my);
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                            BLOCKS, MOVEABLE_BLOCK, tiles, true);
+                            BLOCKS, MOVEABLE_BLOCK, ts, true);
         move->set_cur_frame(MOVEABLE_BLOCK);
         moveables.push_back(move);
       }
@@ -264,7 +272,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         moveables.push_back(new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                         BLOCKS, MOVEABLE_BLOCK, tiles, false));
+                                         BLOCKS, MOVEABLE_BLOCK, ts, false));
       }
       // player start position
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)
@@ -373,6 +381,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   
   moves = moveables;
   specs = specials;
+  
+  tiles.at((int)BG)->move(-SCREEN_WIDTH, -SCREEN_HEIGHT);
   
   return true;
 }
