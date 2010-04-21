@@ -221,7 +221,10 @@ void Game_State::update(int &delta)
         specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
       if (specials.at(i)->get_type() == JUMPER &&
-          specials.at(i)->get_tex_num() == ABILITY)
+          specials.at(i)->get_tex_num() == ABILITY &&
+          !(specials.at(i)->will_collide_y(map) ||
+            specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
+            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
       {
         specials.at(i)->setVSpeed(-JUMP_HEIGHT);
       }
@@ -358,50 +361,48 @@ void Game_State::update(int &delta)
     dist = sqrt((dx*dx)+(dy*dy));
     if (specials.at(i)->is_following())
     {
-      ++num_following;
-      
-      // if the special is not too close and it's not colliding with anything
-      // then change its speed
-      if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH && follow != (int)i)
+      if (specials.at(i)->is_controllable())
       {
-        specials.at(i)->setHSpeed(!dx?specials.at(i)->getHSpeed():(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
-        if (specials.at(i)->will_collide_x(map) ||
-            specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+        ++num_following;
+        
+        // if the special is not too close and it's not colliding with anything
+        // then change its speed
+        if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH && follow != (int)i)
         {
-          specials.at(i)->setHSpeed(0);
+          specials.at(i)->setHSpeed(!dx?specials.at(i)->getHSpeed():(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
+          if (specials.at(i)->will_collide_x(map) ||
+              specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+          {
+            specials.at(i)->setHSpeed(0);
+          }
         }
       }
-      // if it's too close, stop it from moving
-      // else
-      // {
-        // specials.at(i)->setHSpeed(0);
-      // }
-    }
-    // if it isn't following and it's close enough, then make it start
-    // following the player
-    else if (dist < FOLLOW_DIST)
-    {
-      specials.at(i)->start_following();
-      // turn on the music
-      if (specials.at(i)->get_mute())
+      // if it's controllable and it's close enough, then make it start
+      // following the player
+      else if (dist < FOLLOW_DIST)
       {
-        specials.at(i)->set_mute(false);
+        specials.at(i)->start_following();
+        // turn on the music
+        if (specials.at(i)->get_mute())
+        {
+          specials.at(i)->set_mute(false);
+        }
+        // this is so that the specials follow you in the order that
+        // you collect them
+        if (i > (unsigned int) next_special)
+        {
+          Special *temp_special;
+          temp_special = specials.at(i);
+          specials.at(i) = specials.at(next_special);
+          specials.at(next_special) = temp_special;
+          ++next_special;
+        }
+        else if (i == (unsigned int) next_special)
+        {
+          ++next_special;
+        }
+        specials.at(next_special - 1)->set_number(numbers.at(next_special - 1));
       }
-      // this is so that the specials follow you in the order that
-      // you collect them
-      if (i > (unsigned int) next_special)
-      {
-        Special *temp_special;
-        temp_special = specials.at(i);
-        specials.at(i) = specials.at(next_special);
-        specials.at(next_special) = temp_special;
-        ++next_special;
-      }
-      else if (i == (unsigned int) next_special)
-      {
-        ++next_special;
-      }
-      specials.at(next_special - 1)->set_number(numbers.at(next_special - 1));
     }
   }
   
@@ -650,9 +651,18 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
     case 'q':
       if (c != p)
       {
-        ((Special*)c)->stop_following();
-        //((Special*)c)->set_mute(true);
+        if (((Special*)c)->is_following())
+        {
+          ((Special*)c)->stop_following();
+          c->set_volume(UNFOCUSED_VOLUME);
+        }
+        else
+        {
+          ((Special*)c)->start_following();
+          c->set_volume(MAX_VOLUME);
+        }
       }
+      break;
     case '0':
       if (c == p)
       {
