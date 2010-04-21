@@ -11,7 +11,7 @@ Special::Special(float x, float y, int num, int frames, int abil_frames,
                  FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch, 
                  FMOD_SOUND *as, FMOD_CHANNEL *ac)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch),
-following(false), controllable(false), num_abil_frames(abil_frames),
+following(true), controllable(false), num_abil_frames(abil_frames),
 abil_sound(as), abil_channel(ac), number(NULL)
 {
   loc[0] = x;
