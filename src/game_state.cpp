@@ -662,6 +662,16 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
           c->set_volume(MAX_VOLUME);
         }
       }
+      else
+      {
+        for (unsigned int i = 0; i < specials.size(); ++i)
+        {
+          if (specials.at(i)->is_controllable())
+          {
+            specials.at(i)->start_following();
+          }
+        }
+      }
       break;
     case '0':
       if (c == p)
