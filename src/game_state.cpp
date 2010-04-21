@@ -1,7 +1,11 @@
+#include <algorithm>
+
 #include "math.h"
 #include "game_state.h"
 #include "jumper.h"
 #include "ahnold.h"
+
+bool sort_by_height (Special *i, Special *j);
 
 Game_State::Game_State(void)
 :p(NULL), c(NULL), map(NULL), gravity(true), collision(true) {}
@@ -191,42 +195,50 @@ void Game_State::update(int &delta)
         specials.at(i)->setVSpeed(0);
       }
     }
-    // we need to check for following again
-    for (unsigned int i = 0; i < specials.size();  ++i)
+    
+    // we need to check for following
+    vector<Special *>sorted_specials;
+    for (unsigned int i = 0; i < specials.size(); ++i)
     {
-      temp_speed = specials.at(i)->getVSpeed();
-      specials.at(i)->setVSpeed(GRAVITY_SPEED);
-      follow_move = specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
-      follow_spec = specials.at(i)->will_collide_specials_y(specials, i, &follow);
-      specials.at(i)->setVSpeed(temp_speed);
+      sorted_specials.push_back(specials.at(i));
+    }
+    sort(sorted_specials.begin(), sorted_specials.end(), sort_by_height);
+    
+    for (unsigned int i = 0; i < sorted_specials.size();  ++i)
+    {
+      temp_speed = sorted_specials.at(i)->getVSpeed();
+      sorted_specials.at(i)->setVSpeed(GRAVITY_SPEED);
+      follow_move = sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
+      follow_spec = sorted_specials.at(i)->will_collide_specials_y(sorted_specials, i, &follow);
+      sorted_specials.at(i)->setVSpeed(temp_speed);
       
       // if on special or moveable, move with them
-      if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
+      if (follow_spec && follow >= 0 && !p->will_collide_Dx(sorted_specials.at(follow)))
       {
-        if (c != specials.at(i))
+        if (c != sorted_specials.at(i))
         {
-          specials.at(i)->setHSpeed(specials.at(follow)->getHSpeed());
-          specials.at(i)->setVSpeed(specials.at(follow)->getVSpeed());
+          sorted_specials.at(i)->setHSpeed(sorted_specials.at(follow)->getHSpeed());
+          sorted_specials.at(i)->setVSpeed(sorted_specials.at(follow)->getVSpeed());
         }
         else
         {
-          c->setHSpeed(c->getHSpeed() + specials.at(follow)->getHSpeed());
-          c->setVSpeed(c->getVSpeed() + specials.at(follow)->getVSpeed());
+          c->setHSpeed(c->getHSpeed() + sorted_specials.at(follow)->getHSpeed());
+          c->setVSpeed(c->getVSpeed() + sorted_specials.at(follow)->getVSpeed());
         }
       }
       else if (follow_move && mov_follow >= 0)
       {
-        specials.at(i)->setHSpeed(specials.at(i)->getHSpeed() +
+        sorted_specials.at(i)->setHSpeed(sorted_specials.at(i)->getHSpeed() +
                                   moveables.at(mov_follow)->getHSpeed());
-        specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+        sorted_specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
-      if (specials.at(i)->get_type() == JUMPER &&
-          specials.at(i)->get_tex_num() == ABILITY &&
-          !(specials.at(i)->will_collide_y(map) ||
-            specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
+      if (sorted_specials.at(i)->get_type() == JUMPER &&
+          sorted_specials.at(i)->get_tex_num() == ABILITY &&
+          !(sorted_specials.at(i)->will_collide_y(map) ||
+            sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
+            sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
       {
-        specials.at(i)->setVSpeed(-JUMP_HEIGHT);
+        sorted_specials.at(i)->setVSpeed(-JUMP_HEIGHT);
       }
     }
     // move specials in the y
@@ -514,6 +526,10 @@ void Game_State::update(int &delta)
       ++delta;
     }
   }
+  else
+  {
+    p->set_cur_frame(1);
+  }
   
   // animation for specials
   // for the jumper, when jumping and at the last animation
@@ -573,6 +589,10 @@ void Game_State::update(int &delta)
       {
         specials.at(i)->set_delta(++a_delta);
       }
+    }
+    else
+    {
+      specials.at(i)->set_cur_frame(1);
     }
   }
   
@@ -889,4 +909,9 @@ void Game_State::clean(void)
     delete specials.at(i);
   }
   state_clean();
+}
+
+bool sort_by_height(Special *i, Special *j)
+{
+  return i->get_y() > j->get_y();
 }

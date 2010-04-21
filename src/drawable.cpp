@@ -39,8 +39,8 @@ facing_right(true)
     // background will never move and takes
     // up the entire screen
     case BACKGROUND:
-      width = SCREEN_WIDTH;
-      height = SCREEN_HEIGHT;
+      width = texture->get_width();
+      height = texture->get_height();
       break;
     case VARIABLE:
       width = texture->get_width();

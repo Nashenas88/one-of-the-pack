@@ -28,6 +28,8 @@ private:
   char key_held; // used for activating specials ability/switching to special
   bool debug;
   
+  //bool sort_by_height(Special *i, Special *j);
+  
 public:
   Game_State(void);
   Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
