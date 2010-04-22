@@ -36,6 +36,7 @@ private:
   float corners[2][2]; // corners of sprite from texture
   Texture *texture;
   bool facing_right;
+  bool upside_down;
   
   void reset_corners(); // re-calculates the corners when tex_num or cur_frame
                         // is changed
@@ -63,7 +64,9 @@ public:
   unsigned int get_num_frames(void) {return num_frames;}
   void set_cur_frame(int cf);
   int get_cur_frame(void) {return cur_frame;}
+  
   void change_direction(direc dir);
+  void flip_y(void) {upside_down = !upside_down;}
   
   void clean(void);
 };
