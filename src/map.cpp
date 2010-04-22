@@ -309,18 +309,18 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       {
         // move map so that player start is centered
         move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f - TILE_WIDTH,
-             -y * TILE_WIDTH + SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y_offset);
+             -y * TILE_WIDTH + 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT - y_offset);
         for (unsigned int i = 0; i < specials.size(); ++i)
         {
           specials.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
                                TILE_WIDTH, -y * TILE_WIDTH +
-                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y_offset);
+                               3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT - y_offset);
         }
         for (unsigned int i = 0; i < moveables.size(); ++i)
         {
           moveables.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
                                TILE_WIDTH, -y * TILE_WIDTH +
-                               SCREEN_HEIGHT / 2.0f - TILE_HEIGHT - y_offset);
+                               3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT - y_offset);
         }
       }
     }

@@ -205,7 +205,7 @@ void initLevel(int level)
   
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
-                 SCREEN_HEIGHT / 2.0f - TILE_HEIGHT, PLAYER_RIGHT,
+                 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT, PLAYER_RIGHT,
                  5, t, RIGHT, false, system, s_sound, m_channel);
   block1 = new Drawable(0.0f, 0.0f, FLOORS, 1, TILE, tiles);
   block2 = new Drawable(0.0f, 0.0f, FLOORS, 1, TILE, tiles);

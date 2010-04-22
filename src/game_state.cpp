@@ -456,7 +456,7 @@ void Game_State::update(int &delta)
     
     c->get_top_left(control_x, control_y);
     center_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f;
-    center_y = SCREEN_HEIGHT / 2.0f - TILE_HEIGHT;
+    center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
     offset_x = center_x - control_x;
     offset_y = center_y - control_y;
     
