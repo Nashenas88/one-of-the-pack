@@ -453,10 +453,16 @@ void Game_State::update(int &delta)
     float move_x, move_y;
     float offset_x, offset_y;
     int mx, my;
+    float speed;
+    bool will_collide;
     
+    speed = c->getVSpeed();
     c->get_top_left(control_x, control_y);
     center_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f;
-    if (c->getVSpeed() > 0 && !c->will_collide_tile(map, LADDER, NULL))
+    if (!(c != p && ((Special*)c)->get_type() == JUMPER) &&
+        speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
+        (c->setVSpeed(TILE_HEIGHT),will_collide = !c->will_collide_y(map),
+        c->setVSpeed(speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
       if (c->get_y() < SCREEN_HEIGHT / 2.0f + 2 * TILE_HEIGHT)
