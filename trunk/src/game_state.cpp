@@ -456,7 +456,18 @@ void Game_State::update(int &delta)
     
     c->get_top_left(control_x, control_y);
     center_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f;
+    if (c->getVSpeed() > 0 && !c->will_collide_tile(map, LADDER, NULL))
+    {
+      center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
+      if (c->get_y() < SCREEN_HEIGHT / 2.0f + 2 * TILE_HEIGHT)
+      {
+        center_y = SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
+      }
+    }
+    else
+    {
     center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
+    }
     offset_x = center_x - control_x;
     offset_y = center_y - control_y;
     
