@@ -1,6 +1,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <time.h>
 using namespace std;
 
 #include "ahnold.h"
@@ -21,28 +22,56 @@ Map::Map(vector<Drawable *> t)
 void Map::draw(void)
 {
   float x, y, tx, ty;
+  Drawable *tile_to_draw;
+  unsigned char self, above, top_left, top_right;
   
   get_background()->draw();
   
   ((Drawable *)this)->get_top_left(x, y);
   
-  for (int i = 0; i < get_width(); ++i)
+  for (int i = 1; i < get_width() - 1; ++i)
   {
-    for (int j = 0; j < get_height(); ++j)
+    for (int j = 1; j < get_height() - 1; ++j)
     {
       if (map[i][j][M_TILE] == BG ||
           map[i][j][M_TILE] == OUTSIDE)
       {
         continue;
       }
+      
+      tile_to_draw = tiles.at(map[i][j][M_TILE]);
+      above = map[i][j - 1][M_TILE];
+      top_left = map[i-1][j-1][M_TILE];
+      top_right = map[i+1][j-1][M_TILE];
+      self = map[i][j][M_TILE];
+      
       // move object to (0, 0) just in case
-      tiles.at(map[i][j][M_TILE])->get_top_left(tx, ty);
-      tiles.at(map[i][j][M_TILE])->move(-tx, -ty);
+      tile_to_draw->get_top_left(tx, ty);
+      tile_to_draw->move(-tx, -ty);
       // move to location to be drawn at
-      tiles.at(map[i][j][M_TILE])->move(i * TILE_WIDTH + x, j * TILE_HEIGHT + y);
-      tiles.at(map[i][j][M_TILE])->draw();
+      tile_to_draw->move(i * TILE_WIDTH + x, j * TILE_HEIGHT + y);
+      // only draw if the object will be on screen
+      if (tile_to_draw->get_x() > -TILE_WIDTH &&
+          tile_to_draw->get_x() <= SCREEN_WIDTH &&
+          tile_to_draw->get_y() > -TILE_HEIGHT &&
+          tile_to_draw->get_y() <= SCREEN_HEIGHT)
+      {
+        if ((above == OUTSIDE && self >= BLOCK1 && self <= BLOCK5) ||
+            ((top_left == OUTSIDE || top_right == OUTSIDE) &&
+             (self == RC_BLOCK || self == LC_BLOCK)))
+        {
+          tile_to_draw->flip_y();
+        }
+        tile_to_draw->draw();
+        if ((above == OUTSIDE && self >= BLOCK1 && self <= BLOCK5) ||
+            ((top_left == OUTSIDE || top_right == OUTSIDE) &&
+             (self == RC_BLOCK || self == LC_BLOCK)))
+        {
+          tile_to_draw->flip_y();
+        }
+      }
       // move back to (0, 0)
-      tiles.at(map[i][j][M_TILE])->move(-i * TILE_WIDTH - x, -j * TILE_HEIGHT - y);
+      tile_to_draw->move(-i * TILE_WIDTH - x, -j * TILE_HEIGHT - y);
     }
   }
 }
@@ -180,6 +209,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     }
   }
   
+  srand (time(NULL));
+  
   int sound_num;
   float y_offset;
   sound_num = 0;
@@ -202,7 +233,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       if(red[0] == 0 && green[0] == 0 && blue[0] == 0)
       {
         map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = BLOCK;
+        map[x][y][M_TILE] = rand() % 5 + 1; // randomly selects a block 1-5
       }
       // outside of the playable area
       if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
@@ -241,8 +272,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         Moveable *move;
         get_top_left(mx, my);
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                            BLOCKS, MOVEABLE_BLOCK, ts, true);
-        move->set_cur_frame(MOVEABLE_BLOCK);
+                            PUSH, 1, ts, true);
         moveables.push_back(move);
       }
       // ladder
@@ -272,7 +302,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         moveables.push_back(new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                         BLOCKS, MOVEABLE_BLOCK, ts, false));
+                                         BLOCKS, 1, ts, false));
       }
       // player start position
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)
@@ -315,7 +345,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   set_width(width);
   set_height(height);
   
-  int current, left, right, top;
+  int current, left, right, top, top_left, top_right, bottom;
   
   // now we dynamically change the wall tiles to walls and the corner tiles to corners
   for (unsigned int i = 1; i < width - 1; ++i)
@@ -326,8 +356,11 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       left = map[i-1][j][M_TILE];
       right = map[i+1][j][M_TILE];
       top = map[i][j-1][M_TILE];
+      top_left = map[i-1][j-1][M_TILE];
+      top_right = map[i+1][j-1][M_TILE];
+      bottom = map[i][j+1][M_TILE];
       
-      if (current == BLOCK)
+      if (current >= BLOCK1 && current <= BLOCK5)
       {
         if (left == OUTSIDE)
         {
@@ -337,10 +370,10 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         {
           map[i][j][M_TILE] = L_BLOCK;
         }
-        else if (left < BLOCK ||
+        else if (left < BLOCK1 ||
                  left > RC_BLOCK)
         {
-          if (top < BLOCK ||
+          if (top < BLOCK1 ||
               top > RC_BLOCK)
           {
             map[i][j][M_TILE] = LC_BLOCK;
@@ -349,17 +382,29 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                    top == L_BLOCK)
           {
             map[i][j][M_TILE] = L_BLOCK;
+            if ((top_left == OUTSIDE && left >= BLOCK1 && left <= L_BLOCK) ||
+                (top_right == OUTSIDE && right >= BLOCK1 && right <= L_BLOCK) &&
+                bottom == BG)
+            {
+              map[i][j][M_TILE] = LC_BLOCK;
+            }
           }
           else if (top == RC_BLOCK ||
                    top == R_BLOCK)
           {
             map[i][j][M_TILE] = R_BLOCK;
+            if ((top_left == OUTSIDE && left >= BLOCK1 && left <= L_BLOCK) ||
+                (top_right == OUTSIDE && right >= BLOCK1 && right <= L_BLOCK) &&
+                bottom == BG)
+            {
+              map[i][j][M_TILE] = RC_BLOCK;
+            }
           }
         }
-        else if (right < BLOCK ||
+        else if (right < BLOCK1 ||
                  right > RC_BLOCK)
         {
-          if(top < BLOCK ||
+          if(top < BLOCK1 ||
              top > RC_BLOCK)
           {
             map[i][j][M_TILE] = RC_BLOCK;
@@ -368,11 +413,23 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                    top == R_BLOCK)
           {
             map[i][j][M_TILE] = R_BLOCK;
+            if ((top_left == OUTSIDE && left >= BLOCK1 && left <= L_BLOCK) ||
+                (top_right == OUTSIDE && right >= BLOCK1 && right <= L_BLOCK) &&
+                bottom == BG)
+            {
+              map[i][j][M_TILE] = RC_BLOCK;
+            }
           }
           else if (top == LC_BLOCK ||
                    top == L_BLOCK)
           {
             map[i][j][M_TILE] = L_BLOCK;
+            if ((top_left == OUTSIDE && left >= BLOCK1 && left <= L_BLOCK) ||
+                (top_right == OUTSIDE && right >= BLOCK1 && right <= L_BLOCK) &&
+                bottom == BG)
+            {
+              map[i][j][M_TILE] = LC_BLOCK;
+            }
           }
         }
       }

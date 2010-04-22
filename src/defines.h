@@ -91,7 +91,11 @@ typedef enum
 typedef enum
 {
   BG,
-  BLOCK,
+  BLOCK1,
+  BLOCK2,
+  BLOCK3,
+  BLOCK4,
+  BLOCK5,
   R_BLOCK,
   L_BLOCK,
   LC_BLOCK,
@@ -105,8 +109,7 @@ typedef enum
 
 enum
 {
-  MOVEABLE_BLOCK = 2,
-  RIGHT_WALL_FRAME = 2,
+  RIGHT_WALL_FRAME = 1,
   LEFT_WALL_FRAME,
   LEFT_CORNER_WALL_FRAME,
   RIGHT_CORNER_WALL_FRAME
@@ -114,11 +117,13 @@ enum
 
 enum
 {
-  WALLS = 1,
+  FLOORS = 1,
+  SIDES_CORNERS,
   BLOCKS,
   PLATS,
   LADDS,
-  GOALT
+  GOALT,
+  PUSH
 };
 
 enum
