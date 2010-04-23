@@ -311,12 +311,18 @@ void Game_State::update(int &delta)
     if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
     {
       p->setHSpeed(p->getHSpeed() + specials.at(follow)->getHSpeed());
-      p->setVSpeed(specials.at(follow)->getVSpeed());
+      if (p->getVSpeed() >= 0)
+      {
+        p->setVSpeed(specials.at(follow)->getVSpeed());
+      }
     }
     else if (follow_move && mov_follow >= 0)
     {
       p->setHSpeed(p->getHSpeed() + moveables.at(mov_follow)->getHSpeed());
-      p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+      if (p->getVSpeed() >= 0)
+      {
+        p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+      }
     }
     
     player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map);
@@ -337,12 +343,18 @@ void Game_State::update(int &delta)
       if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
       {
         p->setHSpeed(p->getHSpeed() + specials.at(follow)->getHSpeed());
-        p->setVSpeed(specials.at(follow)->getVSpeed());
+        if (p->getVSpeed() >= 0)
+        {
+          p->setVSpeed(specials.at(follow)->getVSpeed());
+        }
       }
       else if (follow_move && mov_follow >= 0)
       {
         p->setHSpeed(p->getHSpeed() + moveables.at(mov_follow)->getHSpeed());
-        p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+        if (p->getVSpeed() >= 0)
+        {
+          p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
+        }
       }
       
       player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
@@ -461,9 +473,20 @@ void Game_State::update(int &delta)
     float control_x, control_y;
     float move_x, move_y;
     float offset_x, offset_y;
-    int mx, my;
+    int mx, my, i = -1;
     float speed;
     bool will_collide;
+    if (c != p)
+    {
+      for (unsigned int j = 0; j < specials.size(); ++j)
+      {
+        if ((Special*)c == specials.at(j))
+        {
+          i = j;
+          break;
+        }
+      }
+    }
     
     speed = c->getVSpeed();
     c->get_top_left(control_x, control_y);
@@ -476,7 +499,9 @@ void Game_State::update(int &delta)
         (c->setVSpeed(TILE_HEIGHT * 1.3f),
          will_collide = !c->will_collide_y(map) &&
          !c->will_collide_platform(map) &&
-         !c->will_collide_tile(map, LADDER, NULL),
+         !c->will_collide_tile(map, LADDER, NULL) &&
+         !c->will_collide_moveables_y(moveables, -1, NULL) &&
+         !c->will_collide_specials_y(specials, i, NULL),
          c->setVSpeed(speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
