@@ -24,11 +24,13 @@ void Special::start_following(void)
 {
   following = true;
   controllable = true;
+  set_shadow(false);
 }
 
 void Special::stop_following(void)
 {
   following = false;
+  set_shadow(true);
 }
 
 void Special::play_effect(void)
