@@ -306,7 +306,6 @@ void handleKeypress(unsigned char key, int x, int y)
       break;
     case '\n':
     case '\r':
-    case ' ':
       if (s == paused)
       {
         if (((Pause_State *)s)->get_selected() == 0) // return

@@ -16,7 +16,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), debug(false) {}
+key_held(0), jump_delta(-1), debug(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -116,6 +116,15 @@ void Game_State::update(int &delta)
       {
         specials.at(i)->setVSpeed(GRAVITY_SPEED);
       }
+    }
+    if (jump_delta != -1)
+    {
+      c->setVSpeed(-JUMP_HEIGHT);
+      ++jump_delta;
+    }
+    if (jump_delta > JUMP_DELAY)
+    {
+      jump_delta = -1;
     }
   }
   
@@ -459,16 +468,17 @@ void Game_State::update(int &delta)
     speed = c->getVSpeed();
     c->get_top_left(control_x, control_y);
     center_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f;
-    if (!(c != p && ((Special*)c)->get_type() == JUMPER) &&
-        speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
-        (c->setVSpeed(TILE_HEIGHT),will_collide = !c->will_collide_y(map),
-        c->setVSpeed(speed),will_collide))
+    if (c != p && ((Special*)c)->get_type() == JUMPER && c->getVSpeed() < 0)
+    {
+      center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
+    }
+    else if (speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
+        (c->setVSpeed(TILE_HEIGHT * 1.3f),
+         will_collide = !c->will_collide_y(map) &&
+         !c->will_collide_platform(map),
+         c->setVSpeed(speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
-      if (c->get_y() < SCREEN_HEIGHT / 2.0f + 2 * TILE_HEIGHT)
-      {
-        center_y = SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
-      }
     }
     else
     {
@@ -764,6 +774,37 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       break;
     case 'z':
       debug = !debug;
+      break;
+    case ' ':
+      if (c != p && ((Special*)c)->get_type() == JUMPER)
+      {
+        ((Special*)c)->use_ability(map);
+        break;
+      }
+      int old_speed, i;
+      old_speed = c->getVSpeed();
+      c->setVSpeed(GRAVITY_SPEED);
+      for (i = 0; i < (int) specials.size(); ++i)
+      {
+        if ((Special*)this == specials.at(i))
+        {
+          break;
+        }
+      }
+      if (i == (int) specials.size())
+      {
+        i = -1;
+      }
+      
+      if (c->will_collide_y(map) ||
+          c->will_collide_platform(map) ||
+          c->will_collide_tile(map, LADDER, NULL) ||
+          c->will_collide_moveables_y(moveables, -1, NULL) ||
+          c->will_collide_specials_y(specials, i, NULL))
+      {
+        jump_delta = 0;
+      }
+      c->setVSpeed(old_speed);
       break;
   }
   last_key = key;
