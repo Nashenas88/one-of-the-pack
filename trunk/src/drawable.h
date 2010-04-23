@@ -37,6 +37,7 @@ private:
   Texture *texture;
   bool facing_right;
   bool upside_down;
+  bool shadow;
   
   void reset_corners(); // re-calculates the corners when tex_num or cur_frame
                         // is changed
@@ -67,6 +68,7 @@ public:
   
   void change_direction(direc dir);
   void flip_y(void) {upside_down = !upside_down;}
+  void set_shadow(bool s) {shadow = s;}
   
   void clean(void);
 };

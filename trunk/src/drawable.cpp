@@ -10,7 +10,7 @@
 
 Drawable::Drawable(void)
 :tl_x(0), tl_y(0), width(0), height(0), tex_num(0), num_frames(0),
-cur_frame(0), texture(0), facing_right(false), upside_down(false)
+cur_frame(0), texture(0), facing_right(false), upside_down(false), shadow(false)
 {
   // initializes the corners to 0
   int i = 0, j = 0;
@@ -25,7 +25,7 @@ cur_frame(0), texture(0), facing_right(false), upside_down(false)
 
 Drawable::Drawable(float x, float y, int num, int frames, D_TYPE type, Texture *tex)
 :tl_x(x), tl_y(y), tex_num(num), num_frames(frames), cur_frame(1), texture(tex),
-facing_right(true), upside_down(false)
+facing_right(true), upside_down(false), shadow(false)
 {
   switch (type)
   {
@@ -95,6 +95,11 @@ void Drawable::draw(void)
   
   // Begin drawing a rectangular object
   glBegin(GL_QUADS);
+  
+  if (shadow)
+  {
+    glColor4f(0.8f, 0.8f, 0.8f, 0.85f);
+  }
   
   if (facing_right)
   {
@@ -174,6 +179,8 @@ void Drawable::draw(void)
       glVertex3i(0, height, 0);
     }
   }
+  
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   
   glEnd();
   glPopMatrix();

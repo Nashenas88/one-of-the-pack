@@ -475,7 +475,8 @@ void Game_State::update(int &delta)
     else if (speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
         (c->setVSpeed(TILE_HEIGHT * 1.3f),
          will_collide = !c->will_collide_y(map) &&
-         !c->will_collide_platform(map),
+         !c->will_collide_platform(map) &&
+         !c->will_collide_tile(map, LADDER, NULL),
          c->setVSpeed(speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
