@@ -21,6 +21,22 @@ key_held(0), jump_delta(-1), debug(false) {}
 // this draws everything to the screen
 void Game_State::draw(void)
 {
+  vector<Special *> sorted_draw;
+  
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    sorted_draw.push_back(specials.at(i));
+  }
+  
+  for (unsigned int i = 0; i < sorted_draw.size(); ++i)
+  {
+    if (!sorted_draw.at(i)->is_following())
+    {
+      sorted_draw.push_back(sorted_draw.at(i));
+      sorted_draw.erase(sorted_draw.begin() + i);
+    }
+  }
+  
   // first the map
   map->draw();
   // then the moveables
@@ -31,22 +47,22 @@ void Game_State::draw(void)
   // then the specials, except for the one you are controlling
   // the closer to the player, the higher up they should be drawn
   // (1st special should be drawn over 2nd special, etc.)
-  for (unsigned int i = specials.size() - 1; i < specials.size() ; --i)
+  for (unsigned int i = sorted_draw.size() - 1; i < sorted_draw.size() ; --i)
   {
+    sorted_draw.at(i)->draw();
+  }
+  
+  for (unsigned int i = 0; i < specials.size() ; ++i)
+  {
+    // don't draw number of special you're controlling
     if (c == specials.at(i))
     {
       continue;
     }
-    specials.at(i)->draw();
+    specials.at(i)->draw_number();
   }
   // then the player
   p->draw();
-  // if you're controlling a special
-  // draw him over the player
-  if (c != p)
-  {
-    c->draw();
-  }
 }
 
 // this is called every time the scene
