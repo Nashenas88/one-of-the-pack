@@ -50,7 +50,7 @@ public:
   Drawable *get_number(void) {return number;}
   void set_number(Drawable *num);
   
-  void draw(void);
+  void draw_number(void);
   void move(float x, float y);
 };
 

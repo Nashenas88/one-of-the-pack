@@ -74,6 +74,7 @@ void Special::set_number(Drawable *num)
   }
 }
 
+/*
 void Special::draw(void)
 {
   ((Character *)this)->draw();
@@ -81,6 +82,14 @@ void Special::draw(void)
   {
     float x, y;
     number->get_top_left(x, y);
+    number->draw();
+  }
+}*/
+
+void Special::draw_number(void)
+{
+  if (number)
+  {
     number->draw();
   }
 }
