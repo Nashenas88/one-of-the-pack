@@ -198,7 +198,45 @@ bool Character::will_collide_y(Map *m)
  */
 bool Character::will_collide_platform(Map *m)
 {
-  return getVSpeed() > 0 && will_collide_tile(m, PLATFORM, NULL);
+  if (!(getVSpeed() > 0))
+  {
+    return false;
+  }
+  int lx, rx, ty, by;
+  
+  float lxo, lxm;
+  float rxo;
+  float tyo, tym;
+  float byo;
+  
+  get_top_left(lxo, tyo);
+  lxo += getHSpeed() + col_x_offset;
+  tyo += getVSpeed() + TILE_HEIGHT - 2 * col_y_offset - PLAYER_SPEED;
+  rxo = lxo + col_width - col_x_offset;
+  byo = tyo + 10;//col_height - col_y_offset;
+  
+  m->get_top_left(lxm, tym);
+  
+  lx = (int)((lxo - lxm) / TILE_WIDTH);
+  rx = (int)((rxo - lxm - col_x_offset) / TILE_WIDTH);
+  ty = (int)((tyo - tym) / TILE_HEIGHT);
+  by = (int)((byo - tym - col_y_offset) / TILE_HEIGHT);
+  
+  for (int i = lx; i <= rx; ++i)
+  {
+    for (int j = ty; j <= by; ++j)
+    {
+      if(m->get_tile(i,j) == PLATFORM)
+      {
+        if (j * TILE_HEIGHT + tym + PLAYER_SPEED >= tyo)
+        {
+          return true;
+        }
+      }
+    }
+  }
+  
+  return false;
 }
 
 /* checks collision with the map
