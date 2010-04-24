@@ -257,11 +257,12 @@ void Game_State::update(int &delta)
                                   moveables.at(mov_follow)->getHSpeed());
         sorted_specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
-      if (sorted_specials.at(i)->get_type() == JUMPER &&
-          sorted_specials.at(i)->get_tex_num() == ABILITY &&
-          !(sorted_specials.at(i)->will_collide_y(map) ||
-            sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-            sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
+      if ((sorted_specials.at(i)->get_type() == JUMPER &&
+           sorted_specials.at(i)->get_tex_num() == ABILITY &&
+           !(sorted_specials.at(i)->will_collide_y(map) ||
+             sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
+             sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))) ||
+          (c == sorted_specials.at(i) && jump_delta != -1))
       {
         sorted_specials.at(i)->setVSpeed(-JUMP_HEIGHT);
       }
@@ -514,7 +515,7 @@ void Game_State::update(int &delta)
     else if (speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
         (c->setVSpeed(TILE_HEIGHT * 1.3f),
          will_collide = !c->will_collide_y(map) &&
-         !c->will_collide_platform(map) &&
+         !c->will_collide_tile(map, PLATFORM, NULL) &&
          !c->will_collide_tile(map, LADDER, NULL) &&
          !c->will_collide_moveables_y(moveables, -1, NULL) &&
          !c->will_collide_specials_y(specials, i, NULL),
