@@ -115,7 +115,7 @@ void initLevel(int level)
   Drawable *block1, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
-  Drawable *block5;
+  Drawable *block5, *black_hole;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
   vector<Texture*> textures;
   vector<Moveable*> moveables;
@@ -234,6 +234,7 @@ void initLevel(int level)
   map_image = new Drawable(PAUSE_MAP_X, PAUSE_MAP_Y, 1, 1, VARIABLE, mi);
   pointer = new Drawable(650, 270, 1, 1, VARIABLE, pi);
   goal = new Drawable(0.0f, 0.0f, GOALT, 1, TILE, tiles);
+  black_hole = new Drawable(0.0f, 0.0f, BH, 1, TILE, tiles);
   
   // place all drawables into vector
   // this order MUST match the order
@@ -254,6 +255,7 @@ void initLevel(int level)
   v.push_back(plat);
   v.push_back(breakable);
   v.push_back(goal);
+  v.push_back(black_hole);
   
   textures.clear();
   textures.push_back(ahnold);

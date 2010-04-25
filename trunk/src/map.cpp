@@ -28,7 +28,6 @@ void Map::draw(void)
   get_background()->draw();
   
   ((Drawable *)this)->get_top_left(x, y);
-  
   for (int i = 1; i < get_width() - 1; ++i)
   {
     for (int j = 1; j < get_height() - 1; ++j)
@@ -92,11 +91,6 @@ void Map::calculate_location(Drawable *d, int &x, int &y)
   d->get_top_left(lxo, tyo);
   x = (int) (lxo - lxm) / TILE_WIDTH;
   y = (int) (tyo - tym) / TILE_HEIGHT;
-}
-
-void Map::move_block(int x, int y)
-{
-  // enter code to move block 
 }
 
 void Map::move(float x, float y)
@@ -247,10 +241,10 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         specials.push_back(new Ahnold(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                      1, 5, AHNOLD_PUNCH_NUM, texs.at(AHNOLD),
-                                      LEFT, system, musics.at(sound_num),
-                                      m_channel, effects.at(AHNOLD),
-                                      a_channel));
+                                      x, y, 1, 5, AHNOLD_PUNCH_NUM,
+                                      texs.at(AHNOLD), LEFT,
+                                      system, musics.at(sound_num), m_channel,
+                                      effects.at(AHNOLD), a_channel));
         ++sound_num;
       }
       // jumping helper
@@ -259,10 +253,10 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         specials.push_back(new Jumper(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                      1, 5, JUMPER_JUMP_NUM, texs.at(JUMPER),
-                                      LEFT, system, musics.at(sound_num),
-                                      m_channel, effects.at(JUMPER),
-                                      a_channel));
+                                      x, y, 1, 5, JUMPER_JUMP_NUM,
+                                      texs.at(JUMPER), LEFT, system,
+                                      musics.at(sound_num), m_channel,
+                                      effects.at(JUMPER), a_channel));
         ++sound_num;
       }
       // moveable block
@@ -295,6 +289,11 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       else if(red[0] == 255 && green[0] == 255 && blue[0] == 0)
       {
         map[x][y][M_TILE] = GOAL;
+      }
+      // black hole tile
+      else if(red[0] == 128 && green[0] == 128 && blue[0] == 255)
+      {
+        map[x][y][M_TILE] = BLACK_HOLE;
       }
       // moving platform
       else if(red[0] == 128 && green[0] == 0 && blue[0] == 128)
