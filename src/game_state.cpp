@@ -77,6 +77,15 @@ void Game_State::update(int &delta)
     return;
   }
   
+  // if the specials are hitting any black holes, reset their positions
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if(specials.at(i)->will_collide_tile(map, BLACK_HOLE, NULL))
+    {
+      specials.at(i)->go_home(map);
+    }
+  }
+  
   float x, y, map_x, map_y;
   int num_following = 0;
   bool player_movey;

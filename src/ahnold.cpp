@@ -5,14 +5,13 @@ Ahnold::Ahnold(void)
 :Special()
 {}
 
-Ahnold::Ahnold(float x, float y, int num, int frames, int abil_frames,
-               Texture *tex, direc dir, FMOD_SYSTEM *sys, FMOD_SOUND *music,
-               FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac)
-:Special(x, y, num, frames, abil_frames, tex, dir, 0, 0, AHNOLD, sys, music, ch, as, ac)
-{
-  loc[0] = x;
-  loc[1] = y;
-}
+Ahnold::Ahnold(float x, float y, int map_x, int map_y, int num, int frames,
+               int abil_frames, Texture *tex, direc dir, FMOD_SYSTEM *sys,
+               FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as,
+               FMOD_CHANNEL *ac)
+:Special(x, y, map_x, map_y, num, frames, abil_frames, tex, dir, 0, 0, AHNOLD,
+         sys, music, ch, as, ac)
+{}
 
 void Ahnold::use_ability(Map *m)
 {
@@ -22,6 +21,7 @@ void Ahnold::use_ability(Map *m)
     set_cur_frame(1);
   }
 }
+
 void Ahnold::enable_ability(Map *m)
 {
   float old_speed;
@@ -59,19 +59,4 @@ void Ahnold::enable_ability(Map *m)
   }
   
   setHSpeed(old_speed);
-}
-
-void Ahnold::start_following(Player *p)
-{
-  following = true;
-}
-
-void Ahnold::stop_following(Player *p)
-{
-  following = false;
-}
-
-void Ahnold::go_home()
-{
-  ((Drawable *)this)->move(loc[0]-get_x(), loc[1]-get_y());
 }

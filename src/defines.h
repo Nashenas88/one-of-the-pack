@@ -104,6 +104,7 @@ typedef enum
   PLATFORM,
   BREAKABLE,
   GOAL,
+  BLACK_HOLE,
   OUTSIDE
 } tile_type;
 
@@ -123,7 +124,8 @@ enum
   PLATS,
   LADDS,
   GOALT,
-  PUSH
+  PUSH,
+  BH
 };
 
 enum

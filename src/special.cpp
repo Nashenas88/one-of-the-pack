@@ -6,16 +6,16 @@ Special::Special(void)
 :Character()
 {}
 
-Special::Special(float x, float y, int num, int frames, int abil_frames,
-                 Texture *tex, direc dir, int vs, int hs, special_type t, 
-                 FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch, 
-                 FMOD_SOUND *as, FMOD_CHANNEL *ac)
+Special::Special(float x, float y, int map_x, int map_y, int num, int frames,
+                 int abil_frames, Texture *tex, direc dir, int vs, int hs,
+                 special_type t, FMOD_SYSTEM *sys, FMOD_SOUND *so,
+                 FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch),
 following(true), controllable(false), num_abil_frames(abil_frames),
 abil_sound(as), abil_channel(ac), number(NULL)
 {
-  loc[0] = x;
-  loc[1] = y;
+  loc[0] = map_x;
+  loc[1] = map_y;
   type = t;
   set_mute(true);
 }
@@ -56,9 +56,14 @@ void Special::set_volume(float volume)
   }
 }
 
-void Special::go_home(void)
+void Special::go_home(Map *m)
 {
-  ((Drawable *)this)->move(loc[0]-get_x(), loc[1]-get_y());
+  float move_x, move_y;
+  
+  move_x = loc[0] * TILE_WIDTH + m->get_x() - get_x();
+  move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
+  ((Drawable *)this)->move(move_x, move_y);
+  number->move(move_x, move_y);
 }
 
 void Special::set_number(Drawable *num)
@@ -73,18 +78,6 @@ void Special::set_number(Drawable *num)
     number->move(-nx + x + (NUM_WIDTH / 2), -ny + y - NUM_HEIGHT);
   }
 }
-
-/*
-void Special::draw(void)
-{
-  ((Character *)this)->draw();
-  if (number)
-  {
-    float x, y;
-    number->get_top_left(x, y);
-    number->draw();
-  }
-}*/
 
 void Special::draw_number(void)
 {
