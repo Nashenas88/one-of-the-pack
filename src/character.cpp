@@ -414,6 +414,11 @@ bool Character::will_collide_screen_y(void)
 // (might possibly be renamed)
 void Character::play_sound(void)
 {
+  if (music == NULL)
+  {
+    return;
+  }
+  
   FMOD_RESULT result;
   
   result = FMOD_System_PlaySound(system, FMOD_CHANNEL_FREE, music,
