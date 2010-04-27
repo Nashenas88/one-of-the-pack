@@ -9,7 +9,7 @@ Paris::Paris(float x, float y, int map_x, int map_y, int num, int frames,
                int abil_frames, Texture *tex, direc dir, FMOD_SYSTEM *sys,
                FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as,
                FMOD_CHANNEL *ac)
-:Special(x, y, map_x, map_y, num, frames, abil_frames, tex, dir, 0, 0, Paris,
+:Special(x, y, map_x, map_y, num, frames, abil_frames, tex, dir, 0, 0, PARIS,
          sys, music, ch, as, ac)
 {}
 

@@ -638,6 +638,26 @@ void Game_State::update(int &delta)
         }
         else if (cur_frame == specials.at(i)->get_abil_frames())
         {
+          if (specials.at(i)->get_type() == PARIS)
+          {
+            int coords[2];
+            float temp_speed;
+            temp_speed = specials.at(i)->getHSpeed();
+            if (specials.at(i)->getDirection() == RIGHT)
+            {
+              specials.at(i)->setHSpeed(PARIS_KISS_RANGE);
+            }
+            else
+            {
+              specials.at(i)->setHSpeed(-PARIS_KISS_RANGE);
+            }
+            if (specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_R, coords) ||
+                specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_L, coords))
+            {
+              map->open_bouncer(coords[0], coords[1]);
+            }
+            specials.at(i)->setHSpeed(temp_speed);
+          }
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
         }

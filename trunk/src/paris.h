@@ -4,7 +4,7 @@
 #include "special.h"
 #include "defines.h"
 
-class Ahnold : public Special
+class Paris : public Special
 {  
 public:
   Paris(void);
@@ -13,7 +13,6 @@ public:
          FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac);
   
   void use_ability(Map *m);
-  void enable_ability(Map *m);
 };
 
 #endif // FLOCK__PARIS__H
