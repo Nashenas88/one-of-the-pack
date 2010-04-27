@@ -1,7 +1,7 @@
 #ifndef FLOCK__DRAWABLE__H
 #define FLOCK__DRAWABLE__H
 
-#include <iostream>
+// #include <iostream>
 
 #ifdef __APPLE__
   #include <OpenGL/OpenGL.h>

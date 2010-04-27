@@ -29,6 +29,7 @@
 #define PLAYER_TEXTURE "Character animation 1.png"
 #define AHNOLD_TEXTURE "Ahnold.png"
 #define JUMPER_TEXTURE "Funblob.png"
+#define ENGINEER_TEXTURE "Thinkblob.png"
 
 // sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
@@ -137,7 +138,8 @@ enum
 typedef enum
 {
   AHNOLD,
-  JUMPER
+  JUMPER,
+  ENGINEER
 } special_type;
 
 #define PAUSE_ICON_FRAMES 4
