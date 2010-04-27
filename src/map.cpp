@@ -227,7 +227,17 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       if(red[0] == 0 && green[0] == 0 && blue[0] == 0)
       {
         map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = rand() % 5 + 1; // randomly selects a block 1-5
+        if (x > 0)
+        {
+          do
+          {
+            map[x][y][M_TILE] = rand() % 5 + 1; // randomly selects a block 1-5
+          } while (map[x-1][y][M_TILE] == map[x][y][M_TILE]);
+        }
+        else
+        {
+          map[x][y][M_TILE] = rand() % 5 + 1; // randomly selects a block 1-5
+        }
       }
       // outside of the playable area
       if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
@@ -321,6 +331,19 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                TILE_WIDTH, -y * TILE_WIDTH +
                                3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT - y_offset);
         }
+      }
+      // Body Guards
+      // Right
+      else if(red[0] == 0 && green[0] == 128 && blue[0] == 128)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = BOUNCER_CLOSED_R;
+      }
+      // Left
+      else if(red[0] == 0 && green[0] == 128 && blue[0] == 129)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = BOUNCER_CLOSED_L;
       }
     }
     // apparently there's some sort of bitmap "newline"

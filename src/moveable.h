@@ -38,6 +38,7 @@ public:
   bool will_collide_y(Map *m);
   bool will_collide_moveables_x(vector<Moveable *> moveables, int cut, int *collide);
   bool will_collide_moveables_y(vector<Moveable *> moveables, int cut, int *collide);
+  bool will_collide_specials_x(vector<Special *> specials, int *collide);
   
 };
 #endif // FLOCK__MOVEABLE__H

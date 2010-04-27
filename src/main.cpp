@@ -115,7 +115,7 @@ void initLevel(int level)
   Drawable *block1, *background, *breakable, *plat, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
-  Drawable *block5, *black_hole;
+  Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
   vector<Texture*> textures;
   vector<Moveable*> moveables;
@@ -235,6 +235,11 @@ void initLevel(int level)
   pointer = new Drawable(650, 270, 1, 1, VARIABLE, pi);
   goal = new Drawable(0.0f, 0.0f, GOALT, 1, TILE, tiles);
   black_hole = new Drawable(0.0f, 0.0f, BH, 1, TILE, tiles);
+  bouncer_cr = new Drawable(0.0f, 0.0f, BOUNCERS, 1, TILE, tiles);
+  bouncer_cl = new Drawable(0.0f, 0.0f, BOUNCERS, 1, TILE, tiles);
+  bouncer_cl->change_direction(LEFT);
+  bouncer_o = new Drawable(0.0f, 0.0f, BOUNCERS, 1, TILE, tiles);
+  bouncer_o->set_cur_frame(2);
   
   // place all drawables into vector
   // this order MUST match the order
@@ -256,6 +261,9 @@ void initLevel(int level)
   v.push_back(breakable);
   v.push_back(goal);
   v.push_back(black_hole);
+  v.push_back(bouncer_cr);
+  v.push_back(bouncer_cl);
+  v.push_back(bouncer_o);
   
   textures.clear();
   textures.push_back(ahnold);

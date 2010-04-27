@@ -106,6 +106,9 @@ typedef enum
   BREAKABLE,
   GOAL,
   BLACK_HOLE,
+  BOUNCER_CLOSED_R,
+  BOUNCER_CLOSED_L,
+  BOUNCER_OPEN,
   OUTSIDE
 } tile_type;
 
@@ -126,7 +129,8 @@ enum
   LADDS,
   GOALT,
   PUSH,
-  BH
+  BH,
+  BOUNCERS
 };
 
 enum
