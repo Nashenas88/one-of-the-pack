@@ -428,11 +428,9 @@ void Character::play_sound(void)
 
 // pauses (and unpauses) the characters single sound
 // (might possibly be renamed)
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// play_sound MUST be called before this is ever called
 void Character::pause_sound(void)
 {
-  if (music == NULL)
+  if (music == NULL || music_channel == NULL)
   {
     return;
   }
