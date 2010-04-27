@@ -5,6 +5,7 @@
 
 // speeds
 #define PLAYER_SPEED 10
+#define BEAM_SPEED 20
 #define GRAVITY_SPEED 20
 
 #define DIST_CHECK 30
@@ -30,6 +31,7 @@
 #define AHNOLD_TEXTURE "Ahnold.png"
 #define JUMPER_TEXTURE "Funblob.png"
 #define ENGINEER_TEXTURE "Thinkblob.png"
+#define BEAM_TEXTURE ""
 
 // sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
