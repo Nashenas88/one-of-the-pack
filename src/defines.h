@@ -31,8 +31,8 @@
 #define AHNOLD_TEXTURE "Ahnold.png"
 #define JUMPER_TEXTURE "Funblob.png"
 #define ENGINEER_TEXTURE "Thinkblob.png"
+#define BEAM_ANIM 3
 #define PARIS_TEXTURE "Cutieblob.png"
-#define BEAM_TEXTURE ""
 
 // sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
@@ -42,6 +42,8 @@
 #define PLAYER_SOUND "Default.mp3"
 #define AHNOLD_SFX "punch sound.wav"
 #define JUMPER_SFX "jump sound (not final).wav"
+#define ENGINEER_SFX "jump sound (not final).wav"
+#define BEAM_SFX "punch sound.wav"
 
 // widths and heights
 #define TILE_WIDTH 100
@@ -81,6 +83,8 @@
 
 #define JUMPER_JUMP_NUM 5
 #define JUMP_HEIGHT 20
+
+#define BEAM_NUM 5
 
 #define PARIS_KISS_NUM 1
 #define PARIS_KISS_RANGE 15
