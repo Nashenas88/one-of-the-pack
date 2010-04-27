@@ -432,6 +432,11 @@ void Character::play_sound(void)
 // play_sound MUST be called before this is ever called
 void Character::pause_sound(void)
 {
+  if (music == NULL)
+  {
+    return;
+  }
+  
   FMOD_RESULT result;
   
   result = FMOD_Channel_GetPaused(music_channel, &sound_paused);
