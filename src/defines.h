@@ -31,6 +31,7 @@
 #define AHNOLD_TEXTURE "Ahnold.png"
 #define JUMPER_TEXTURE "Funblob.png"
 #define ENGINEER_TEXTURE "Thinkblob.png"
+#define PARIS_TEXTURE "Cutieblob.png"
 #define BEAM_TEXTURE ""
 
 // sound file stuff
@@ -80,6 +81,9 @@
 
 #define JUMPER_JUMP_NUM 5
 #define JUMP_HEIGHT 20
+
+#define PARIS_KISS_NUM 1
+#define PARIS_KISS_RANGE 15
 
 #define LAST_LEVEL 3
 
@@ -145,7 +149,8 @@ typedef enum
 {
   AHNOLD,
   JUMPER,
-  ENGINEER
+  ENGINEER,
+  PARIS
 } special_type;
 
 #define PAUSE_ICON_FRAMES 4

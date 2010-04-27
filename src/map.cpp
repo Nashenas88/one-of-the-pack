@@ -6,6 +6,7 @@ using namespace std;
 
 #include "ahnold.h"
 #include "jumper.h"
+#include "paris.h"
 #include "map.h"
 #include "defines.h"
 #include "character.h"
@@ -80,6 +81,12 @@ void Map::remove(int x, int y)
   map[x][y][M_TILE] = BG;
   map[x][y][M_COLL] = 0;
   // enter code to remove block from map
+}
+
+void Map::open_bouncer(int x, int y)
+{
+  map[x][y][M_TILE] = BOUNCER_OPEN;
+  map[x][y][M_COLL] = 0;
 }
 
 void Map::calculate_location(Drawable *d, int &x, int &y)
@@ -267,6 +274,18 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                       texs.at(JUMPER), LEFT, system,
                                       musics.at(sound_num), m_channel,
                                       effects.at(JUMPER), a_channel));
+        ++sound_num;
+      }
+      // paris helper
+      else if (red[0] == 255 && green[0] == 0 && blue[0] == 128)
+      {
+        float mx, my;
+        get_top_left(mx, my);
+        specials.push_back(new Paris(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                                     x, y, 1, 5, PARIS_KISS_NUM,
+                                     texs.at(PARIS), LEFT, system,
+                                     musics.at(sound_num), m_channel,
+                                     effects.at(PARIS), a_channel));
         ++sound_num;
       }
       // moveable block

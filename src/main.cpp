@@ -117,6 +117,7 @@ void initLevel(int level)
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
   Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
+  Texture *engineer, *paris;
   vector<Texture*> textures;
   vector<Moveable*> moveables;
   vector<Special*> specials;
@@ -151,6 +152,10 @@ void initLevel(int level)
   ahnold = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << JUMPER_TEXTURE;
   jumper = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << ENGINEER_TEXTURE;
+  engineer = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PARIS_TEXTURE;
+  paris = new Texture(temp_string.str().c_str());
   
   temp_string.str(""); temp_string << RESOURCES << NUMBER_TEXTURE;
   nums = new Texture(temp_string.str().c_str());
@@ -201,6 +206,8 @@ void initLevel(int level)
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
   ERRCHECK(result);
+  effects.push_back(temp_sound);
+  effects.push_back(temp_sound);
   effects.push_back(temp_sound);
   
   // initializing player and all other objects
@@ -268,6 +275,8 @@ void initLevel(int level)
   textures.clear();
   textures.push_back(ahnold);
   textures.push_back(jumper);
+  textures.push_back(engineer);
+  textures.push_back(paris);
   
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
