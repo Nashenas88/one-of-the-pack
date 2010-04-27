@@ -58,5 +58,5 @@ void Ahnold::enable_ability(Map *m)
     }
   }
   
-  setHSpeed(old_speed);
+  setHSpeed((int)old_speed);
 }

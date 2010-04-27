@@ -523,13 +523,13 @@ void Game_State::update(int &delta)
       center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
     }
     else if (speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
-        (c->setVSpeed(TILE_HEIGHT * 1.3f),
+        (c->setVSpeed((int)(TILE_HEIGHT * 1.3f)),
          will_collide = !c->will_collide_y(map) &&
          !c->will_collide_tile(map, PLATFORM, NULL) &&
          !c->will_collide_tile(map, LADDER, NULL) &&
          !c->will_collide_moveables_y(moveables, -1, NULL) &&
          !c->will_collide_specials_y(specials, i, NULL),
-         c->setVSpeed(speed),will_collide))
+         c->setVSpeed((int) speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
     }
@@ -656,7 +656,7 @@ void Game_State::update(int &delta)
             {
               map->open_bouncer(coords[0], coords[1]);
             }
-            specials.at(i)->setHSpeed(temp_speed);
+            specials.at(i)->setHSpeed((int)temp_speed);
           }
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);

@@ -1,47 +1,23 @@
-
 #include "beam.h"
 #include "defines.h"
 
 Beam::Beam(void)
-:Character()
+:Special()
 {}
 
 Beam::Beam(float x, float y, int map_x, int map_y, int num, int frames,
-                 int abil_frames, Texture *tex, direc dir, int hs,
-                 FMOD_SYSTEM *sys, FMOD_SOUND *so,
-                 FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac)
-:Character(x, y, num, frames, tex, dir, 0, hs, sys, so, ch),
-num_abil_frames(abil_frames), abil_sound(as), abil_channel(ac)
-{
-  loc[0] = map_x;
-  loc[1] = map_y;
-  set_mute(true);
-}
+               Texture *tex, direc dir, int hs, FMOD_SYSTEM *sys,
+               FMOD_SOUND *as, FMOD_CHANNEL *ac)
+:Special(x, y, map_x, map_y, num, frames, 0, tex, dir, 0, hs, ENGINEER,
+         sys, NULL, NULL, as, ac)
+{}
 
-void Beam::play_effect(void)
+void Beam::use_ability(Map *m)
 {
-  FMOD_RESULT result;
+  int hit[2];
   
-  result = FMOD_System_PlaySound(get_system(), FMOD_CHANNEL_FREE, abil_sound,
-                                 0, &abil_channel);
-  ERRCHECK(result);
-}
-
-void Beam::set_mute(bool m)
-{
-  mute = m;
-  FMOD_Channel_SetVolume(get_channel(), mute?0.0f:1.0f);
-}
-
-void Beam::set_volume(float volume)
-{
-  if (!mute)
+  if (will_collide_tile(m, BREAKABLE, hit))
   {
-    ((Character *)this)->set_volume(volume);
+    play_effect();
   }
-}
-
-void Beam::move(float x)
-{
-  ((Character *)this)->move(x, 0);
 }
