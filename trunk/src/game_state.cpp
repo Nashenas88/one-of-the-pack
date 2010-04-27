@@ -173,7 +173,8 @@ void Game_State::update(int &delta)
     }
     moveables.at(i)->move(0, moveables.at(i)->getVSpeed());
     
-    if(moveables.at(i)->will_collide_x(map))
+    if(moveables.at(i)->will_collide_x(map) ||
+       moveables.at(i)->will_collide_specials_x(specials, NULL))
     {
       moveables.at(i)->setHSpeed(0);
       temp_move = moveables.at(i)->get_link();

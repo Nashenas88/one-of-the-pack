@@ -180,3 +180,19 @@ bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
   }
   return false;
 }
+
+bool Moveable::will_collide_specials_x(vector<Special *>specials, int *collide)
+{
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if (will_collide_Dx((Drawable *)specials.at(i)))
+    {
+      if (collide)
+      {
+        *collide = i;
+      }
+      return true;
+    }
+  }
+  return false;
+}
