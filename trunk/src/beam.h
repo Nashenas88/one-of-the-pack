@@ -1,53 +1,42 @@
 #ifndef FLOCK__BEAM__H
 #define FLOCK__BEAM__H
 
-#include "FMOD_includes.h"
-
-#include "drawable.h"
-#include "moveable.h"
+#include "character.h"
 #include "map.h"
+#include "player.h"
 #include "defines.h"
 
-class Beam: public Drawable
+typedef enum
+{
+  SPECIAL_RIGHT = 1,
+  SPECIAL_LEFT
+} Special_Dir_Text;
+
+class Beam: public Character
 {
 private:
-  // direction the character is facing
-  direc direction;
-  
-  // used for timing animation
-  int anim_delta;
-  
-  // vertical and horizontal speed
-  int h_speed;
-  
-  // offsets used for collision
-  float col_width, col_height;
-  float col_x_offset, col_y_offset;
+  int loc[2];
+  // for ability animation
+  unsigned int num_abil_frames;
+  bool mute;
+  FMOD_SOUND *abil_sound;
+  FMOD_CHANNEL *abil_channel;
   
 public:
-  // constructors
   Beam(void);
-  Beam(float x, float y, int num, int frames, Texture *tex,
-            direc dir, int hs);
+  Beam(float x, float y, int map_x, int map_y, int num, int frames,
+          int abil_frames, Texture *tex, direc dir, int hs,
+          FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch,
+          FMOD_SOUND *as, FMOD_CHANNEL *ac);
   
-  // getters and setters
-  int getDirection(void) {return direction;}
-  void setDirection(direc dir) {direction = dir;}
-  int getHSpeed(void) {return h_speed;}
-  void setHSpeed(int hs) {h_speed = hs;}
-  int get_delta(void) {return anim_delta;}
-  void set_delta(int d) {anim_delta = d;}
-  float get_col_x_offset(void) {return col_x_offset;}
+  unsigned int get_abil_frames(void) {return num_abil_frames;}
+  
+  void play_effect(void);
+  bool get_mute(void) {return mute;}
+  void set_mute(bool m);
+  void set_volume(float volume);
   
   void move(float x);
-  
-  // check collision with other possible objects
-  // (moving players are not collideables)
-  bool will_collide_Dx(Drawable *o);
-  bool will_collide_x(Map *m);
-  bool will_collide_platform(Map *m);
-  bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
-  bool will_collide_moveables_x(vector<Moveable *>specials, int cur, int *collide);
-  bool will_collide_screen_x(void);
 };
+
 #endif // FLOCK__BEAM__H
