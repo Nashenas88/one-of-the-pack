@@ -246,7 +246,7 @@ void Game_State::update(int &delta)
     {
       map->calculate_location(specials.at(i), x, y);
       if (specials.at(i)->get_bounce() && specials.at(i)->get_jump() &&
-          y > specials.at(i)->get_jump() &&
+          y >= specials.at(i)->get_jump() &&
           !(specials.at(i)->get_type() == KURT &&
            ((Kurt*)specials.at(i))->get_ability()))
       {
@@ -258,7 +258,7 @@ void Game_State::update(int &delta)
         {
           specials.at(i)->set_jump(y);
         }
-        else if (y == specials.at(i)->get_jump())
+        else if (y <= specials.at(i)->get_jump())
         {
           specials.at(i)->set_jump(0);
           specials.at(i)->set_bounce(false);
@@ -948,7 +948,6 @@ void Game_State::update(int &delta)
   {
     gravity = true;
   }
-  if(debug)printf("c %i\n",c->get_jump());
   state_update();
 }
 
