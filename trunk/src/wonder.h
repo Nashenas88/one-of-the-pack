@@ -3,6 +3,7 @@
 
 #include "special.h"
 #include "defines.h"
+#include "player.h"
 
 class Kurt : public Special
 {  
@@ -18,7 +19,7 @@ public:
   bool get_ability(void) { return ability; }
   std::vector<Moveable*> remove_blocks(std::vector<Moveable*> moveables);
   void use_ability(Map *m);
-  std::vector<Moveable*> enable_ability(Map *m, std::vector<Moveable*> moveables);
+  std::vector<Moveable*> enable_ability(Map *m, int i, Player *p, std::vector<Moveable*> moveables, std::vector<Special*> specials);
 };
 
 #endif // FLOCK__WONDER__H

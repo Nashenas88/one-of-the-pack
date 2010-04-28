@@ -818,7 +818,7 @@ void Game_State::update(int &delta)
           }
           else if (specials.at(i)->get_type() == KURT)
           {
-            moveables = ((Kurt *)specials.at(i))->enable_ability(map, moveables);
+            moveables = ((Kurt *)specials.at(i))->enable_ability(map, i, p, moveables, specials);
           }
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
