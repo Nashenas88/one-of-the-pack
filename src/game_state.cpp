@@ -165,7 +165,8 @@ void Game_State::update(int &delta)
   // if the specials are hitting any black holes, reset their positions
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    if(specials.at(i)->will_collide_tile(map, BLACK_HOLE, NULL))
+    if(specials.at(i)->will_collide_tile(map, BLACK_HOLE, NULL) &&
+       !specials.at(i)->will_collide_y(map))
     {
       specials.at(i)->go_home(map);
     }
@@ -213,26 +214,71 @@ void Game_State::update(int &delta)
   // reset gravity for everything
   if (gravity)
   {
-    p->setVSpeed(GRAVITY_SPEED);
+    int x, y;
+    map->calculate_location(p, x, y);
+    
+    if (p->get_bounce() && p->get_jump() && y > p->get_jump())
+    {
+      p->setVSpeed(-GRAVITY_SPEED);
+    }
+    else
+    {
+      if (!p->will_collide_y(map) &&
+          !p->will_collide_tile(map, LADDER, NULL) &&
+          !p->will_collide_moveables_y(moveables, -1, NULL) &&
+          !p->will_collide_platform(map))
+      {
+        if (!p->get_jump())
+        {
+          p->set_jump(y);
+        }
+        else if (y == p->get_jump())
+        {
+          p->set_jump(0);
+          p->set_bounce(0);
+        }
+      }
+      p->setVSpeed(GRAVITY_SPEED);
+    }
+    
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
-      // if we are not a jumper reset gravity
-      if (specials.at(i)->get_type() != JUMPER)
+      map->calculate_location(specials.at(i), x, y);
+      if (specials.at(i)->get_bounce() && specials.at(i)->get_jump() &&
+          y > specials.at(i)->get_jump())
       {
-        specials.at(i)->setVSpeed(GRAVITY_SPEED);
+        specials.at(i)->setVSpeed(-GRAVITY_SPEED);
       }
-      // if we are a jumper and we are not jumping, reset gravity
-      else if (specials.at(i)->get_tex_num() == SPECIAL)
+      else
       {
-        specials.at(i)->setVSpeed(GRAVITY_SPEED);
+        if (!specials.at(i)->get_jump())
+        {
+          specials.at(i)->set_jump(y);
+        }
+        else if (y == specials.at(i)->get_jump())
+        {
+          specials.at(i)->set_jump(0);
+          specials.at(i)->set_bounce(false);
+        }
+        
+        // if we are not a jumper reset gravity
+        if (specials.at(i)->get_type() != JUMPER)
+        {
+          specials.at(i)->setVSpeed(GRAVITY_SPEED);
+        }
+        // if we are a jumper and we are not jumping, reset gravity
+        else if (specials.at(i)->get_tex_num() == SPECIAL)
+        {
+          specials.at(i)->setVSpeed(GRAVITY_SPEED);
+        }
       }
     }
-    if (jump_delta != -1)
+    if (jump_delta != -1 && !(c->get_bounce() && c->getVSpeed() < 0))
     {
       c->setVSpeed(-JUMP_HEIGHT);
       ++jump_delta;
     }
-    if (jump_delta > JUMP_DELAY)
+    if (jump_delta > JUMP_DELAY && !(c->get_bounce() && c->getVSpeed() < 0))
     {
       jump_delta = -1;
     }
@@ -298,10 +344,13 @@ void Game_State::update(int &delta)
             specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))
         {
           c->setVSpeed(0);
+          c->set_jump(0);
+          c->set_bounce(false);
         }
         else if (c->will_collide_rubber_y(map))
         {
-          c->setVSpeed(-c->getVSpeed());
+          c->setVSpeed(-GRAVITY_SPEED);
+          c->set_bounce(true);
         }
         if (specials.at(i)->will_collide_x(map) ||
             specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
@@ -317,10 +366,13 @@ void Game_State::update(int &delta)
           specials.at(i)->will_collide_platform(map))
       {
         specials.at(i)->setVSpeed(0);
+        specials.at(i)->set_jump(0);
+        specials.at(i)->set_bounce(false);
       }
       else if (specials.at(i)->will_collide_rubber_y(map))
       {
-        specials.at(i)->setVSpeed(-specials.at(i)->getVSpeed());
+        specials.at(i)->setVSpeed(-GRAVITY_SPEED);
+        specials.at(i)->set_bounce(true);
       }
     }
     
@@ -406,6 +458,8 @@ void Game_State::update(int &delta)
       if (!p->will_collide_tile(map, LADDER, NULL))
       {
         p->setVSpeed(0);
+        p->set_jump(0);
+        p->set_bounce(false);
       }
       else
       {
@@ -416,7 +470,6 @@ void Game_State::update(int &delta)
       if (p->will_collide_rubber_y(map))
       {
         p->setVSpeed(-p->getVSpeed());
-        printf("hitting\n");
       }
     }
     
@@ -492,6 +545,8 @@ void Game_State::update(int &delta)
     if (!player_movey)
     {
       p->setVSpeed(0);
+      p->set_jump(0);
+      p->set_bounce(false);
     }
     
     if (c != p)
@@ -870,7 +925,7 @@ void Game_State::update(int &delta)
   {
     gravity = true;
   }
-  
+  if(debug)printf("c %i\n",c->get_jump());
   state_update();
 }
 

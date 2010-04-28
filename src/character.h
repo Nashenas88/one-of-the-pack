@@ -30,6 +30,9 @@ private:
   
   FMOD_BOOL sound_paused;
   
+  int jump_height;
+  bool bounce;
+  
 public:
   // constructors
   Character(void);
@@ -48,6 +51,10 @@ public:
   void set_delta(int d) {anim_delta = d;}
   float get_col_y_offset(void) {return col_y_offset;}
   float get_col_x_offset(void) {return col_x_offset;}
+  int get_jump(void) {return jump_height;}
+  void set_jump(int height) {jump_height = height;}
+  bool get_bounce(void) {return bounce;}
+  void set_bounce(bool b) {bounce = b;}
   
   void change_direction(direc dir);
   
