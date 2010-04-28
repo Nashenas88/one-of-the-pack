@@ -47,14 +47,50 @@ std::vector<Moveable*> Kurt::remove_blocks(std::vector<Moveable*> moveables)
   return moveables;
 }
 
-std::vector<Moveable*> Kurt::enable_ability(Map *m, std::vector<Moveable*> moveables)
+std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
+          std::vector<Moveable*> moveables, std::vector<Special*> specials)
 {
+  float old_speed = getVSpeed();
   move_loc = moveables.size();
   moveables.push_back(new Moveable(get_x(), get_y(), 2, 5, get_texture(), false));
-  moveables.push_back(new Moveable(get_x()+TILE_WIDTH, get_y(), 2, 5, get_texture(), false));
-  moveables.push_back(new Moveable(get_x()+TILE_WIDTH*2, get_y(), 2, 5, get_texture(), false));
-  moveables.push_back(new Moveable(get_x()-TILE_WIDTH, get_y(), 2, 5, get_texture(), false));
-  moveables.push_back(new Moveable(get_x()-TILE_WIDTH*2, get_y(), 2, 5, get_texture(), false));
   
+  setVSpeed(TILE_WIDTH);
+  if (!will_collide_Dx(p) &&
+      !will_collide_x(m) && 
+      !will_collide_tile(m, PLATFORM, NULL) &&
+      !will_collide_specials_x(specials, i, NULL) &&
+      !will_collide_moveables_x(moveables, i, NULL))
+  {
+    moveables.push_back(new Moveable(get_x()+TILE_WIDTH, get_y(), 2, 5, get_texture(), false));
+    setVSpeed(2*TILE_WIDTH);
+    if (!will_collide_Dx(p) &&
+        !will_collide_x(m) && 
+        !will_collide_tile(m, PLATFORM, NULL) &&
+        !will_collide_specials_x(specials, i, NULL) &&
+        !will_collide_moveables_x(moveables, i, NULL))
+    {
+      moveables.push_back(new Moveable(get_x()+TILE_WIDTH*2, get_y(), 2, 5, get_texture(), false));
+    }
+  }
+  
+  setVSpeed(-TILE_WIDTH);
+  if (!will_collide_Dx(p) &&
+      !will_collide_x(m) && 
+      !will_collide_tile(m, PLATFORM, NULL) &&
+      !will_collide_specials_x(specials, i, NULL) &&
+      !will_collide_moveables_x(moveables, i, NULL))
+  {
+    moveables.push_back(new Moveable(get_x()-TILE_WIDTH, get_y(), 2, 5, get_texture(), false));
+    setVSpeed(-TILE_WIDTH*2);
+    if (!will_collide_Dx(p) &&
+        !will_collide_x(m) && 
+        !will_collide_tile(m, PLATFORM, NULL) &&
+        !will_collide_specials_x(specials, i, NULL) &&
+        !will_collide_moveables_x(moveables, i, NULL))
+    {
+      moveables.push_back(new Moveable(get_x()-TILE_WIDTH*2, get_y(), 2, 5, get_texture(), false));
+    }
+  }
+  setVSpeed(old_speed);
   return moveables;
 }
