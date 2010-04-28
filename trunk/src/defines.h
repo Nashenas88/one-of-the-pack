@@ -92,8 +92,9 @@
 #define ENGINEER_BUTTON_NUM 5
 
 #define KURT_GUITAR_NUM 5
+#define KURT_ABILITY_FRAMES 3
 
-#define PARIS_KISS_NUM 1
+#define PARIS_KISS_NUM 5
 #define PARIS_KISS_RANGE 15
 
 #define LAST_LEVEL 3
