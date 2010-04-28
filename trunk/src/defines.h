@@ -102,6 +102,7 @@ typedef enum
   LEFT
 } direc;
 
+#define RUBBER_FRAME 2
 typedef enum
 {
   BG,
@@ -114,6 +115,7 @@ typedef enum
   L_BLOCK,
   LC_BLOCK,
   RC_BLOCK,
+  RUBBER,
   LADDER,
   PLATFORM,
   BREAKABLE,
