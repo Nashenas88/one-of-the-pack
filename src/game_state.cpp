@@ -1045,11 +1045,21 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       }
       else
       {
+        p->switch_follow();
         for (unsigned int i = 0; i < specials.size(); ++i)
         {
           if (specials.at(i)->is_controllable())
           {
-            specials.at(i)->start_following();
+            if (p->should_follow())
+            {
+              specials.at(i)->start_following();
+              specials.at(i)->set_volume(MAX_VOLUME);
+            }
+            else
+            {
+              specials.at(i)->stop_following();
+              specials.at(i)->set_volume(UNFOCUSED_VOLUME);
+            }
           }
         }
       }
