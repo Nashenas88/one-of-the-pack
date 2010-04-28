@@ -25,22 +25,23 @@ void Engineer::use_ability(Map *m)
   }
 }
 
-void Engineer::enable_ability(Map *m, vector<Beam*> beams)
+Beam *Engineer::enable_ability(Map *m)
 {
   play_effect();
 
   FMOD_CHANNEL *a_channel = 0;
-
+  
   if (getDirection() == RIGHT)
   {
-    beams.push_back(new Beam(get_x()+TILE_WIDTH, get_y(), 0, 0, BEAM_ANIM,
-               BEAM_NUM, get_texture(), RIGHT, BEAM_SPEED, get_system(),
-               beam_sound, a_channel));
+    return new Beam(get_x() + TILE_WIDTH / 2, get_y(), BEAM_NUM, BEAM_ANIM,
+                    get_texture(), RIGHT, BEAM_SPEED, get_system(),
+                    beam_sound, a_channel);
   }
   else if (getDirection() == LEFT)
   {
-    beams.push_back(new Beam(get_x()-TILE_WIDTH, get_y(), 0, 0, BEAM_ANIM,
-               BEAM_NUM, get_texture(), LEFT, -BEAM_SPEED, get_system(),
-               beam_sound, a_channel));
+    return new Beam(get_x() - TILE_WIDTH / 2, get_y(), BEAM_NUM, BEAM_ANIM,
+                    get_texture(), LEFT, -BEAM_SPEED, get_system(),
+                    beam_sound, a_channel);
   }
+  return NULL;
 }

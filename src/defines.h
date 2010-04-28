@@ -63,7 +63,9 @@
 
 #define DELTA_DELAY 2
 #define SPECIAL_DELTA_DELAY 3
-#define AHNOLD_DELTA_DELAY 1
+#define AHNOLD_DELTA_DELAY 0
+#define ENGINEER_DELTA_DELAY 0
+#define BEAM_DELTA_DELAY 2
 
 #define BORDER 100
 #define COLLISION_SPACE 0.8f;
@@ -84,7 +86,8 @@
 #define JUMPER_JUMP_NUM 5
 #define JUMP_HEIGHT 20
 
-#define BEAM_NUM 5
+#define BEAM_NUM 3
+#define ENGINEER_BUTTON_NUM 5
 
 #define PARIS_KISS_NUM 1
 #define PARIS_KISS_RANGE 15
@@ -154,7 +157,8 @@ typedef enum
   AHNOLD,
   JUMPER,
   ENGINEER,
-  PARIS
+  PARIS,
+  BEAM
 } special_type;
 
 #define PAUSE_ICON_FRAMES 4

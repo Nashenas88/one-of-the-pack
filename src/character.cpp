@@ -9,10 +9,12 @@ col_height(0.0), col_x_offset(0.0), col_y_offset(0.0) {}
 Character::Character(float x, float y, int num, int frames, Texture *tex,
                      direc dir, int vs, int hs, FMOD_SYSTEM *sys,
                      FMOD_SOUND *mu, FMOD_CHANNEL *mch)
-:Drawable(x, y, num, frames, TILE, tex), direction(dir), anim_delta(0),
+:Drawable(x, y, num, frames, TILE, tex), anim_delta(0),
 v_speed(vs), h_speed(hs), system(sys), music(mu),
 music_channel(mch)
 {
+  
+  change_direction(dir);
   col_width = get_width() * COLLISION_SPACE;
   col_height = get_height() * COLLISION_SPACE;
   

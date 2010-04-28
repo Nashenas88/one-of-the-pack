@@ -8,6 +8,7 @@ using namespace std;
 #include "map.h"
 #include "special.h"
 #include "state.h"
+#include "beam.h"
 
 class Game_State : public State
 {
@@ -18,6 +19,7 @@ private:
   vector<Moveable *> moveables; // all moveable entities
   vector<Special *> specials; // all specials that can follow player
   vector<Drawable *> numbers; // numbers to place above specials
+  vector<Beam *> beams; // all beams flying in the air
   unsigned int next_special; // num to determine pos in specials
   bool gravity; // is gravity on or off?
   bool collision; // is collision on or off?

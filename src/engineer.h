@@ -18,7 +18,7 @@ public:
          FMOD_SOUND *as1);
   
   void use_ability(Map *m);
-  void enable_ability(Map *m, vector<Beam*> beams);
+  Beam *enable_ability(Map *m);
 };
 
 #endif // FLOCK__ENGINEER__H

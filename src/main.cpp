@@ -209,6 +209,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   effects.push_back(temp_sound);
   effects.push_back(temp_sound);
+  effects.push_back(temp_sound);
   
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
