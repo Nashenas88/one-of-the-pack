@@ -10,6 +10,7 @@ class Player : public Character
 {
 private:
   bool jumping;
+  bool follow;
   
 public:
   Player(void);
@@ -17,6 +18,8 @@ public:
          direc dir, bool jump, FMOD_SYSTEM *sys,
          FMOD_SOUND *so, FMOD_CHANNEL *ch);
   
+  bool should_follow(void) {return follow;}
+  void switch_follow(void) {follow = !follow;}
   void pickupItem(int item);
 };
 
