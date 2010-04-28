@@ -9,7 +9,7 @@ class Kurt : public Special
 {  
 private:
   bool ability, summoned;
-  unsigned int move_loc;
+  unsigned int move_loc, num_created;
 public:
   Kurt(void);
   Kurt(float x, float y, int map_x, int map_y, int num, int frames,

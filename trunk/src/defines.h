@@ -93,6 +93,7 @@
 
 #define KURT_GUITAR_NUM 5
 #define KURT_ABILITY_FRAMES 3
+#define KURT_MUSIC_NUM 5
 
 #define PARIS_KISS_NUM 5
 #define PARIS_KISS_RANGE 15

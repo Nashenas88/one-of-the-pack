@@ -972,12 +972,22 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         break;
     }
     case 'a':
-      a = true;
-      last_x = true;
+      if (!(c != p &&
+            ((Special*)c)->get_type() == KURT &&
+            ((Kurt*)c)->get_ability()))
+      {
+        a = true;
+        last_x = true;
+      }
       break;
     case 'd':
-      d = true;
-      last_x = false;
+      if (!(c != p &&
+            ((Special*)c)->get_type() == KURT &&
+            ((Kurt*)c)->get_ability()))
+      {
+        d = true;
+        last_x = false;
+      }
       break;
     case 'e':
       if (c != p)
