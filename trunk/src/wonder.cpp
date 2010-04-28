@@ -17,7 +17,7 @@ Kurt::Kurt(float x, float y, int map_x, int map_y, int num, int frames,
                FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as,
                FMOD_CHANNEL *ac)
 :Special(x, y, map_x, map_y, num, frames, abil_frames, tex, dir, 0, 0, KURT,
-         sys, music, ch, as, ac)
+         sys, music, ch, as, ac), ability(false), summoned(false), move_loc(0)
 {
   ability = false;
 }
@@ -43,6 +43,8 @@ std::vector<Moveable*> Kurt::remove_blocks(std::vector<Moveable*> moveables)
     delete moveables.at(move_loc);
     moveables.erase(moveables.begin() + move_loc);
   }
+  
+  summoned = false;
   
   return moveables;
 }
@@ -92,5 +94,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     }
   }
   setVSpeed(old_speed);
+  
+  summoned = true;
+  
   return moveables;
 }
