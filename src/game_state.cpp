@@ -5,6 +5,7 @@
 #include "jumper.h"
 #include "ahnold.h"
 #include "engineer.h"
+#include "wonder.h"
 
 bool sort_by_height (Special *i, Special *j);
 
@@ -815,6 +816,10 @@ void Game_State::update(int &delta)
             }
             specials.at(i)->setHSpeed((int)temp_speed);
           }
+          else if (specials.at(i)->get_type() == KURT)
+          {
+            moveables = ((Kurt *)specials.at(i))->enable_ability(map, moveables);
+          }
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
         }
@@ -960,6 +965,10 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       if (c != p)
       {
         ((Special *)c)->use_ability(map);
+        if (((Special *)c)->get_type() == KURT && !((Kurt *)c)->get_ability())
+        {
+          moveables = ((Kurt *)c)->remove_blocks(moveables);
+        }
       }
       break;
     case 'p':
