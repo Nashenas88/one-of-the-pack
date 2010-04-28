@@ -312,7 +312,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // engineer helper
-      else if (red[0] == 255 && green[0] == 128 && blue[0] == 192)
+      else if (red[0] == 255 && green[0] == 128 && blue[0] == 64)
       {
         float mx, my;
         get_top_left(mx, my);
@@ -320,7 +320,20 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                         x, y, 1, 5, ENGINEER_BUTTON_NUM,
                                         texs.at(ENGINEER), LEFT, system,
                                         musics.at(sound_num), m_channel,
-                                        effects.at(ENGINEER), a_channel, effects.at(BEAM)));
+                                        effects.at(ENGINEER), a_channel,
+                                        effects.at(BEAM)));
+        ++sound_num;
+      }
+      // Kurt helper
+      else if (red[0] == 255 && green[0] == 128 && blue[0] == 192)
+      {
+        float mx, my;
+        get_top_left(mx, my);
+        specials.push_back(new Kurt(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                                    x, y, 1, 5, KURT_BUTTON_NUM,
+                                    texas.at(KURT), LEFT, system,
+                                    musics.at(sound_num), m_channel,
+                                    effect.at(KURT), a_channel));
         ++sound_num;
       }
       // moveable block
