@@ -85,13 +85,49 @@ void Game_State::update(int &delta)
   }
   
   vector<int> to_delete;
+  int coords[2];
   
   for (int i = 0; i < (int) beams.size(); ++i)
   {
-    if(beams.at(i)->will_collide_x(map))
+    for (int j = BLOCK1; j < LADDER; ++j)
     {
-      delete beams.at(i);
-      to_delete.push_back(i);
+      if(beams.at(i)->will_collide_tile(map, (tile_type) j, coords))
+      {
+        beams.at(i)->play_effect();
+        delete beams.at(i);
+        to_delete.push_back(i);
+        
+        // make sure the blocks we'll be checking are in the map
+        if (coords[0] - 1 < 0)
+        {
+          coords[0] = 0;
+        }
+        if (coords[0] + 1 >= map->get_width())
+        {
+          coords[0] = map->get_width() - 1;
+        }
+        if (coords[1] - 1 < 0)
+        {
+          coords[1] = 0;
+        }
+        if (coords[1] + 1 >= map->get_height())
+        {
+          coords[1] = map->get_height() - 1;
+        }
+        
+        // try to convert the blocks
+        for (int k = coords[0] - 1; k < coords[0] + 2; ++k)
+        {
+          for (int l = coords[1] - 1; l < coords[1] + 2; ++l)
+          {
+            if (!map->make_rubber(k, l))
+            {
+              map->return_from_rubber(k, l);
+            }
+          }
+        }
+        break;
+      }
     }
   }
   for(unsigned int i = 0; i < to_delete.size(); ++i)
@@ -245,6 +281,10 @@ void Game_State::update(int &delta)
         {
           c->setVSpeed(0);
         }
+        else if (specials.at(i)->will_collide_rubber_y(map))
+        {
+          c->setVSpeed(-c->getVSpeed());
+        }
         if (specials.at(i)->will_collide_x(map) ||
             specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
         {
@@ -347,6 +387,12 @@ void Game_State::update(int &delta)
         p->setVSpeed(temp);
       }
       p->move(0, -temp);
+      
+      if (p->will_collide_rubber_y(map))
+      {
+        p->setVSpeed(-p->getVSpeed());
+        printf("hitting\n");
+      }
     }
     
     // change falling speed to PLAYER_SPEED when too close to floor
@@ -559,7 +605,8 @@ void Game_State::update(int &delta)
          !c->will_collide_tile(map, PLATFORM, NULL) &&
          !c->will_collide_tile(map, LADDER, NULL) &&
          !c->will_collide_moveables_y(moveables, -1, NULL) &&
-         !c->will_collide_specials_y(specials, i, NULL),
+         !c->will_collide_specials_y(specials, i, NULL) &&
+         !c->will_collide_rubber_y(map),
          c->setVSpeed((int) speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;

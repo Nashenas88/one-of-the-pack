@@ -66,6 +66,8 @@ public:
   bool will_collide_specials_y(vector<Special *>specials, int cur, int *collide);
   bool will_collide_moveables_x(vector<Moveable *>specials, int cur, int *collide);
   bool will_collide_moveables_y(vector<Moveable *>specials, int cur, int *collide);
+  bool will_collide_rubber_x(Map *m);
+  bool will_collide_rubber_y(Map *m);
   bool will_collide_screen_x(void);
   bool will_collide_screen_y(void);
   

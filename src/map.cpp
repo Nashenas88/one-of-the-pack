@@ -84,6 +84,28 @@ void Map::remove(int x, int y)
   // enter code to remove block from map
 }
 
+bool Map::make_rubber(int x, int y)
+{
+  if (map[x][y][M_TILE] > BG && map[x][y][M_TILE] < RUBBER)
+  {
+    map[x][y][M_COLL] = map[x][y][M_TILE] + 1;
+    map[x][y][M_TILE] = RUBBER;
+    return true;
+  }
+  return false;
+}
+
+bool Map::return_from_rubber(int x, int y)
+{
+  if (map[x][y][M_TILE] == RUBBER && map[x][y][M_COLL] != 1)
+  {
+    map[x][y][M_TILE] = map[x][y][M_COLL] - 1;
+    map[x][y][M_COLL] = 1;
+    return true;
+  }
+  return false;
+}
+
 void Map::open_bouncer(int x, int y)
 {
   map[x][y][M_TILE] = BOUNCER_OPEN;
