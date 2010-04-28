@@ -8,6 +8,7 @@ using namespace std;
 #include "jumper.h"
 #include "paris.h"
 #include "engineer.h"
+#include "wonder.h"
 #include "map.h"
 #include "defines.h"
 #include "character.h"
@@ -330,10 +331,10 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         specials.push_back(new Kurt(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                    x, y, 1, 5, KURT_BUTTON_NUM,
-                                    texas.at(KURT), LEFT, system,
+                                    x, y, 1, 5, KURT_GUITAR_NUM,
+                                    texs.at(KURT), LEFT, system,
                                     musics.at(sound_num), m_channel,
-                                    effect.at(KURT), a_channel));
+                                    effects.at(KURT), a_channel));
         ++sound_num;
       }
       // moveable block

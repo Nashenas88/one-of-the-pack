@@ -33,6 +33,7 @@
 #define ENGINEER_TEXTURE "Thinkblob.png"
 #define BEAM_ANIM 3
 #define PARIS_TEXTURE "Cutieblob.png"
+#define KURT_TEXTURE "Wonderblob.png"
 
 // sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
@@ -44,6 +45,7 @@
 #define JUMPER_SFX "jump sound (not final).wav"
 #define ENGINEER_SFX "jump sound (not final).wav"
 #define BEAM_SFX "punch sound.wav"
+#define KURT_SFX "jump sound (not final).wav"
 
 // widths and heights
 #define TILE_WIDTH 100
@@ -88,6 +90,8 @@
 
 #define BEAM_NUM 3
 #define ENGINEER_BUTTON_NUM 5
+
+#define KURT_GUITAR_NUM 5
 
 #define PARIS_KISS_NUM 1
 #define PARIS_KISS_RANGE 15
@@ -159,6 +163,7 @@ typedef enum
   AHNOLD,
   JUMPER,
   ENGINEER,
+  KURT,
   PARIS,
   BEAM
 } special_type;
