@@ -825,7 +825,7 @@ void Game_State::update(int &delta)
             specials.at(i)->setHSpeed((int)temp_speed);
           }
           else if (specials.at(i)->get_type() == KURT &&
-                   !((Kurt *)specials.at(i))->blocks_summoned())
+                   !((Kurt *)specials.at(i))->get_summoned())
           {
             moveables = ((Kurt *)specials.at(i))->enable_ability(map, i, p, moveables, specials);
           }
