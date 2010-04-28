@@ -4,6 +4,7 @@
 #include "game_state.h"
 #include "jumper.h"
 #include "ahnold.h"
+#include "engineer.h"
 
 bool sort_by_height (Special *i, Special *j);
 
@@ -44,6 +45,12 @@ void Game_State::draw(void)
   {
     moveables.at(i)->draw();
   }
+  
+  for (unsigned int i = 0; i < beams.size(); ++i)
+  {
+    beams.at(i)->draw();
+  }
+  
   // then the specials, except for the one you are controlling
   // the closer to the player, the higher up they should be drawn
   // (1st special should be drawn over 2nd special, etc.)
@@ -75,6 +82,30 @@ void Game_State::update(int &delta)
   {
     delta = -1;
     return;
+  }
+  
+  vector<int> to_delete;
+  
+  for (int i = 0; i < (int) beams.size(); ++i)
+  {
+    if(beams.at(i)->will_collide_x(map))
+    {
+      delete beams.at(i);
+      to_delete.push_back(i);
+    }
+  }
+  for(unsigned int i = 0; i < to_delete.size(); ++i)
+  {
+    beams.erase(beams.begin() + to_delete.at(i));
+    for (unsigned int j = i; j < to_delete.size(); ++j)
+    {
+      to_delete.at(j) = to_delete.at(j) - 1;
+    }
+  }
+  
+  for (unsigned int i = 0; i < beams.size(); ++i)
+  {
+    beams.at(i)->move(beams.at(i)->getHSpeed(), 0);
   }
   
   // if the specials are hitting any black holes, reset their positions
@@ -580,6 +611,10 @@ void Game_State::update(int &delta)
       {
         moveables.at(i)->move(mx, my);
       }
+      for (unsigned int i = 0; i < beams.size(); ++i)
+      {
+        ((Drawable *)beams.at(i))->move(mx, my);
+      }
     }
   }
   
@@ -614,27 +649,22 @@ void Game_State::update(int &delta)
   // animation for specials
   // for the jumper, when jumping and at the last animation
   // turn gravity back on
-  unsigned int a_delta, cur_frame;
+  int a_delta;
+  unsigned int cur_frame;
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     a_delta = specials.at(i)->get_delta();
     if (specials.at(i)->get_tex_num() == ABILITY)
     {
-      if (a_delta > SPECIAL_DELTA_DELAY)
+      if (specials.at(i)->get_type() != ENGINEER &&
+          specials.at(i)->get_type() != AHNOLD &&
+          a_delta > SPECIAL_DELTA_DELAY)
       {
         specials.at(i)->set_delta(0);
         cur_frame = specials.at(i)->get_cur_frame();
         if (cur_frame < specials.at(i)->get_abil_frames())
         {
           specials.at(i)->set_cur_frame(++cur_frame);
-          if(specials.at(i)->get_type() == AHNOLD)
-          {
-            specials.at(i)->set_cur_frame(++cur_frame);
-            if(cur_frame == specials.at(i)->get_num_frames())
-            {
-              ((Ahnold *)specials.at(i))->enable_ability(map);
-            }
-          }
         }
         else if (cur_frame == specials.at(i)->get_abil_frames())
         {
@@ -660,6 +690,51 @@ void Game_State::update(int &delta)
           }
           specials.at(i)->set_cur_frame(1);
           specials.at(i)->set_tex_num(SPECIAL);
+        }
+      }
+      else if ((specials.at(i)->get_type() == ENGINEER &&
+                a_delta > ENGINEER_DELTA_DELAY)||
+               (specials.at(i)->get_type() == AHNOLD &&
+                a_delta > AHNOLD_DELTA_DELAY))
+      {
+        specials.at(i)->set_delta(0);
+        cur_frame = specials.at(i)->get_cur_frame();
+        if (cur_frame < specials.at(i)->get_abil_frames())
+        {
+          specials.at(i)->set_cur_frame(++cur_frame);
+        }
+        else
+        {
+          if(specials.at(i)->get_type() == AHNOLD)
+          {
+            if(cur_frame == specials.at(i)->get_num_frames())
+            {
+              ((Ahnold *)specials.at(i))->enable_ability(map);
+            }
+          }
+          else if (specials.at(i)->get_type() == ENGINEER &&
+                  cur_frame == specials.at(i)->get_num_frames())
+          {
+            beams.push_back(((Engineer *) specials.at(i))->enable_ability(map));
+          }
+          specials.at(i)->set_delta(-1);
+        }
+      }
+      else if ((specials.at(i)->get_type() == ENGINEER &&
+                a_delta < 0 && a_delta < -ENGINEER_DELTA_DELAY) ||
+               (specials.at(i)->get_type() == AHNOLD &&
+                a_delta < 0 && a_delta< -ENGINEER_DELTA_DELAY))
+      {
+        specials.at(i)->set_delta(-1);
+        cur_frame = specials.at(i)->get_cur_frame();
+        if (cur_frame == 1)
+        {
+          specials.at(i)->set_delta(0);
+          specials.at(i)->set_tex_num(SPECIAL);
+        }
+        else
+        {
+          specials.at(i)->set_cur_frame(--cur_frame);
         }
       }
       else
@@ -693,6 +768,28 @@ void Game_State::update(int &delta)
     else
     {
       specials.at(i)->set_cur_frame(1);
+    }
+  }
+  
+  // animation for beams
+  for (unsigned int i = 0; i < beams.size(); ++i)
+  {
+    a_delta = beams.at(i)->get_delta();
+    if (a_delta > BEAM_DELTA_DELAY)
+    {
+      cur_frame = beams.at(i)->get_cur_frame();
+      if (cur_frame == beams.at(i)->get_num_frames())
+      {
+        beams.at(i)->set_cur_frame(1);
+      }
+      else
+      {
+        beams.at(i)->set_cur_frame(++cur_frame);
+      }
+    }
+    else
+    {
+      beams.at(i)->set_delta(++a_delta);
     }
   }
   

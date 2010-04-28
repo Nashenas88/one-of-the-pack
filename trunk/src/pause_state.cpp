@@ -84,6 +84,8 @@ void Pause_State::draw(void)
       case JUMPER:
         movers->set_tex_num(JUMPER_ICON);
         break;
+      default:
+        break;
     }
     movers->move(-movers->get_x() + PAUSE_MAP_X, -movers->get_y() + PAUSE_MAP_Y);
     m->calculate_location(spec, x, y);

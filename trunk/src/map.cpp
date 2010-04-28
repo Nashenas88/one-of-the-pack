@@ -7,6 +7,7 @@ using namespace std;
 #include "ahnold.h"
 #include "jumper.h"
 #include "paris.h"
+#include "engineer.h"
 #include "map.h"
 #include "defines.h"
 #include "character.h"
@@ -286,6 +287,18 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                      texs.at(PARIS), LEFT, system,
                                      musics.at(sound_num), m_channel,
                                      effects.at(PARIS), a_channel));
+        ++sound_num;
+      }
+      // engineer helper
+      else if (red[0] == 255 && green[0] == 128 && blue[0] == 192)
+      {
+        float mx, my;
+        get_top_left(mx, my);
+        specials.push_back(new Engineer(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                                        x, y, 1, 5, ENGINEER_BUTTON_NUM,
+                                        texs.at(ENGINEER), LEFT, system,
+                                        musics.at(sound_num), m_channel,
+                                        effects.at(ENGINEER), a_channel, effects.at(BEAM)));
         ++sound_num;
       }
       // moveable block

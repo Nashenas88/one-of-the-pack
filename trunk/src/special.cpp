@@ -97,3 +97,13 @@ void Special::move(float x, float y)
 }
 
 void Special::use_ability(Map *m) {}
+
+void Special::clean(void)
+{
+  FMOD_RESULT result;
+  
+  result = FMOD_Sound_Release(abil_sound);
+  ERRCHECK(result);
+  
+  ((Character*)this)->clean();
+}
