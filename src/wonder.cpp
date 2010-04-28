@@ -43,6 +43,8 @@ std::vector<Moveable*> Kurt::remove_blocks(std::vector<Moveable*> moveables)
     delete moveables.at(move_loc);
     moveables.erase(moveables.begin() + move_loc);
   }
+  
+  return moveables;
 }
 
 std::vector<Moveable*> Kurt::enable_ability(Map *m, std::vector<Moveable*> moveables)
