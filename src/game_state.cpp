@@ -86,10 +86,12 @@ void Game_State::update(int &delta)
   
   vector<int> to_delete;
   int coords[2];
+  int which;
+  int j;
   
   for (int i = 0; i < (int) beams.size(); ++i)
   {
-    for (int j = BLOCK1; j < LADDER; ++j)
+    for (j = BLOCK1; j < LADDER; ++j)
     {
       if(beams.at(i)->will_collide_tile(map, (tile_type) j, coords))
       {
@@ -127,6 +129,22 @@ void Game_State::update(int &delta)
           }
         }
         break;
+      }
+    }
+    if (j == LADDER)
+    {
+      if (beams.at(i)->will_collide_moveables_x(moveables, -1, &which))
+      {
+        moveables.at(which)->set_gravity(!moveables.at(which)->get_gravity());
+        beams.at(i)->play_effect();
+        delete beams.at(i);
+        to_delete.push_back(i);
+      }
+      else if (beams.at(i)->will_collide_x(map))
+      {
+        beams.at(i)->play_effect();
+        delete beams.at(i);
+        to_delete.push_back(i);
       }
     }
   }
@@ -281,7 +299,7 @@ void Game_State::update(int &delta)
         {
           c->setVSpeed(0);
         }
-        else if (specials.at(i)->will_collide_rubber_y(map))
+        else if (c->will_collide_rubber_y(map))
         {
           c->setVSpeed(-c->getVSpeed());
         }
@@ -295,10 +313,14 @@ void Game_State::update(int &delta)
       
       // move specials in the y if they can
       if (specials.at(i)->will_collide_y(map) ||
-            specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-            specials.at(i)->will_collide_platform(map))
+          specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
+          specials.at(i)->will_collide_platform(map))
       {
         specials.at(i)->setVSpeed(0);
+      }
+      else if (specials.at(i)->will_collide_rubber_y(map))
+      {
+        specials.at(i)->setVSpeed(-specials.at(i)->getVSpeed());
       }
     }
     
@@ -343,7 +365,10 @@ void Game_State::update(int &delta)
            !(sorted_specials.at(i)->will_collide_y(map) ||
              sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
              sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))) ||
-          (c == sorted_specials.at(i) && jump_delta != -1))
+          (c == sorted_specials.at(i) && jump_delta != -1 &&
+           !(c->will_collide_y(map) ||
+             c->will_collide_tile(map, LADDER, NULL) ||
+             c->will_collide_moveables_y(moveables, -1, NULL))))
       {
         sorted_specials.at(i)->setVSpeed(-JUMP_HEIGHT);
       }
