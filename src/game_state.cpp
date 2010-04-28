@@ -246,7 +246,9 @@ void Game_State::update(int &delta)
     {
       map->calculate_location(specials.at(i), x, y);
       if (specials.at(i)->get_bounce() && specials.at(i)->get_jump() &&
-          y > specials.at(i)->get_jump())
+          y > specials.at(i)->get_jump() &&
+          !(specials.at(i)->get_type() == KURT &&
+           ((Kurt*)specials.at(i))->get_ability()))
       {
         specials.at(i)->setVSpeed(-GRAVITY_SPEED);
       }
@@ -263,7 +265,9 @@ void Game_State::update(int &delta)
         }
         
         // if we are not a jumper reset gravity
-        if (specials.at(i)->get_type() != JUMPER)
+        if (specials.at(i)->get_type() != JUMPER &&
+            !(specials.at(i)->get_type() == KURT &&
+              ((Kurt*)specials.at(i))->get_ability()))
         {
           specials.at(i)->setVSpeed(GRAVITY_SPEED);
         }
@@ -348,7 +352,9 @@ void Game_State::update(int &delta)
           c->set_jump(0);
           c->set_bounce(false);
         }
-        else if (c->will_collide_rubber_y(map))
+        else if (c->will_collide_rubber_y(map) &&
+                 !(((Special *)c)->get_type() == KURT &&
+                    ((Kurt*)c)->get_ability()))
         {
           c->setVSpeed(-GRAVITY_SPEED);
           c->set_bounce(true);
@@ -370,7 +376,9 @@ void Game_State::update(int &delta)
         specials.at(i)->set_jump(0);
         specials.at(i)->set_bounce(false);
       }
-      else if (specials.at(i)->will_collide_rubber_y(map))
+      else if (specials.at(i)->will_collide_rubber_y(map) &&
+               !(specials.at(i)->get_type() == KURT &&
+                 ((Kurt*)specials.at(i))->get_ability()))
       {
         specials.at(i)->setVSpeed(-GRAVITY_SPEED);
         specials.at(i)->set_bounce(true);
@@ -816,12 +824,22 @@ void Game_State::update(int &delta)
             }
             specials.at(i)->setHSpeed((int)temp_speed);
           }
-          else if (specials.at(i)->get_type() == KURT)
+          else if (specials.at(i)->get_type() == KURT &&
+                   !((Kurt *)specials.at(i))->blocks_summoned())
           {
             moveables = ((Kurt *)specials.at(i))->enable_ability(map, i, p, moveables, specials);
           }
-          specials.at(i)->set_cur_frame(1);
-          specials.at(i)->set_tex_num(SPECIAL);
+          if (specials.at(i)->get_type() == KURT &&
+              ((Kurt*)specials.at(i))->get_ability())
+          {
+            specials.at(i)->set_cur_frame((specials.at(i)->get_cur_frame() + 1) %
+                                          KURT_ABILITY_FRAMES + 2);
+          }
+          else
+          {
+            specials.at(i)->set_cur_frame(1);
+            specials.at(i)->set_tex_num(SPECIAL);
+          }
         }
       }
       else if ((specials.at(i)->get_type() == ENGINEER &&
