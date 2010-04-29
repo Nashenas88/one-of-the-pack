@@ -10,6 +10,8 @@ class Kurt : public Special
 private:
   bool ability, summoned;
   unsigned int move_loc, num_created;
+  
+  bool will_collide_specials(std::vector<Special*> specials, int cur);
 public:
   Kurt(void);
   Kurt(float x, float y, int map_x, int map_y, int num, int frames,

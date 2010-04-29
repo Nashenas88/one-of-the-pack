@@ -28,7 +28,7 @@ void Kurt::use_ability(Map *m)
   ability = !ability;
   if (ability)
   {
-    getVSpeed() == 0?setVSpeed(GRAVITY_SPEED) : setVSpeed(0);
+    setVSpeed(0);
     if (get_tex_num() != ABILITY)
     {
       set_tex_num(ABILITY);
@@ -72,7 +72,7 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   if (!will_collide_Dx(p) &&
       !will_collide_x(m) && 
       !will_collide_tile(m, PLATFORM, NULL) &&
-      !will_collide_specials_x(specials, i, NULL) &&
+      !will_collide_specials(specials, i) &&
       !will_collide_moveables_x(moveables, -1, NULL))
   {
     ++num_created;
@@ -83,7 +83,7 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
         !will_collide_tile(m, PLATFORM, NULL) &&
-        !will_collide_specials_x(specials, i, NULL) &&
+        !will_collide_specials(specials, i) &&
         !will_collide_moveables_x(moveables, -1, NULL))
     {
       ++num_created;
@@ -97,7 +97,7 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   if (!will_collide_Dx(p) &&
       !will_collide_x(m) && 
       !will_collide_tile(m, PLATFORM, NULL) &&
-      !will_collide_specials_x(specials, i, NULL) &&
+      !will_collide_specials(specials, i) &&
       !will_collide_moveables_x(moveables, -1, NULL))
   {
     ++num_created;
@@ -108,7 +108,7 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
         !will_collide_tile(m, PLATFORM, NULL) &&
-        !will_collide_specials_x(specials, i, NULL) &&
+        !will_collide_specials(specials, i) &&
         !will_collide_moveables_x(moveables, -1, NULL))
     {
       ++num_created;
@@ -120,4 +120,21 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   summoned = true;
   
   return moveables;
+}
+
+bool Kurt::will_collide_specials(std::vector<Special*> specials, int cur)
+{
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if ((int) i == cur)
+    {
+      continue;
+    }
+    if (will_collide_Dx(specials.at(i)))
+    {
+      return true;
+    }
+  }
+  
+  return false;
 }

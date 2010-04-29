@@ -244,11 +244,15 @@ void Game_State::update(int &delta)
     
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
+      if (specials.at(i)->get_type() == KURT &&
+          ((Kurt*)specials.at(i))->get_ability())
+      {
+        continue;
+      }
+      
       map->calculate_location(specials.at(i), x, y);
       if (specials.at(i)->get_bounce() && specials.at(i)->get_jump() &&
-          y >= specials.at(i)->get_jump() &&
-          !(specials.at(i)->get_type() == KURT &&
-           ((Kurt*)specials.at(i))->get_ability()))
+          y >= specials.at(i)->get_jump())
       {
         specials.at(i)->setVSpeed(-GRAVITY_SPEED);
       }
@@ -265,9 +269,7 @@ void Game_State::update(int &delta)
         }
         
         // if we are not a jumper reset gravity
-        if (specials.at(i)->get_type() != JUMPER &&
-            !(specials.at(i)->get_type() == KURT &&
-              ((Kurt*)specials.at(i))->get_ability()))
+        if (specials.at(i)->get_type() != JUMPER)
         {
           specials.at(i)->setVSpeed(GRAVITY_SPEED);
         }
@@ -278,14 +280,18 @@ void Game_State::update(int &delta)
         }
       }
     }
-    if (jump_delta != -1 && !(c->get_bounce() && c->getVSpeed() < 0))
+    if (!(c != p && ((Special*)c)->get_type() == KURT &&
+        ((Kurt*)c)->get_ability()))
     {
-      c->setVSpeed(-JUMP_HEIGHT);
-      ++jump_delta;
-    }
-    if (jump_delta > JUMP_DELAY && !(c->get_bounce() && c->getVSpeed() < 0))
-    {
-      jump_delta = -1;
+      if (jump_delta != -1 && !(c->get_bounce() && c->getVSpeed() < 0))
+      {
+        c->setVSpeed(-JUMP_HEIGHT);
+        ++jump_delta;
+      }
+      if (jump_delta > JUMP_DELAY && !(c->get_bounce() && c->getVSpeed() < 0))
+      {
+        jump_delta = -1;
+      }
     }
   }
   
@@ -338,6 +344,12 @@ void Game_State::update(int &delta)
     // check vertical collision for specials
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
+      if (specials.at(i)->get_type() == KURT &&
+          ((Kurt*)specials.at(i))->get_ability())
+      {
+        continue;
+      }
+      
       // if we are controlling this special, then just change the speed
       // the movement is done when we check for map collision
       if (c == specials.at(i))
@@ -352,9 +364,7 @@ void Game_State::update(int &delta)
           c->set_jump(0);
           c->set_bounce(false);
         }
-        else if (c->will_collide_rubber_y(map) &&
-                 !(((Special *)c)->get_type() == KURT &&
-                    ((Kurt*)c)->get_ability()))
+        else if (c->will_collide_rubber_y(map))
         {
           c->setVSpeed(-GRAVITY_SPEED);
           c->set_bounce(true);
@@ -376,9 +386,7 @@ void Game_State::update(int &delta)
         specials.at(i)->set_jump(0);
         specials.at(i)->set_bounce(false);
       }
-      else if (specials.at(i)->will_collide_rubber_y(map) &&
-               !(specials.at(i)->get_type() == KURT &&
-                 ((Kurt*)specials.at(i))->get_ability()))
+      else if (specials.at(i)->will_collide_rubber_y(map))
       {
         specials.at(i)->setVSpeed(-GRAVITY_SPEED);
         specials.at(i)->set_bounce(true);
@@ -395,6 +403,12 @@ void Game_State::update(int &delta)
     
     for (unsigned int i = 0; i < sorted_specials.size();  ++i)
     {
+      if (sorted_specials.at(i)->get_type() == KURT &&
+          ((Kurt*)sorted_specials.at(i))->get_ability())
+      {
+        continue;
+      }
+      
       temp_speed = sorted_specials.at(i)->getVSpeed();
       sorted_specials.at(i)->setVSpeed(GRAVITY_SPEED);
       follow_move = sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
@@ -422,14 +436,14 @@ void Game_State::update(int &delta)
         sorted_specials.at(i)->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
       if ((sorted_specials.at(i)->get_type() == JUMPER &&
-           sorted_specials.at(i)->get_tex_num() == ABILITY &&
-           !(sorted_specials.at(i)->will_collide_y(map) ||
-             sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-             sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))) ||
-          (c == sorted_specials.at(i) && jump_delta != -1 &&
-           !(c->will_collide_y(map) ||
-             c->will_collide_tile(map, LADDER, NULL) ||
-             c->will_collide_moveables_y(moveables, -1, NULL))))
+            sorted_specials.at(i)->get_tex_num() == ABILITY &&
+            !(sorted_specials.at(i)->will_collide_y(map) ||
+              sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
+              sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))) ||
+           (c == sorted_specials.at(i) && jump_delta != -1 &&
+            !(c->will_collide_y(map) ||
+              c->will_collide_tile(map, LADDER, NULL) ||
+              c->will_collide_moveables_y(moveables, -1, NULL))))
       {
         sorted_specials.at(i)->setVSpeed(-JUMP_HEIGHT);
       }
@@ -790,7 +804,7 @@ void Game_State::update(int &delta)
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     a_delta = specials.at(i)->get_delta();
-    if (specials.at(i)->get_tex_num() == ABILITY)
+    if (specials.at(i)->get_tex_num() >= ABILITY)
     {
       if (specials.at(i)->get_type() != ENGINEER &&
           specials.at(i)->get_type() != AHNOLD &&
@@ -832,8 +846,16 @@ void Game_State::update(int &delta)
           if (specials.at(i)->get_type() == KURT &&
               ((Kurt*)specials.at(i))->get_ability())
           {
-            specials.at(i)->set_cur_frame((specials.at(i)->get_cur_frame() + 1) %
+            if (cur_frame < specials.at(i)->get_num_frames())
+            {
+              specials.at(i)->set_cur_frame(cur_frame + 1);
+            }
+            else
+            {
+              specials.at(i)->set_cur_frame(1);
+              specials.at(i)->set_tex_num((specials.at(i)->get_tex_num() - 1) %
                                           KURT_ABILITY_FRAMES + 2);
+            }
           }
           else
           {
@@ -1199,6 +1221,11 @@ void Game_State::key_released(unsigned char key, int x, int y)
           specials.at(key - 49)->is_controllable())
       {
         specials.at(key - 49)->use_ability(map);
+        if (((Special *)specials.at(key - 49))->get_type() == KURT &&
+            !((Kurt *)specials.at(key - 49))->get_ability())
+        {
+          moveables = ((Kurt *)specials.at(key - 49))->remove_blocks(moveables);
+        }
         last_key = 0;
       }
       else
