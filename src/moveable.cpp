@@ -1,4 +1,5 @@
 #include "moveable.h"
+#include "special.h"
 
 Moveable::Moveable(void)
 :Drawable(),gravity(false),v_speed(0),h_speed(0) {}
@@ -22,7 +23,7 @@ bool Moveable::will_collide_Dx(Drawable *d)
   right_x1 = left_x1 + get_width();
   right_x2 = left_x2 + d->get_width();
   bottom_y1 = top_y1 + get_height();
-  bottom_y2 = top_y2 + d->get_height();
+  bottom_y2 = top_y2 + d->get_height() - 1;
   
   if (bottom_y1 < top_y2) return false;
   if (top_y1 > bottom_y2) return false;
@@ -185,7 +186,7 @@ bool Moveable::will_collide_specials_x(vector<Special *>specials, int *collide)
 {
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    if (will_collide_Dx((Drawable *)specials.at(i)))
+    if (specials.at(i)->will_collide_Dx(this))
     {
       if (collide)
       {
