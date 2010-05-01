@@ -138,3 +138,27 @@ bool Kurt::will_collide_specials(std::vector<Special*> specials, int cur)
   
   return false;
 }
+
+bool Kurt::will_collide_Dx(Drawable *d)
+{
+  float left_x1, left_x2;
+  float right_x1, right_x2;
+  float top_y1, top_y2;
+  float bottom_y1, bottom_y2;
+  
+  get_top_left(left_x1, top_y1);
+  left_x1 += getHSpeed();
+  d->get_top_left(left_x2, top_y2);
+  right_x1 = left_x1 + TILE_WIDTH;
+  right_x2 = left_x2 + d->get_width();
+  bottom_y1 = top_y1 + TILE_HEIGHT;
+  bottom_y2 = top_y2 + d->get_height();
+  
+  if (bottom_y1 < top_y2) return false;
+  if (top_y1 > bottom_y2) return false;
+  
+  if (right_x1 < left_x2) return false;
+  if (left_x1 > right_x2) return false;
+  
+  return true;
+}
