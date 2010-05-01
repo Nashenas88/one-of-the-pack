@@ -395,7 +395,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         }
         for (unsigned int i = 0; i < moveables.size(); ++i)
         {
-          moveables.at(i)->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
+          ((Drawable*)moveables.at(i))->move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f -
                                TILE_WIDTH, -y * TILE_WIDTH +
                                3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT - y_offset);
         }
@@ -523,6 +523,31 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
           }
         }
       }
+    }
+  }
+  
+  // move every moveable 10 pixels in every direction and form
+  // a link with any moveables it collides with
+  int block;
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    for (int speed = -10; speed <= 10; speed += 20)
+    {
+      // check in the x
+      moveables.at(i)->map_setHSpeed(speed);
+      if (moveables.at(i)->will_collide_moveables_x(moveables, i, &block))
+      {
+        moveables.at(i)->add_link(moveables.at(block));
+      }
+      moveables.at(i)->map_setHSpeed(0);
+      
+      // check in the y
+      moveables.at(i)->map_setVSpeed(speed);
+      if (moveables.at(i)->will_collide_moveables_y(moveables, i, &block))
+      {
+        moveables.at(i)->add_link(moveables.at(block));
+      }
+      moveables.at(i)->map_setVSpeed(0);
     }
   }
   

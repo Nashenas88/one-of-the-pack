@@ -301,7 +301,7 @@ void Game_State::update(int &delta)
   int follow = -1;
   int mov_follow = -1;
   int temp_speed;
-  Moveable *temp_move, *temp2;
+  vector<Moveable *> links, ignore;
   
   // check for collision on everyone
   // collision is always on for moveables
@@ -309,36 +309,18 @@ void Game_State::update(int &delta)
   {
     if (moveables.at(i)->get_gravity())
     {
-      moveables.at(i)->setVSpeed(GRAVITY_SPEED);
+      moveables.at(i)->setVSpeed(GRAVITY_SPEED, map);
     }
     if(moveables.at(i)->will_collide_y(map))
     {
-      moveables.at(i)->setVSpeed(0);
+      moveables.at(i)->setVSpeed(0, map);
     }
     moveables.at(i)->move(0, moveables.at(i)->getVSpeed());
     
     if(moveables.at(i)->will_collide_x(map) ||
        moveables.at(i)->will_collide_specials_x(specials, NULL))
     {
-      moveables.at(i)->setHSpeed(0);
-      temp_move = moveables.at(i)->get_link();
-      while(temp_move)
-      {
-        temp_move->setHSpeed(0);
-        temp2 = temp_move;
-        temp_move = temp_move->get_link();
-        temp2->set_link(NULL);
-        if (temp_move == moveables.at(i))
-        {
-          break;
-        }
-      }
-    }
-    
-    if(moveables.at(i)->will_collide_moveables_x(moveables, i, &mov_follow))
-    {
-      moveables.at(mov_follow)->setHSpeed(moveables.at(i)->getHSpeed());
-      moveables.at(mov_follow)->set_link(moveables.at(i));
+      moveables.at(i)->setHSpeed(0, map);
     }
   }
   if (collision)
@@ -668,7 +650,7 @@ void Game_State::update(int &delta)
   // move moveables
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
-    moveables.at(i)->move(moveables.at(i)->getHSpeed(), 0);
+    ((Drawable *)moveables.at(i))->move(moveables.at(i)->getHSpeed(), 0);
   }
   
   c->move(c->getHSpeed(), c->getVSpeed());
@@ -763,7 +745,7 @@ void Game_State::update(int &delta)
       }
       for (unsigned int i = 0; i < moveables.size(); ++i)
       {
-        moveables.at(i)->move(mx, my);
+        ((Drawable *)moveables.at(i))->move(mx, my);
       }
       for (unsigned int i = 0; i < beams.size(); ++i)
       {
