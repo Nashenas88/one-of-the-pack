@@ -42,6 +42,7 @@ public:
   // getting background
   Drawable *get_background(void) {return tiles.at((int)BG);}
   vector<Moveable *> get_moveables(void) {return moves;}
+  void set_moveables(vector<Moveable*> m) {moves = m;}
   vector<Special *> get_specials(void) {return specs;}
   
   // simple methods for adding, getting, and removing blockers

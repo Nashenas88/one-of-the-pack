@@ -440,14 +440,16 @@ void Game_State::update(int &delta)
       if ((sorted_specials.at(i)->get_type() == JUMPER &&
             sorted_specials.at(i)->get_tex_num() == ABILITY &&
             !(sorted_specials.at(i)->will_collide_y(map) ||
-              sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-              sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))) ||
+              sorted_specials.at(i)->will_collide_tile(map, LADDER, NULL))) ||
            (c == sorted_specials.at(i) && jump_delta != -1 &&
             !(c->will_collide_y(map) ||
-              c->will_collide_tile(map, LADDER, NULL) ||
-              c->will_collide_moveables_y(moveables, -1, NULL))))
+              c->will_collide_tile(map, LADDER, NULL))))
       {
         sorted_specials.at(i)->setVSpeed(-JUMP_HEIGHT);
+      }
+      if (sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))
+      {
+        sorted_specials.at(i)->setVSpeed(0);
       }
     }
     // move specials in the y
@@ -825,6 +827,7 @@ void Game_State::update(int &delta)
                    !((Kurt *)specials.at(i))->get_summoned())
           {
             moveables = ((Kurt *)specials.at(i))->enable_ability(map, i, p, moveables, specials);
+            map->set_moveables(moveables);
           }
           if (specials.at(i)->get_type() == KURT &&
               ((Kurt*)specials.at(i))->get_ability())
@@ -1024,6 +1027,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         if (((Special *)c)->get_type() == KURT && !((Kurt *)c)->get_ability())
         {
           moveables = ((Kurt *)c)->remove_blocks(moveables);
+          map->set_moveables(moveables);
         }
       }
       break;
@@ -1035,6 +1039,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
             && !((Kurt *)specials.at(i))->get_ability())
         {
           moveables = ((Kurt *)specials.at(i))->remove_blocks(moveables);
+          map->set_moveables(moveables);
         }
       }
       break;
@@ -1236,6 +1241,7 @@ void Game_State::key_released(unsigned char key, int x, int y)
             !((Kurt *)specials.at(key - 49))->get_ability())
         {
           moveables = ((Kurt *)specials.at(key - 49))->remove_blocks(moveables);
+          map->set_moveables(moveables);
         }
         last_key = 0;
       }
