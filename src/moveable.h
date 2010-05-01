@@ -15,8 +15,12 @@ private:
   // vertical and horizontal speed
   int v_speed, h_speed;
   
-  Moveable *link;
+  vector<Moveable *> links;
   
+  void setVSpeed(int vs, Map *m, vector<Moveable *> ignore);
+  void setHSpeed(int hs, Map *m, vector<Moveable *> ignore);
+  void setVSpeed(int vs) {v_speed = vs;}
+  void setHSpeed(int hs) {h_speed = hs;}
 public:
   // constructors
   Moveable(void);
@@ -24,13 +28,17 @@ public:
   
   // getters and setters
   int getVSpeed(void) {return v_speed;}
-  void setVSpeed(int vs) {v_speed = vs;}
+  void setVSpeed(int vs, Map *m);
   int getHSpeed(void) {return h_speed;}
-  void setHSpeed(int hs) {h_speed = hs;}
+  void setHSpeed(int hs, Map *m);
   bool get_gravity(void) {return gravity;}
   void set_gravity(bool g) {gravity = g;}
-  Moveable *get_link(void) {return link;}
-  void set_link(Moveable *l) {link = l;}
+  vector<Moveable *> get_links(void) {return links;}
+  void add_link(Moveable *l) {links.push_back(l);}
+  
+  // TO ONLY BE USED IN MAP.CPP
+  void map_setVSpeed(int vs) {setVSpeed(vs);}
+  void map_setHSpeed(int hs) {setHSpeed(hs);}
   
   bool will_collide_Dx(Drawable *o);
   bool will_collide_Dy(Drawable *o);

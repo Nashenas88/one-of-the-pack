@@ -6,8 +6,7 @@ Moveable::Moveable(void)
 
 Moveable::Moveable(float x, float y, int num, int frames, Texture *tex,
                    bool g)
-:Drawable(x, y, num, frames, TILE, tex), gravity(g), v_speed(0), h_speed(0),
-link(NULL) {}
+:Drawable(x, y, num, frames, TILE, tex), gravity(g), v_speed(0), h_speed(0) {}
 
 
 bool Moveable::will_collide_Dx(Drawable *d)
@@ -196,4 +195,126 @@ bool Moveable::will_collide_specials_x(vector<Special *>specials, int *collide)
     }
   }
   return false;
+}
+
+void Moveable::setHSpeed(int hs, Map *m)
+{
+  vector<Moveable *> ignore;
+  ignore.push_back(this);
+  h_speed = hs;
+  for (unsigned int i = 0; i < links.size(); ++i)
+  {
+    links.at(i)->setHSpeed(hs, m, ignore);
+  }
+}
+
+void Moveable::setVSpeed(int vs, Map *m)
+{
+  vector<Moveable *> ignore;
+  ignore.push_back(this);
+  v_speed = vs;
+  for (unsigned int i = 0; i < links.size(); ++i)
+  {
+    links.at(i)->setVSpeed(vs, m, ignore);
+  }
+}
+
+void Moveable::setHSpeed(int hs, Map *m, vector<Moveable *> ignore)
+{
+  for (unsigned int i = 0; i < ignore.size(); ++i)
+  {
+    if (ignore.at(i) == this)
+    {
+      return;
+    }
+  }
+  
+  bool leave = false;
+  int old;
+  
+  old = getHSpeed();
+  setHSpeed(hs);
+  if (will_collide_x(m))
+  {
+    for (unsigned int i = 0; i < ignore.size(); ++i)
+    {
+      ignore.at(i)->setHSpeed(0);
+    }
+    leave = true;
+  }
+  setHSpeed(old);
+  
+  if (leave)
+  {
+    setHSpeed(0);
+    return;
+  }
+  
+  ignore.push_back(this);
+  setHSpeed(hs);
+  
+  for (unsigned int i = 0, j = 0; i < links.size(); ++i)
+  {
+    for (j = 0; j < ignore.size(); ++j)
+    {
+      if (links.at(i) == ignore.at(j))
+      {
+        break;
+      }
+    }
+    if (j == ignore.size())
+    {
+      links.at(i)->setHSpeed(hs, m, ignore);
+    }
+  }
+}
+
+void Moveable::setVSpeed(int vs, Map *m, vector<Moveable *> ignore)
+{
+  for (unsigned int i = 0; i < ignore.size(); ++i)
+  {
+    if (ignore.at(i) == this)
+    {
+      return;
+    }
+  }
+  
+  bool leave = false;
+  int old;
+  
+  old = getVSpeed();
+  setVSpeed(vs);
+  if (will_collide_x(m))
+  {
+    for (unsigned int i = 0; i < ignore.size(); ++i)
+    {
+      ignore.at(i)->setVSpeed(0);
+    }
+    leave = true;
+  }
+  setVSpeed(old);
+  
+  if (leave)
+  {
+    setVSpeed(0);
+    return;
+  }
+  
+  ignore.push_back(this);
+  setVSpeed(vs);
+  
+  for (unsigned int i = 0, j = 0; i < links.size(); ++i)
+  {
+    for (j = 0; j < ignore.size(); ++j)
+    {
+      if (links.at(i) == ignore.at(j))
+      {
+        break;
+      }
+    }
+    if (j == ignore.size())
+    {
+      links.at(i)->setVSpeed(vs, m, ignore);
+    }
+  }
 }

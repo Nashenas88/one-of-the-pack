@@ -50,11 +50,11 @@ void Ahnold::enable_ability(Map *m)
     move = m->get_moveables().at(block);
     if (move->get_gravity())
     {
-      move->setHSpeed(getHSpeed() / PUNCH_RANGE * BLOCK_SLIDE_SPEED);
+      move->setHSpeed(getHSpeed() / PUNCH_RANGE * BLOCK_SLIDE_SPEED, m);
     }
     else
     {
-      move->setHSpeed(getHSpeed() / PUNCH_RANGE * HOVER_SLIDE_SPEED);
+      move->setHSpeed(getHSpeed() / PUNCH_RANGE * HOVER_SLIDE_SPEED, m);
     }
   }
   
