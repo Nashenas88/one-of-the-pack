@@ -23,6 +23,8 @@ public:
   std::vector<Moveable*> remove_blocks(std::vector<Moveable*> moveables);
   void use_ability(Map *m);
   std::vector<Moveable*> enable_ability(Map *m, int i, Player *p, std::vector<Moveable*> moveables, std::vector<Special*> specials);
+  
+  bool will_collide_Dx(Drawable *d);
 };
 
 #endif // FLOCK__WONDER__H

@@ -189,11 +189,13 @@ void Game_State::update(int &delta)
   
   // change speed of controlled player
   // if keys are being pressed
-  if (last_x && a)
+  if (last_x && a && !(c != p && ((Special*)c)->get_type() == KURT &&
+                       ((Kurt*)c)->get_ability()))
   {
     c->setHSpeed(-PLAYER_SPEED);
   }
-  else if (d)
+  else if (d && !(c != p && ((Special*)c)->get_type() == KURT &&
+                  ((Kurt*)c)->get_ability()))
   {
     c->setHSpeed(PLAYER_SPEED);
   }
@@ -218,7 +220,7 @@ void Game_State::update(int &delta)
     int x, y;
     map->calculate_location(p, x, y);
     
-    if (p->get_bounce() && p->get_jump() && y > p->get_jump())
+    if (p->get_bounce() && p->get_jump() && y >= p->get_jump())
     {
       p->setVSpeed(-GRAVITY_SPEED);
     }
@@ -233,10 +235,10 @@ void Game_State::update(int &delta)
         {
           p->set_jump(y);
         }
-        else if (y == p->get_jump())
+        else if (y <= p->get_jump())
         {
           p->set_jump(0);
-          p->set_bounce(0);
+          p->set_bounce(false);
         }
       }
       p->setVSpeed(GRAVITY_SPEED);
@@ -489,11 +491,11 @@ void Game_State::update(int &delta)
         p->setVSpeed(temp);
       }
       p->move(0, -temp);
-      
-      if (p->will_collide_rubber_y(map))
-      {
-        p->setVSpeed(-p->getVSpeed());
-      }
+    }
+    else if (p->will_collide_rubber_y(map))
+    {
+      p->setVSpeed(-GRAVITY_SPEED);
+      p->set_bounce(true);
     }
     
     // change falling speed to PLAYER_SPEED when too close to floor
@@ -808,6 +810,7 @@ void Game_State::update(int &delta)
     {
       if (specials.at(i)->get_type() != ENGINEER &&
           specials.at(i)->get_type() != AHNOLD &&
+          specials.at(i)->get_type() != PARIS &&
           a_delta > SPECIAL_DELTA_DELAY)
       {
         specials.at(i)->set_delta(0);
@@ -818,27 +821,7 @@ void Game_State::update(int &delta)
         }
         else if (cur_frame == specials.at(i)->get_abil_frames())
         {
-          if (specials.at(i)->get_type() == PARIS)
-          {
-            int coords[2];
-            float temp_speed;
-            temp_speed = specials.at(i)->getHSpeed();
-            if (specials.at(i)->getDirection() == RIGHT)
-            {
-              specials.at(i)->setHSpeed(PARIS_KISS_RANGE);
-            }
-            else
-            {
-              specials.at(i)->setHSpeed(-PARIS_KISS_RANGE);
-            }
-            if (specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_R, coords) ||
-                specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_L, coords))
-            {
-              map->open_bouncer(coords[0], coords[1]);
-            }
-            specials.at(i)->setHSpeed((int)temp_speed);
-          }
-          else if (specials.at(i)->get_type() == KURT &&
+          if (specials.at(i)->get_type() == KURT &&
                    !((Kurt *)specials.at(i))->get_summoned())
           {
             moveables = ((Kurt *)specials.at(i))->enable_ability(map, i, p, moveables, specials);
@@ -865,9 +848,11 @@ void Game_State::update(int &delta)
         }
       }
       else if ((specials.at(i)->get_type() == ENGINEER &&
-                a_delta > ENGINEER_DELTA_DELAY)||
+                a_delta > ENGINEER_DELTA_DELAY) ||
                (specials.at(i)->get_type() == AHNOLD &&
-                a_delta > AHNOLD_DELTA_DELAY))
+                a_delta > AHNOLD_DELTA_DELAY) ||
+               (specials.at(i)->get_type() == PARIS &&
+                a_delta > PARIS_DELTA_DELAY))
       {
         specials.at(i)->set_delta(0);
         cur_frame = specials.at(i)->get_cur_frame();
@@ -889,13 +874,35 @@ void Game_State::update(int &delta)
           {
             beams.push_back(((Engineer *) specials.at(i))->enable_ability(map));
           }
+          else if (specials.at(i)->get_type() == PARIS)
+          {
+            int coords[2];
+            float temp_speed;
+            temp_speed = specials.at(i)->getHSpeed();
+            if (specials.at(i)->getDirection() == RIGHT)
+            {
+              specials.at(i)->setHSpeed(PARIS_KISS_RANGE);
+            }
+            else
+            {
+              specials.at(i)->setHSpeed(-PARIS_KISS_RANGE);
+            }
+            if (specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_R, coords) ||
+                specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_L, coords))
+            {
+              map->open_bouncer(coords[0], coords[1]);
+            }
+            specials.at(i)->setHSpeed((int)temp_speed);
+          }
           specials.at(i)->set_delta(-1);
         }
       }
       else if ((specials.at(i)->get_type() == ENGINEER &&
                 a_delta < 0 && a_delta < -ENGINEER_DELTA_DELAY) ||
                (specials.at(i)->get_type() == AHNOLD &&
-                a_delta < 0 && a_delta< -ENGINEER_DELTA_DELAY))
+                a_delta < 0 && a_delta < -ENGINEER_DELTA_DELAY) ||
+               (specials.at(i)->get_type() == PARIS &&
+                a_delta < 0 && a_delta < PARIS_DELTA_DELAY))
       {
         specials.at(i)->set_delta(-1);
         cur_frame = specials.at(i)->get_cur_frame();
@@ -1024,6 +1031,11 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       for (unsigned int i = 0; i < next_special && i < specials.size(); ++i)
       {
         specials.at(i)->use_ability(map);
+        if (specials.at(i)->get_type() == KURT
+            && !((Kurt *)specials.at(i))->get_ability())
+        {
+          moveables = ((Kurt *)specials.at(i))->remove_blocks(moveables);
+        }
       }
       break;
     case 'g':
@@ -1090,7 +1102,6 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       {
         break;
       }
-      c->setVSpeed(GRAVITY_SPEED);
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
@@ -1221,7 +1232,7 @@ void Game_State::key_released(unsigned char key, int x, int y)
           specials.at(key - 49)->is_controllable())
       {
         specials.at(key - 49)->use_ability(map);
-        if (((Special *)specials.at(key - 49))->get_type() == KURT &&
+        if (specials.at(key - 49)->get_type() == KURT &&
             !((Kurt *)specials.at(key - 49))->get_ability())
         {
           moveables = ((Kurt *)specials.at(key - 49))->remove_blocks(moveables);
