@@ -110,6 +110,7 @@ typedef enum
 } direc;
 
 #define RUBBER_FRAME 2
+#define CIRCUIT_FRAME 3
 typedef enum
 {
   BG,
@@ -122,6 +123,7 @@ typedef enum
   L_BLOCK,
   LC_BLOCK,
   RC_BLOCK,
+  CIRCUIT,
   RUBBER,
   LADDER,
   PLATFORM,

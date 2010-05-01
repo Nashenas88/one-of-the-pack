@@ -270,6 +270,12 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
           map[x][y][M_TILE] = rand() % 5 + 1; // randomly selects a block 1-5
         }
       }
+      // circuit
+      if(red[0] == 0 && green[0] == 0 && blue[0] == 128)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = CIRCUIT;
+      }
       // outside of the playable area
       if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
       {
@@ -557,6 +563,32 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   tiles.at((int)BG)->move(-SCREEN_WIDTH, -SCREEN_HEIGHT);
   
   return true;
+}
+
+void Map::convert_circuit(int x, int y)
+{
+  if (get_tile(x, y) == CIRCUIT)
+  {
+    map[x][y][M_COLL] = CIRCUIT;
+    map[x][y][M_TILE] = RUBBER;
+    convert_circuit(x - 1, y);
+    convert_circuit(x + 1, y);
+    convert_circuit(x, y - 1);
+    convert_circuit(x, y + 1);
+  }
+}
+
+void Map::unconvert_circuit(int x, int y)
+{
+  if (map[x][y][M_COLL] == CIRCUIT)
+  {
+    map[x][y][M_COLL] = 1;
+    map[x][y][M_TILE] = CIRCUIT;
+    unconvert_circuit(x - 1, y);
+    unconvert_circuit(x + 1, y);
+    unconvert_circuit(x, y - 1);
+    unconvert_circuit(x, y + 1);
+  }
 }
 
 void Map::clean(void)

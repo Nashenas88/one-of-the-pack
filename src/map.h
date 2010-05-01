@@ -48,11 +48,14 @@ public:
   // simple methods for adding, getting, and removing blockers
   bool get_blocker(int x, int y) {return map[x][y][M_COLL] == 1;}
   tile_type get_tile(int x, int y) {return (tile_type) map[x][y][M_TILE];}
+  tile_type get_coll(int x, int y) {return (tile_type) map[x][y][M_COLL];}
   bool make_rubber(int x, int y);
   bool return_from_rubber(int x, int y);
   void remove(int x, int y);
   void open_bouncer(int x, int y);
   void move(float x, float y);
+  void convert_circuit(int x, int y);
+  void unconvert_circuit(int x, int y);
   
   void calculate_location(Drawable *d, int &x, int &y);
   

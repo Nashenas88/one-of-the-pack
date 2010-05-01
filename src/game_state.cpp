@@ -100,6 +100,17 @@ void Game_State::update(int &delta)
         delete beams.at(i);
         to_delete.push_back(i);
         
+        if (map->get_tile(coords[0], coords[1]) == CIRCUIT)
+        {
+          map->convert_circuit(coords[0], coords[1]);
+          break;
+        }
+        else if (map->get_coll(coords[0], coords[1]) == CIRCUIT)
+        {
+          map->unconvert_circuit(coords[0], coords[1]);
+          break;
+        }
+        
         // make sure the blocks we'll be checking are in the map
         if (coords[0] - 1 < 0)
         {
@@ -321,6 +332,14 @@ void Game_State::update(int &delta)
        moveables.at(i)->will_collide_specials_x(specials, NULL))
     {
       moveables.at(i)->setHSpeed(0, map);
+    }
+    if(moveables.at(i)->will_collide_rubber_x(map))
+    {
+      moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
+    }
+    if(moveables.at(i)->will_collide_rubber_y(map))
+    {
+      moveables.at(i)->setVSpeed(-moveables.at(i)->getVSpeed(), map);
     }
   }
   if (collision)
