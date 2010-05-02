@@ -43,6 +43,7 @@ public:
   void setHSpeed(int hs, Map *m);
   bool get_gravity(void) {return gravity;}
   void set_gravity(bool g) {gravity = g;}
+  bool get_rubber(void) {return rubber;}
   vector<Moveable *> get_links(void) {return links;}
   void add_link(Moveable *l) {links.push_back(l);}
   

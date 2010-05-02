@@ -351,9 +351,17 @@ void Game_State::update(int &delta)
     }
     
     if(moveables.at(i)->will_collide_x(map) ||
-       moveables.at(i)->will_collide_specials_x(specials, NULL))
+       moveables.at(i)->will_collide_specials_x(specials, NULL) ||
+       moveables.at(i)->will_collide_moveables_x(moveables, i, NULL))
     {
-      moveables.at(i)->setHSpeed(0, map);
+      if (moveables.at(i)->get_rubber())
+      {
+        moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
+      }
+      else
+      {
+        moveables.at(i)->setHSpeed(0, map);
+      }
     }
     if(moveables.at(i)->will_collide_rubber_x(map))
     {

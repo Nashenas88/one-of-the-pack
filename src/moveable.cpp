@@ -58,8 +58,8 @@ bool Moveable::will_collide_Dx(Drawable *d)
   d->get_top_left(left_x2, top_y2);
   right_x1 = left_x1 + get_width();
   right_x2 = left_x2 + d->get_width();
-  bottom_y1 = top_y1 + get_height();
-  bottom_y2 = top_y2 + d->get_height() - 1;
+  bottom_y1 = top_y1 + get_height() - 1;
+  bottom_y2 = top_y2 + d->get_height();
   
   if (bottom_y1 < top_y2) return false;
   if (top_y1 > bottom_y2) return false;
@@ -179,12 +179,25 @@ bool Moveable::will_collide_y(Map *m)
 bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
+  bool skip = false;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
+    skip = false;
     if (cur == (int)i)
     {
       continue;
     }
+    for (int j = 0; j < get_links().size(); j++)
+    {
+      if (moveables.at(i) == get_links().at(j))
+      {
+        skip = true;
+        break;
+      }
+    }
+    
+    if (skip == true) continue;
+    
     if (will_collide_Dx(moveables.at(i)))
     {
       if (collide)
@@ -200,12 +213,24 @@ bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
 bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
+  skip = false;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     if (cur == (int)i)
     {
       continue;
     }
+    
+    for (int j = 0; j < get_links().size(); j++)
+    {
+      if (moveables.at(i) == get_links().at(j))
+      {
+        skip = true;
+        break;
+      }
+    }
+    
+    if (skip == true) continue;
     
     if (will_collide_Dy(moveables.at(i)))
     {
