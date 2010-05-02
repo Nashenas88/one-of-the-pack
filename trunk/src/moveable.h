@@ -11,6 +11,11 @@ private:
   // gravity flag used to differentiate 
   // floating moving platforms from normal blocks
   bool gravity;
+  bool rubber;
+  bool resetted;
+  
+  // original location
+  int loc[2];
   
   // vertical and horizontal speed
   int v_speed, h_speed;
@@ -24,7 +29,8 @@ private:
 public:
   // constructors
   Moveable(void);
-  Moveable(float x, float y, int num, int frames, Texture *tex, bool g);
+  Moveable(float x, float y, int start_x, int start_y, int num, int frames, Texture *tex,
+           bool g, bool r);
   
   // getters and setters
   int getVSpeed(void) {return v_speed;}
@@ -35,6 +41,9 @@ public:
   void set_gravity(bool g) {gravity = g;}
   vector<Moveable *> get_links(void) {return links;}
   void add_link(Moveable *l) {links.push_back(l);}
+  
+  void reset(Map *m);
+  void move(float x, float y, Map *m);
   
   // TO ONLY BE USED IN MAP.CPP
   void map_setVSpeed(int vs) {setVSpeed(vs);}

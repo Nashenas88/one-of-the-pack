@@ -61,8 +61,11 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   float old_speed = getHSpeed();
   move_loc = moveables.size();
   Moveable *temp_move;
+  int x, y;
+  m->calculate_location(this, x, y);
   
-  temp_move = new Moveable(get_x(), get_y(), KURT_MUSIC_NUM, 1, get_texture(), false);
+  temp_move = new Moveable(get_x(), get_y(), x, y, KURT_MUSIC_NUM, 1,
+                           get_texture(), false, false);
   temp_move->set_cur_frame(3);
   moveables.push_back(temp_move);
   
@@ -76,7 +79,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
       !will_collide_moveables_x(moveables, -1, NULL))
   {
     ++num_created;
-    temp_move = new Moveable(get_x()+TILE_WIDTH, get_y(), KURT_MUSIC_NUM, 1, get_texture(), false);
+    temp_move = new Moveable(get_x()+TILE_WIDTH, get_y(), x + 1, y,
+                             KURT_MUSIC_NUM, 1, get_texture(), false, false);
     temp_move->set_cur_frame(4);
     moveables.push_back(temp_move);
     setHSpeed(2*TILE_WIDTH);
@@ -87,7 +91,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
         !will_collide_moveables_x(moveables, -1, NULL))
     {
       ++num_created;
-      temp_move = new Moveable(get_x()+TILE_WIDTH*2, get_y(), KURT_MUSIC_NUM, 1, get_texture(), false);
+      temp_move = new Moveable(get_x()+TILE_WIDTH*2, get_y(), x + 2, y,
+                               KURT_MUSIC_NUM, 1, get_texture(), false, false);
       temp_move->set_cur_frame(5);
       moveables.push_back(temp_move);
     }
@@ -101,7 +106,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
       !will_collide_moveables_x(moveables, -1, NULL))
   {
     ++num_created;
-    temp_move = new Moveable(get_x()-TILE_WIDTH, get_y(), KURT_MUSIC_NUM, 1, get_texture(), false);
+    temp_move = new Moveable(get_x()-TILE_WIDTH, get_y(), x - 1, y,
+                             KURT_MUSIC_NUM, 1, get_texture(), false, false);
     temp_move->set_cur_frame(2);
     moveables.push_back(temp_move);
     setHSpeed(-TILE_WIDTH*2);
@@ -112,7 +118,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
         !will_collide_moveables_x(moveables, -1, NULL))
     {
       ++num_created;
-      moveables.push_back(new Moveable(get_x()-TILE_WIDTH*2, get_y(), KURT_MUSIC_NUM, 1, get_texture(), false));
+      moveables.push_back(new Moveable(get_x()-TILE_WIDTH*2, get_y(), x - 2, y,
+                                       KURT_MUSIC_NUM, 1, get_texture(), false, false));
     }
   }
   setHSpeed(old_speed);

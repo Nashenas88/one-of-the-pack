@@ -326,7 +326,6 @@ void Game_State::update(int &delta)
     {
       moveables.at(i)->setVSpeed(0, map);
     }
-    moveables.at(i)->move(0, moveables.at(i)->getVSpeed());
     
     if(moveables.at(i)->will_collide_x(map) ||
        moveables.at(i)->will_collide_specials_x(specials, NULL))
@@ -660,16 +659,23 @@ void Game_State::update(int &delta)
     {
       continue;
     }
-    //if (!specials.at(i)->will_collide_x(map))
-    //{
-      specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
-    //}
+    specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+  }
+  
+  // right before moving moveables, make sure they shouldn't be reset
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    if (moveables.at(i)->will_collide_tile(map, BLACK_HOLE, NULL))
+    {
+      moveables.at(i)->reset(map);
+    }
   }
   
   // move moveables
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
-    ((Drawable *)moveables.at(i))->move(moveables.at(i)->getHSpeed(), 0);
+    moveables.at(i)->move(moveables.at(i)->getHSpeed(),
+                          moveables.at(i)->getVSpeed(), map);
   }
   
   c->move(c->getHSpeed(), c->getVSpeed());
