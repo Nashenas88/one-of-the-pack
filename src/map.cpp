@@ -380,6 +380,11 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       {
         map[x][y][M_TILE] = BLACK_HOLE;
       }
+      // toxic sludge tile
+      else if (red[0] == 128 && green[0] == 255 && blue[0] == 128)
+      {
+        map[x][y][M_TILE] = TOXIC_SLUDGE;
+      }
       // moving platform
       else if(red[0] == 128 && green[0] == 0 && blue[0] == 128)
       {
