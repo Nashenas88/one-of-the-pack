@@ -7,7 +7,7 @@ Moveable::Moveable(void)
 Moveable::Moveable(float x, float y, int start_x, int start_y, int num,
                    int frames, Texture *tex, bool g, bool r, Kurt *c)
 :Drawable(x, y, num, frames, TILE, tex), gravity(g), rubber(r), resetted(false),
-v_speed(0), h_speed(0), creator(c)
+freezeable(g), v_speed(0), h_speed(0), creator(c)
 {
   loc[0] = start_x;
   loc[1] = start_y;

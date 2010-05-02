@@ -354,6 +354,18 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                             x, y, PUSH, 1, ts, true, false, NULL);
         moveables.push_back(move);
       }
+      // freezeable moveable block
+      else if(red[0] == 0 && green[0] == 64 && blue[0] == 64)
+      {
+        float mx, my;
+        Moveable *move;
+        get_top_left(mx, my);
+        move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                            x, y, PUSH, 1, ts, true, false, NULL);
+        move->set_gravity(false);
+        move->set_cur_frame(FREEZEABLE_FRAME);
+        moveables.push_back(move);
+      }
       // ladder
       else if(red[0] == 128 && green[0] == 128 && blue[0] == 0)
       {
