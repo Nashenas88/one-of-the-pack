@@ -150,10 +150,12 @@ void Game_State::update(int &delta)
       }
       if (j == LADDER)
       {
-        if (beams.at(i)->will_collide_moveables_x(moveables, -1, &which) &&
-            moveables.at(which)->is_freezeable())
+        if (beams.at(i)->will_collide_moveables_x(moveables, -1, &which))
         {
-          moveables.at(which)->set_gravity(!moveables.at(which)->get_gravity());
+          if (moveables.at(which)->is_freezeable())
+          {
+            moveables.at(which)->set_gravity(!moveables.at(which)->get_gravity());
+          }
           beams.at(i)->play_effect();
           delete beams.at(i);
           to_delete.push_back(i);
