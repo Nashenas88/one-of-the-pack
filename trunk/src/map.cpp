@@ -98,7 +98,8 @@ bool Map::make_rubber(int x, int y)
 
 bool Map::return_from_rubber(int x, int y)
 {
-  if (map[x][y][M_TILE] == RUBBER && map[x][y][M_COLL] != 1)
+  if (map[x][y][M_TILE] == RUBBER && map[x][y][M_COLL] != 1 &&
+      map[x][y][M_COLL] != CIRCUIT)
   {
     map[x][y][M_TILE] = map[x][y][M_COLL] - 1;
     map[x][y][M_COLL] = 1;
@@ -405,6 +406,12 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                TILE_WIDTH, -y * TILE_WIDTH +
                                3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT - y_offset);
         }
+        ((Player *)player)->set_checkpoint(x, y);
+      }
+      // check point
+      else if (red[0] == 192 && green[0] == 128 && blue[0] == 255)
+      {
+        map[x][y][M_TILE] = NEW_CHECKPOINT;
       }
       // Body Guards
       // Right
@@ -588,6 +595,14 @@ void Map::unconvert_circuit(int x, int y)
     unconvert_circuit(x + 1, y);
     unconvert_circuit(x, y - 1);
     unconvert_circuit(x, y + 1);
+  }
+}
+
+void Map::clear_checkpoint(int x, int y)
+{
+  if (map[x][y][M_TILE] == NEW_CHECKPOINT)
+  {
+    map[x][y][M_TILE] = OLD_CHECKPOINT;
   }
 }
 
