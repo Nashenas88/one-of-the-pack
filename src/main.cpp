@@ -116,7 +116,7 @@ void initLevel(int level)
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
   Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o, *rubber;
-  Drawable *circuit;
+  Drawable *circuit, *n_check, *o_check;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
   Texture *engineer, *paris, *kurt;
   vector<Texture*> textures;
@@ -256,6 +256,9 @@ void initLevel(int level)
   rubber->set_cur_frame(RUBBER_FRAME);
   circuit = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   circuit->set_cur_frame(CIRCUIT_FRAME);
+  n_check = new Drawable(0.0f, 0.0f, CHECKS, 1, TILE, tiles);
+  o_check = new Drawable(0.0f, 0.0f, CHECKS, 1, TILE, tiles);
+  o_check->set_cur_frame(OLD_CHECK_FRAME);
   
   // place all drawables into vector
   // this order MUST match the order
@@ -272,9 +275,9 @@ void initLevel(int level)
   v.push_back(right_block);
   v.push_back(left_corner_block);
   v.push_back(right_corner_block);
-  v.push_back(circuit);
   v.push_back(rubber);
   v.push_back(ladder);
+  v.push_back(circuit);
   v.push_back(plat);
   v.push_back(breakable);
   v.push_back(goal);
@@ -282,6 +285,8 @@ void initLevel(int level)
   v.push_back(bouncer_cr);
   v.push_back(bouncer_cl);
   v.push_back(bouncer_o);
+  v.push_back(n_check);
+  v.push_back(o_check);
   
   textures.clear();
   textures.push_back(ahnold);

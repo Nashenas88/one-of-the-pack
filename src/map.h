@@ -56,6 +56,7 @@ public:
   void move(float x, float y);
   void convert_circuit(int x, int y);
   void unconvert_circuit(int x, int y);
+  void clear_checkpoint(int x, int y);
   
   void calculate_location(Drawable *d, int &x, int &y);
   

@@ -60,14 +60,14 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
 {
   float old_speed = getHSpeed();
   move_loc = moveables.size();
-  Moveable *temp_move;
+  Moveable *temp_move1, *temp_move2, *temp_move3, *temp_move4, *temp_move5;
   int x, y;
   m->calculate_location(this, x, y);
   
-  temp_move = new Moveable(get_x(), get_y(), x, y, KURT_MUSIC_NUM, 1,
+  temp_move1 = new Moveable(get_x(), get_y(), x, y, KURT_MUSIC_NUM, 1,
                            get_texture(), false, false);
-  temp_move->set_cur_frame(3);
-  moveables.push_back(temp_move);
+  temp_move1->set_cur_frame(3);
+  moveables.push_back(temp_move1);
   
   num_created = 1;
   
@@ -79,10 +79,14 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
       !will_collide_moveables_x(moveables, -1, NULL))
   {
     ++num_created;
-    temp_move = new Moveable(get_x()+TILE_WIDTH, get_y(), x + 1, y,
+    temp_move2 = new Moveable(get_x()+TILE_WIDTH, get_y(), x + 1, y,
                              KURT_MUSIC_NUM, 1, get_texture(), false, false);
-    temp_move->set_cur_frame(4);
-    moveables.push_back(temp_move);
+    temp_move2->set_cur_frame(4);
+    moveables.push_back(temp_move2);
+    
+    temp_move1->add_link(temp_move2);
+    temp_move2->add_link(temp_move1);
+    
     setHSpeed(2*TILE_WIDTH);
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
@@ -91,10 +95,13 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
         !will_collide_moveables_x(moveables, -1, NULL))
     {
       ++num_created;
-      temp_move = new Moveable(get_x()+TILE_WIDTH*2, get_y(), x + 2, y,
+      temp_move3 = new Moveable(get_x()+TILE_WIDTH*2, get_y(), x + 2, y,
                                KURT_MUSIC_NUM, 1, get_texture(), false, false);
-      temp_move->set_cur_frame(5);
-      moveables.push_back(temp_move);
+      temp_move3->set_cur_frame(5);
+      moveables.push_back(temp_move3);
+      
+      temp_move2->add_link(temp_move3);
+      temp_move3->add_link(temp_move2);
     }
   }
   
@@ -106,11 +113,14 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
       !will_collide_moveables_x(moveables, -1, NULL))
   {
     ++num_created;
-    temp_move = new Moveable(get_x()-TILE_WIDTH, get_y(), x - 1, y,
+    temp_move4 = new Moveable(get_x()-TILE_WIDTH, get_y(), x - 1, y,
                              KURT_MUSIC_NUM, 1, get_texture(), false, false);
-    temp_move->set_cur_frame(2);
-    moveables.push_back(temp_move);
+    temp_move4->set_cur_frame(2);
+    moveables.push_back(temp_move4);
     setHSpeed(-TILE_WIDTH*2);
+    
+    temp_move1->add_link(temp_move4);
+    temp_move4->add_link(temp_move1);
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
         !will_collide_tile(m, PLATFORM, NULL) &&
@@ -118,8 +128,12 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
         !will_collide_moveables_x(moveables, -1, NULL))
     {
       ++num_created;
-      moveables.push_back(new Moveable(get_x()-TILE_WIDTH*2, get_y(), x - 2, y,
-                                       KURT_MUSIC_NUM, 1, get_texture(), false, false));
+      temp_move5 = new Moveable(get_x()-TILE_WIDTH*2, get_y(), x - 2, y,
+                                KURT_MUSIC_NUM, 1, get_texture(), false, false);
+      moveables.push_back(temp_move5);
+      
+      temp_move4->add_link(temp_move5);
+      temp_move5->add_link(temp_move4);
     }
   }
   setHSpeed(old_speed);

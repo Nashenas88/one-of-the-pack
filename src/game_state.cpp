@@ -92,71 +92,77 @@ void Game_State::update(int &delta)
   
   for (int i = 0; i < (int) beams.size(); ++i)
   {
-    for (j = BLOCK1; j < LADDER; ++j)
+    if (beams.at(i)->will_collide_tile(map, CIRCUIT, coords))
     {
-      if(beams.at(i)->will_collide_tile(map, (tile_type) j, coords))
+      beams.at(i)->play_effect();
+      delete beams.at(i);
+      to_delete.push_back(i);
+      
+      map->convert_circuit(coords[0], coords[1]);
+    }
+    else
+    {
+      for (j = BLOCK1; j < LADDER; ++j)
       {
-        beams.at(i)->play_effect();
-        delete beams.at(i);
-        to_delete.push_back(i);
-        
-        if (map->get_tile(coords[0], coords[1]) == CIRCUIT)
+        if(beams.at(i)->will_collide_tile(map, (tile_type) j, coords))
         {
-          map->convert_circuit(coords[0], coords[1]);
-          break;
-        }
-        else if (map->get_coll(coords[0], coords[1]) == CIRCUIT)
-        {
-          map->unconvert_circuit(coords[0], coords[1]);
-          break;
-        }
-        
-        // make sure the blocks we'll be checking are in the map
-        if (coords[0] - 1 < 0)
-        {
-          coords[0] = 0;
-        }
-        if (coords[0] + 1 >= map->get_width())
-        {
-          coords[0] = map->get_width() - 1;
-        }
-        if (coords[1] - 1 < 0)
-        {
-          coords[1] = 0;
-        }
-        if (coords[1] + 1 >= map->get_height())
-        {
-          coords[1] = map->get_height() - 1;
-        }
-        
-        // try to convert the blocks
-        for (int k = coords[0] - 1; k < coords[0] + 2; ++k)
-        {
-          for (int l = coords[1] - 1; l < coords[1] + 2; ++l)
+          beams.at(i)->play_effect();
+          delete beams.at(i);
+          to_delete.push_back(i);
+          
+          if (j == RUBBER && map->get_coll(coords[0], coords[1]) == CIRCUIT)
           {
-            if (!map->make_rubber(k, l))
+            map->unconvert_circuit(coords[0], coords[1]);
+            break;
+          }
+          
+          // make sure the blocks we'll be checking are in the map
+          if (coords[0] - 1 < 0)
+          {
+            coords[0] = 0;
+          }
+          if (coords[0] + 1 >= map->get_width())
+          {
+            coords[0] = map->get_width() - 1;
+          }
+          if (coords[1] - 1 < 0)
+          {
+            coords[1] = 0;
+          }
+          if (coords[1] + 1 >= map->get_height())
+          {
+            coords[1] = map->get_height() - 1;
+          }
+          
+          // try to convert the blocks
+          for (int k = coords[0] - 1; k < coords[0] + 2; ++k)
+          {
+            for (int l = coords[1] - 1; l < coords[1] + 2; ++l)
             {
-              map->return_from_rubber(k, l);
+              if (!map->make_rubber(k, l))
+              {
+                map->return_from_rubber(k, l);
+              }
             }
           }
+          break;
         }
-        break;
       }
-    }
-    if (j == LADDER)
-    {
-      if (beams.at(i)->will_collide_moveables_x(moveables, -1, &which))
+      if (j == LADDER)
       {
-        moveables.at(which)->set_gravity(!moveables.at(which)->get_gravity());
-        beams.at(i)->play_effect();
-        delete beams.at(i);
-        to_delete.push_back(i);
-      }
-      else if (beams.at(i)->will_collide_x(map))
-      {
-        beams.at(i)->play_effect();
-        delete beams.at(i);
-        to_delete.push_back(i);
+        if (beams.at(i)->will_collide_moveables_x(moveables, -1, &which))
+        {
+          moveables.at(which)->set_gravity(!moveables.at(which)->get_gravity());
+          beams.at(i)->play_effect();
+          delete beams.at(i);
+          to_delete.push_back(i);
+        }
+        else if (beams.at(i)->will_collide_x(map))
+        {
+          beams.at(i)->play_effect();
+          delete beams.at(i);
+          to_delete.push_back(i);
+        }
       }
     }
   }
@@ -182,6 +188,17 @@ void Game_State::update(int &delta)
     {
       specials.at(i)->go_home(map);
     }
+  }
+  
+  if (c == p && p->will_collide_tile(map, BLACK_HOLE, NULL))
+  {
+    p->reset(map);
+  }
+  int loc[2];
+  if (c == p && p->will_collide_tile(map, NEW_CHECKPOINT, loc))
+  {
+    p->set_checkpoint(loc[0], loc[1]);
+    map->clear_checkpoint(loc[0], loc[1]);
   }
   
   float x, y, map_x, map_y;
@@ -372,7 +389,8 @@ void Game_State::update(int &delta)
           c->set_bounce(true);
         }
         if (specials.at(i)->will_collide_x(map) ||
-            specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+            specials.at(i)->will_collide_moveables_x(moveables, -1, NULL) ||
+            specials.at(i)->will_collide_rubber_x(map))
         {
           c->setHSpeed(0);
         }
@@ -579,13 +597,15 @@ void Game_State::update(int &delta)
     if (c != p)
     {
       p->setHSpeed(p->will_collide_x(map) ||
-                   p->will_collide_moveables_x(moveables, -1, NULL)?
+                   p->will_collide_moveables_x(moveables, -1, NULL) ||
+                   p->will_collide_rubber_x(map)?
                    0 : p->getHSpeed());
     }
     
     // check for horizontal collision with human controlled character
     c->setHSpeed(c->will_collide_x(map) ||
-                 c->will_collide_moveables_x(moveables, -1, NULL)?
+                 c->will_collide_moveables_x(moveables, -1, NULL) ||
+                 c->will_collide_rubber_x(map)?
                  0 : c->getHSpeed());
   }
   
@@ -615,7 +635,8 @@ void Game_State::update(int &delta)
         {
           specials.at(i)->setHSpeed(!dx?specials.at(i)->getHSpeed():(dx<0?PLAYER_SPEED:-PLAYER_SPEED));
           if (specials.at(i)->will_collide_x(map) ||
-              specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+              specials.at(i)->will_collide_moveables_x(moveables, -1, NULL) ||
+              specials.at(i)->will_collide_rubber_x(map))
           {
             specials.at(i)->setHSpeed(0);
           }

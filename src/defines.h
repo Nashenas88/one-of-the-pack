@@ -111,6 +111,7 @@ typedef enum
 
 #define RUBBER_FRAME 2
 #define CIRCUIT_FRAME 3
+#define OLD_CHECK_FRAME 2
 typedef enum
 {
   BG,
@@ -123,9 +124,9 @@ typedef enum
   L_BLOCK,
   LC_BLOCK,
   RC_BLOCK,
-  CIRCUIT,
   RUBBER,
   LADDER,
+  CIRCUIT,
   PLATFORM,
   BREAKABLE,
   GOAL,
@@ -133,6 +134,8 @@ typedef enum
   BOUNCER_CLOSED_R,
   BOUNCER_CLOSED_L,
   BOUNCER_OPEN,
+  NEW_CHECKPOINT,
+  OLD_CHECKPOINT,
   OUTSIDE
 } tile_type;
 
@@ -154,7 +157,8 @@ enum
   GOALT,
   PUSH,
   BH,
-  BOUNCERS
+  BOUNCERS,
+  CHECKS
 };
 
 enum

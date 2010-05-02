@@ -11,16 +11,18 @@ class Player : public Character
 private:
   bool jumping;
   bool follow;
+  int loc[2];
   
 public:
   Player(void);
-  Player(float x, float y, int num, int frames, Texture *tex,
-         direc dir, bool jump, FMOD_SYSTEM *sys,
-         FMOD_SOUND *so, FMOD_CHANNEL *ch);
+  Player(float x, float y, int num, int frames, Texture *tex, direc dir,
+         bool jump, FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch);
   
   bool should_follow(void) {return follow;}
   void switch_follow(void) {follow = !follow;}
   void pickupItem(int item);
+  void set_checkpoint(int x, int y);
+  void reset(Map *m);
 };
 
 #endif // FLOCK__PLAYER__H
