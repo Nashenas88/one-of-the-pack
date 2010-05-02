@@ -579,26 +579,28 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   
   // move every moveable 10 pixels in every direction and form
   // a link with any moveables it collides with
-  int block;
+  int block, old;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     for (int speed = -10; speed <= 10; speed += 20)
     {
       // check in the x
+      old = moveables.at(i)->getHSpeed();
       moveables.at(i)->map_setHSpeed(speed);
       if (moveables.at(i)->will_collide_moveables_x(moveables, i, &block))
       {
         moveables.at(i)->add_link(moveables.at(block));
       }
-      moveables.at(i)->map_setHSpeed(0);
+      moveables.at(i)->map_setHSpeed(old);
       
       // check in the y
+      old = moveables.at(i)->getVSpeed();
       moveables.at(i)->map_setVSpeed(speed);
       if (moveables.at(i)->will_collide_moveables_y(moveables, i, &block))
       {
         moveables.at(i)->add_link(moveables.at(block));
       }
-      moveables.at(i)->map_setVSpeed(0);
+      moveables.at(i)->map_setVSpeed(old);
     }
   }
   
