@@ -17,6 +17,7 @@ using namespace std;
 State *s;
 State *paused;
 vector<State *> stack;
+vector<FMOD_SOUND *> sounds;
 bool loading;
 Drawable *load_screen;
 int level;
@@ -203,6 +204,7 @@ void initLevel(int level)
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
   ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
   
   result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
@@ -210,10 +212,39 @@ void initLevel(int level)
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
   ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
   
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
@@ -459,6 +490,15 @@ void drawScene(void)
 // clean up all data
 void system_clean(void)
 {
+  for (unsigned int i = 0; i < sounds.size(); ++i)
+  {
+    FMOD_RESULT result;
+    
+    result = FMOD_Sound_Release(sounds.at(i));
+    ERRCHECK(result);
+  }
+  sounds.clear();
+  
   paused->clean();
   delete paused;
 }

@@ -351,7 +351,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         Moveable *move;
         get_top_left(mx, my);
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                            x, y, PUSH, 1, ts, true, false);
+                            x, y, PUSH, 1, ts, true, false, NULL);
         moveables.push_back(move);
       }
       // ladder
@@ -391,7 +391,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         float mx, my;
         get_top_left(mx, my);
         moveables.push_back(new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                         x, y, BLOCKS, 1, ts, false, false));
+                                         x, y, BLOCKS, 1, ts, false, false, NULL));
       }
       // player start position
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)
