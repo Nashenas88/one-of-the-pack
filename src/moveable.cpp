@@ -216,6 +216,7 @@ bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
   bool skip = false;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
+    skip = false;
     if (cur == (int)i)
     {
       continue;

@@ -604,6 +604,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     }
   }
   
+  
   moves = moveables;
   specs = specials;
   
