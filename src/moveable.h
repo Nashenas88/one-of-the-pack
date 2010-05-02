@@ -15,6 +15,7 @@ private:
   bool gravity;
   bool rubber;
   bool resetted;
+  bool freezeable;
   
   // original location
   int loc[2];
@@ -44,6 +45,8 @@ public:
   void set_gravity(bool g) {gravity = g;}
   vector<Moveable *> get_links(void) {return links;}
   void add_link(Moveable *l) {links.push_back(l);}
+  
+  bool is_freezeable(void) {return freezeable;}
   
   void reset(Map *m);
   void move(float x, float y, Map *m);
