@@ -112,6 +112,7 @@ typedef enum
 #define RUBBER_FRAME 2
 #define CIRCUIT_FRAME 3
 #define OLD_CHECK_FRAME 2
+#define T_SLUDGE_FRAME 2
 typedef enum
 {
   BG,
@@ -131,6 +132,7 @@ typedef enum
   BREAKABLE,
   GOAL,
   BLACK_HOLE,
+  TOXIC_SLUDGE,
   BOUNCER_CLOSED_R,
   BOUNCER_CLOSED_L,
   BOUNCER_OPEN,
