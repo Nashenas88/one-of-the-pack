@@ -117,9 +117,9 @@ void initLevel(int level)
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
   Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o, *rubber;
-  Drawable *circuit, *n_check, *o_check, *toxic_sludge;
+  Drawable *circuit, *n_check, *o_check, *toxic_sludge, *paused_names;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
-  Texture *engineer, *paris, *kurt;
+  Texture *engineer, *paris, *kurt, *p_names;
   vector<Texture*> textures;
   vector<Moveable*> moveables;
   vector<Special*> specials;
@@ -160,6 +160,8 @@ void initLevel(int level)
   paris = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << KURT_TEXTURE;
   kurt = new Texture(temp_string.str().c_str());
+  temp_string.str(""); temp_string << RESOURCES << PAUSED_NAMES_TEXTURE;
+  p_names = new Texture(temp_string.str().c_str());
   
   temp_string.str(""); temp_string << RESOURCES << NUMBER_TEXTURE;
   nums = new Texture(temp_string.str().c_str());
@@ -292,6 +294,7 @@ void initLevel(int level)
   n_check = new Drawable(0.0f, 0.0f, CHECKS, 1, TILE, tiles);
   o_check = new Drawable(0.0f, 0.0f, CHECKS, 1, TILE, tiles);
   o_check->set_cur_frame(OLD_CHECK_FRAME);
+  paused_names = new Drawable(0.0f, 0.0f, 1, 1, VARIABLE, p_names);
   
   // place all drawables into vector
   // this order MUST match the order
@@ -335,7 +338,7 @@ void initLevel(int level)
               p, system, musics, m_channel, effects, a_channel);
   s = new Game_State(p, m, moveables, specials, numbers, system);
   paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
-                           map_image, pointer, ps_ic);
+                           map_image, pointer, ps_ic, paused_names);
   
   // this is for syncing the music in the game
   p->pause_sound();

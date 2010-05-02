@@ -25,6 +25,7 @@
 #define MAP_IMAGE "level.png"
 #define LOADING_TEXTURE "loading.png"
 #define PAUSE_ICONS_TEXTURE "pause_icons.png"
+#define PAUSED_NAMES_TEXTURE "names.png"
 
 // character texture files
 #define PLAYER_TEXTURE "Character animation 1.png"
@@ -186,6 +187,9 @@ typedef enum
   PLAYER_ICON = 1,
   AHNOLD_ICON,
   JUMPER_ICON,
+  KURT_ICON,
+  PARIS_ICON,
+  ENGINEER_ICON,
   BREAK_ICON,
   PUSH_ICON,
   GOAL_ICON,

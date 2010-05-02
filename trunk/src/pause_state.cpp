@@ -4,9 +4,10 @@ Pause_State::Pause_State(void)
 : State(), dspparameq(0) {}
 
 Pause_State::Pause_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              Drawable *b, Drawable *m, Drawable *p, Texture *icons)
+              Drawable *b, Drawable *m, Drawable *p, Texture *icons,
+              Drawable *pn)
 :State(system), dspparameq(pe), game_state(gs), background(b),
-map(m), pointer(p), selected(0), anim_timer(0)
+map(m), pointer(p), paused_names(pn), selected(0), anim_timer(0)
 {
   movers = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);
   statics = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);
@@ -23,13 +24,16 @@ void Pause_State::draw(void)
   background->draw();
   map->draw();
   
-  for (unsigned int i = 0; i < HOVER_ICON; ++i)
+  for (unsigned int i = 0; i < ENGINEER_ICON; ++i)
   {
     statics->set_tex_num(i+1);
     statics->move(-statics->get_x() + PAUSE_MAP_X + 256,
                   -statics->get_y() + PAUSE_MAP_Y + 16 * i);
     statics->draw();
   }
+  paused_names->move(-paused_names->get_x() + PAUSE_MAP_X + 266,
+                     -paused_names->get_y() + PAUSE_MAP_Y + 1);
+  paused_names->draw();
   
   m = game_state->get_map();
   for (int i = 0; i < m->get_width(); ++i)
@@ -83,6 +87,15 @@ void Pause_State::draw(void)
         break;
       case JUMPER:
         movers->set_tex_num(JUMPER_ICON);
+        break;
+      case PARIS:
+        movers->set_tex_num(PARIS_ICON);
+        break;
+      case KURT:
+        movers->set_tex_num(KURT_ICON);
+        break;
+      case ENGINEER:
+        movers->set_tex_num(ENGINEER_ICON);
         break;
       default:
         break;

@@ -19,13 +19,15 @@ private:
   Drawable *pointer;
   Drawable *movers;
   Drawable *statics;
+  Drawable *paused_names;
   unsigned int selected;
   unsigned int anim_timer;
   
 public:
   Pause_State(void);
   Pause_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              Drawable *b, Drawable *m, Drawable *p, Texture *icons);
+              Drawable *b, Drawable *m, Drawable *p, Texture *icons,
+              Drawable *pn);
   
   void draw(void);
   
