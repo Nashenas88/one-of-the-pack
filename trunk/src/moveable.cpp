@@ -15,7 +15,7 @@ freezeable(g), v_speed(0), h_speed(0), creator(c)
 
 void Moveable::reset(Map *m)
 {
-  float move_x, move_y;
+  int move_x, move_y;
   
   move_x = loc[0] * TILE_WIDTH + m->get_x() - get_x();
   move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
@@ -41,8 +41,8 @@ void Moveable::move(float x, float y)
   ((Drawable*)this)->move(x, y);
   if (creator)
   {
-    ((Special*)creator)->setHSpeed(x);
-    ((Special*)creator)->setVSpeed(y);
+    ((Special*)creator)->setHSpeed((int)(x>0?x+0.55f:x-0.5f));
+    ((Special*)creator)->setVSpeed((int)(y>0?y+0.5f:y-0.5f));
   }
 }
 
@@ -56,10 +56,10 @@ bool Moveable::will_collide_Dx(Drawable *d)
   get_top_left(left_x1, top_y1);
   left_x1 += getHSpeed();
   d->get_top_left(left_x2, top_y2);
-  right_x1 = left_x1 + get_width();
-  right_x2 = left_x2 + d->get_width();
+  right_x1 = left_x1 + get_width() - 1;
+  right_x2 = left_x2 + d->get_width() - 1;
   bottom_y1 = top_y1 + get_height() - 1;
-  bottom_y2 = top_y2 + d->get_height();
+  bottom_y2 = top_y2 + d->get_height() - 1;
   
   if (bottom_y1 < top_y2) return false;
   if (top_y1 > bottom_y2) return false;
@@ -80,10 +80,10 @@ bool Moveable::will_collide_Dy(Drawable *d)
   get_top_left(left_x1, top_y1);
   top_y1 += getVSpeed();
   d->get_top_left(left_x2, top_y2);
-  right_x1 = left_x1 + get_width();
-  right_x2 = left_x2 + d->get_width();
-  bottom_y1 = top_y1 + get_height();
-  bottom_y2 = top_y2 + d->get_height();
+  right_x1 = left_x1 + get_width() - 1;
+  right_x2 = left_x2 + d->get_width() - 1;
+  bottom_y1 = top_y1 + get_height() - 1;
+  bottom_y2 = top_y2 + d->get_height() - 1;
   
   if (bottom_y1 < top_y2) return false;
   if (top_y1 > bottom_y2) return false;
@@ -187,7 +187,7 @@ bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
     {
       continue;
     }
-    for (int j = 0; j < get_links().size(); j++)
+    for (unsigned int j = 0; j < get_links().size(); j++)
     {
       if (moveables.at(i) == get_links().at(j))
       {
@@ -213,7 +213,7 @@ bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
 bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
-  skip = false;
+  bool skip = false;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     if (cur == (int)i)
@@ -221,7 +221,7 @@ bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
       continue;
     }
     
-    for (int j = 0; j < get_links().size(); j++)
+    for (unsigned int j = 0; j < get_links().size(); j++)
     {
       if (moveables.at(i) == get_links().at(j))
       {
