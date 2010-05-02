@@ -2,12 +2,39 @@
 #include "special.h"
 
 Moveable::Moveable(void)
-:Drawable(),gravity(false),v_speed(0),h_speed(0) {}
+:Drawable(),gravity(false),rubber(false),resetted(false),v_speed(0),h_speed(0) {}
 
-Moveable::Moveable(float x, float y, int num, int frames, Texture *tex,
-                   bool g)
-:Drawable(x, y, num, frames, TILE, tex), gravity(g), v_speed(0), h_speed(0) {}
+Moveable::Moveable(float x, float y, int start_x, int start_y, int num,
+                   int frames, Texture *tex, bool g, bool r)
+:Drawable(x, y, num, frames, TILE, tex), gravity(g), rubber(r), resetted(false),
+v_speed(0), h_speed(0)
+{
+  loc[0] = start_x;
+  loc[1] = start_y;
+}
 
+void Moveable::reset(Map *m)
+{
+  float move_x, move_y;
+  
+  move_x = loc[0] * TILE_WIDTH + m->get_x() - get_x();
+  move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
+  setHSpeed(move_x, m);
+  setVSpeed(move_y, m);
+  
+  resetted = true;
+}
+
+void Moveable::move(float x, float y, Map *m)
+{
+  ((Drawable*)this)->move(x, y);
+  if (resetted)
+  {
+    setHSpeed(0, m);
+    setVSpeed(0, m);
+    resetted = false;
+  }
+}
 
 bool Moveable::will_collide_Dx(Drawable *d)
 {
