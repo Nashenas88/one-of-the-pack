@@ -54,7 +54,7 @@ public:
   void draw_number(void);
   void move(float x, float y);
   
-  void clean(void);
+  void move_number(float x, float y);
 };
 
 #endif // FLOCK__SPECIAL__H

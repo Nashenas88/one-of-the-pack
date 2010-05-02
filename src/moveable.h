@@ -5,6 +5,8 @@
 #include "defines.h"
 #include "map.h"
 
+class Kurt;
+
 class Moveable: public Drawable
 {
 private:
@@ -20,6 +22,7 @@ private:
   // vertical and horizontal speed
   int v_speed, h_speed;
   
+  Kurt *creator;
   vector<Moveable *> links;
   
   void setVSpeed(int vs, Map *m, vector<Moveable *> ignore);
@@ -29,8 +32,8 @@ private:
 public:
   // constructors
   Moveable(void);
-  Moveable(float x, float y, int start_x, int start_y, int num, int frames, Texture *tex,
-           bool g, bool r);
+  Moveable(float x, float y, int start_x, int start_y, int num, int frames,
+           Texture *tex, bool g, bool r, Kurt *c);
   
   // getters and setters
   int getVSpeed(void) {return v_speed;}
@@ -44,6 +47,7 @@ public:
   
   void reset(Map *m);
   void move(float x, float y, Map *m);
+  void move(float x, float y);
   
   // TO ONLY BE USED IN MAP.CPP
   void map_setVSpeed(int vs) {setVSpeed(vs);}

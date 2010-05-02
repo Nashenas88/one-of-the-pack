@@ -65,7 +65,7 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   m->calculate_location(this, x, y);
   
   temp_move1 = new Moveable(get_x(), get_y(), x, y, KURT_MUSIC_NUM, 1,
-                           get_texture(), false, false);
+                           get_texture(), false, false, this);
   temp_move1->set_cur_frame(3);
   moveables.push_back(temp_move1);
   
@@ -80,7 +80,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   {
     ++num_created;
     temp_move2 = new Moveable(get_x()+TILE_WIDTH, get_y(), x + 1, y,
-                             KURT_MUSIC_NUM, 1, get_texture(), false, false);
+                             KURT_MUSIC_NUM, 1, get_texture(), false, false,
+                             this);
     temp_move2->set_cur_frame(4);
     moveables.push_back(temp_move2);
     
@@ -96,7 +97,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     {
       ++num_created;
       temp_move3 = new Moveable(get_x()+TILE_WIDTH*2, get_y(), x + 2, y,
-                               KURT_MUSIC_NUM, 1, get_texture(), false, false);
+                               KURT_MUSIC_NUM, 1, get_texture(), false, false,
+                               this);
       temp_move3->set_cur_frame(5);
       moveables.push_back(temp_move3);
       
@@ -114,7 +116,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   {
     ++num_created;
     temp_move4 = new Moveable(get_x()-TILE_WIDTH, get_y(), x - 1, y,
-                             KURT_MUSIC_NUM, 1, get_texture(), false, false);
+                             KURT_MUSIC_NUM, 1, get_texture(), false, false,
+                             this);
     temp_move4->set_cur_frame(2);
     moveables.push_back(temp_move4);
     setHSpeed(-TILE_WIDTH*2);
@@ -129,7 +132,8 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     {
       ++num_created;
       temp_move5 = new Moveable(get_x()-TILE_WIDTH*2, get_y(), x - 2, y,
-                                KURT_MUSIC_NUM, 1, get_texture(), false, false);
+                                KURT_MUSIC_NUM, 1, get_texture(), false, false,
+                                this);
       moveables.push_back(temp_move5);
       
       temp_move4->add_link(temp_move5);

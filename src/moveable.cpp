@@ -5,9 +5,9 @@ Moveable::Moveable(void)
 :Drawable(),gravity(false),rubber(false),resetted(false),v_speed(0),h_speed(0) {}
 
 Moveable::Moveable(float x, float y, int start_x, int start_y, int num,
-                   int frames, Texture *tex, bool g, bool r)
+                   int frames, Texture *tex, bool g, bool r, Kurt *c)
 :Drawable(x, y, num, frames, TILE, tex), gravity(g), rubber(r), resetted(false),
-v_speed(0), h_speed(0)
+v_speed(0), h_speed(0), creator(c)
 {
   loc[0] = start_x;
   loc[1] = start_y;
@@ -27,12 +27,22 @@ void Moveable::reset(Map *m)
 
 void Moveable::move(float x, float y, Map *m)
 {
-  ((Drawable*)this)->move(x, y);
+  move(x, y);
   if (resetted)
   {
     setHSpeed(0, m);
     setVSpeed(0, m);
     resetted = false;
+  }
+}
+
+void Moveable::move(float x, float y)
+{
+  ((Drawable*)this)->move(x, y);
+  if (creator)
+  {
+    ((Special*)creator)->setHSpeed(x);
+    ((Special*)creator)->setVSpeed(y);
   }
 }
 
@@ -196,6 +206,7 @@ bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
     {
       continue;
     }
+    
     if (will_collide_Dy(moveables.at(i)))
     {
       if (collide)
@@ -212,6 +223,11 @@ bool Moveable::will_collide_specials_x(vector<Special *>specials, int *collide)
 {
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
+    if (specials.at(i)->get_type() == KURT &&
+        (Kurt*)specials.at(i) == creator)
+    {
+      continue;
+    }
     if (specials.at(i)->will_collide_Dx(this))
     {
       if (collide)
@@ -292,6 +308,10 @@ void Moveable::setHSpeed(int hs, Map *m)
   vector<Moveable *> ignore;
   ignore.push_back(this);
   h_speed = hs;
+  if (creator)
+  {
+    ((Special*)creator)->setHSpeed(hs);
+  }
   for (unsigned int i = 0; i < links.size(); ++i)
   {
     links.at(i)->setHSpeed(hs, m, ignore);
@@ -303,6 +323,10 @@ void Moveable::setVSpeed(int vs, Map *m)
   vector<Moveable *> ignore;
   ignore.push_back(this);
   v_speed = vs;
+  if (creator)
+  {
+    ((Special*)creator)->setVSpeed(vs);
+  }
   for (unsigned int i = 0; i < links.size(); ++i)
   {
     links.at(i)->setVSpeed(vs, m, ignore);

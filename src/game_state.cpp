@@ -676,18 +676,6 @@ void Game_State::update(int &delta)
     }
   }
   
-  // move specials in the x
-  for (unsigned int i = 0; i < specials.size(); ++i)
-  {
-    // if this special is being controlled, then don't move it. this will
-    // be done when we check for collision with the map
-    if (c == specials.at(i))
-    {
-      continue;
-    }
-    specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
-  }
-  
   // right before moving moveables, make sure they shouldn't be reset
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
@@ -702,6 +690,27 @@ void Game_State::update(int &delta)
   {
     moveables.at(i)->move(moveables.at(i)->getHSpeed(),
                           moveables.at(i)->getVSpeed(), map);
+  }
+  
+  // move specials in the x
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    // if this special is being controlled, then don't move it. this will
+    // be done when we check for collision with the map
+    if (c == specials.at(i))
+    {
+      continue;
+    }
+    if (specials.at(i)->get_type() == KURT &&
+        ((Kurt*)specials.at(i))->get_ability())
+    {
+      ((Drawable*)specials.at(i))->move(specials.at(i)->getHSpeed(), 0);
+      specials.at(i)->move_number(specials.at(i)->getHSpeed(), 0);
+    }
+    else
+    {
+      specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+    }
   }
   
   c->move(c->getHSpeed(), c->getVSpeed());
@@ -745,7 +754,7 @@ void Game_State::update(int &delta)
          !c->will_collide_tile(map, PLATFORM, NULL) &&
          !c->will_collide_tile(map, LADDER, NULL) &&
          !c->will_collide_moveables_y(moveables, -1, NULL) &&
-         !c->will_collide_specials_y(specials, i, NULL) &&
+         !c->will_collide_specials_y(specials, -1, NULL) &&
          !c->will_collide_rubber_y(map),
          c->setVSpeed((int) speed),will_collide))
     {
