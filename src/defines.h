@@ -200,6 +200,8 @@ typedef enum
 #define PAUSE_MAP_Y 300
 #define PAUSE_ANIM_DELAY 4
 
+#define CAMERA_DELTA 120
+
 #define JUMP_DELAY 6
 
 #endif // FLOCK__DEFINES__H

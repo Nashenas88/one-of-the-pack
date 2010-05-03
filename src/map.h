@@ -58,6 +58,8 @@ public:
   void unconvert_circuit(int x, int y);
   void clear_checkpoint(int x, int y);
   
+  void get_goal(float &x, float &y);
+  
   void calculate_location(Drawable *d, int &x, int &y);
   
   // loads map from a binary image, returns false on fail, also modifies
