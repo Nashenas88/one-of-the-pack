@@ -1443,7 +1443,6 @@ void Game_State::clean(void)
     specials.at(i)->clean();
     delete specials.at(i);
   }
-  state_clean();
 }
 
 bool sort_by_height(Special *i, Special *j)

@@ -246,7 +246,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   for (int y = height - 1; y >= 0 && file.good(); --y)
   {
     for (int x = 0; x < (int)width && file.good(); ++x)
-    { 
+    {
       file.read((char *)blue, 1);
       file.read((char *)green, 1);
       file.read((char *)red, 1);
@@ -465,19 +465,26 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         map[x][y][M_TILE] = BOUNCER_CLOSED_L;
       }
     }
-    // apparently there's some sort of bitmap "newline"
-    // in the bitmaps that ryan makes. this is to fix that issue
-    if(width % 2 != 0)
+    // this is to fix the alignment issue with
+    // 3 bytes per pixel bitmaps
+    if (bpp != 32)
     {
-      file.read((char *)blue, 1);
+      if(width * 3 % 4 == 3)
+      {
+        file.read((char *)blue, 1);
+      }
+      else if (width * 3 % 4 == 2)
+      {
+        file.read((char *)blue, 1);
+        file.read((char *)blue, 1);
+      }
+      else if (width * 3 % 4 == 1)
+      {
+        file.read((char *)blue, 1);
+        file.read((char *)blue, 1);
+        file.read((char *)blue, 1);
+      }
     }
-    /*file.read((char *)green, 1);
-    file.read((char *)red, 1);
-    if (bpp == 32)
-    {
-      file.read((char *)alpha, 1);
-    }*/
-    // commented out because this issue magically dissapeared
   }
   
   file.close();

@@ -1,13 +1,12 @@
 #include "pause_state.h"
 
 Pause_State::Pause_State(void)
-: State(), dspparameq(0) {}
+: State() {}
 
-Pause_State::Pause_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              Drawable *b, Drawable *m, Drawable *p, Texture *icons,
-              Drawable *pn)
-:State(system), dspparameq(pe), game_state(gs), background(b),
-map(m), pointer(p), paused_names(pn), selected(0), anim_timer(0)
+Pause_State::Pause_State(FMOD_SYSTEM *system, Game_State *gs, Drawable *b,
+                         Drawable *m, Drawable *p, Texture *icons, Drawable *pn)
+:State(system), game_state(gs), background(b), map(m), pointer(p),
+paused_names(pn), selected(0), anim_timer(0)
 {
   movers = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);
   statics = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);

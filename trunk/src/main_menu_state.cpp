@@ -1,11 +1,16 @@
 #include "main_menu_state.h"
 
 Main_Menu_State::Main_Menu_State(void)
-: State(), {}
+: State() {}
 
-Main_Menu_State::Main_Menu_State(FMOD_SYSTEM *system, Drawable *b, Drawable *p)
-:State(system), background(b), pointer(p), selected(0)
-{}
+Main_Menu_State::Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s,
+                                 FMOD_SOUND *mu, FMOD_CHANNEL *mch)
+:State(s), background(b), pointer(p), selected_x(0), selected_y(0), music(mu),
+channel(mch)
+{
+  pointer->move(-pointer->get_x() + MAIN_POINTER_START_X,
+                -pointer->get_y() + MAIN_POINTER_START_Y);
+}
 
 void Main_Menu_State::draw(void)
 {
@@ -23,26 +28,49 @@ void Main_Menu_State::key_pressed(unsigned char key, int x, int y)
   switch(key)
   {
     case 'w':
-      if(selected == 0)
+      if(selected_y == 0)
       {
-        selected = MENU_ITEMS - 1;
-        pointer->move(0, MAIN_MENU_POINTER_MOVE * 2);
+        selected_y = MAIN_MENU_ITEMS_Y - 1;
+        pointer->move(0, MAIN_MENU_POINTER_MOVE_Y * (MAIN_MENU_ITEMS_Y - 1));
       }
       else
       {
-        --selected;
-        pointer->move(0, -MAIN_MENU_POINTER_MOVE);
+        --selected_y;
+        pointer->move(0, -MAIN_MENU_POINTER_MOVE_Y);
       }
       break;
     case 's':
-      selected = (++selected) % MENU_ITEMS;
-      if (selected == 0)
+      selected_y = (++selected_y) % MAIN_MENU_ITEMS_Y;
+      if (selected_y == 0)
       {
-        pointer->move(0, -MAIN_MENU_POINTER_MOVE * 2);
+        pointer->move(0, -MAIN_MENU_POINTER_MOVE_Y * (MAIN_MENU_ITEMS_Y - 1));
       }
       else
       {
-        pointer->move(0, MAIN_MENU_POINTER_MOVE);
+        pointer->move(0, MAIN_MENU_POINTER_MOVE_Y);
+      }
+      break;
+    case 'a':
+      if(selected_x == 0)
+      {
+        selected_x = MAIN_MENU_ITEMS_X - 1;
+        pointer->move(MAIN_MENU_POINTER_MOVE_X * (MAIN_MENU_ITEMS_X - 1), 0);
+      }
+      else
+      {
+        --selected_x;
+        pointer->move(-MAIN_MENU_POINTER_MOVE_X, 0);
+      }
+      break;
+    case 'd':
+      selected_x = (++selected_x) % MAIN_MENU_ITEMS_X;
+      if (selected_x == 0)
+      {
+        pointer->move(-MAIN_MENU_POINTER_MOVE_X * (MAIN_MENU_ITEMS_X - 1), 0);
+      }
+      else
+      {
+        pointer->move(MAIN_MENU_POINTER_MOVE_X, 0);
       }
       break;
   }
@@ -71,12 +99,45 @@ void Main_Menu_State::special_pressed(int key, int x, int y)
 
 void Main_Menu_State::special_released(int key, int x, int y) {}
 
-void Main_Menu_State::reset_selected(void)
+unsigned int Main_Menu_State::get_selected(void)
 {
-  while (selected != 0)
+  return selected_y + MAIN_MENU_ITEMS_Y * selected_x + 1;
+}
+
+// plays the characters single sound
+// (might possibly be renamed)
+void Main_Menu_State::play_sound(void)
+{
+  if (music == NULL)
   {
-    key_pressed('w', 0, 0);
+    return;
   }
+  
+  FMOD_RESULT result;
+  
+  result = FMOD_System_PlaySound(get_system(), FMOD_CHANNEL_FREE, music,
+                                 0, &channel);
+  ERRCHECK(result);
+}
+
+// pauses (and unpauses) the characters single sound
+// (might possibly be renamed)
+void Main_Menu_State::pause_sound(void)
+{
+  if (music == NULL || channel == NULL)
+  {
+    return;
+  }
+  
+  FMOD_RESULT result;
+  
+  result = FMOD_Channel_GetPaused(channel, &sound_paused);
+  ERRCHECK(result);
+  
+  sound_paused = !sound_paused;
+  
+  result = FMOD_Channel_SetPaused(channel, sound_paused);
+  ERRCHECK(result);
 }
 
 void Main_Menu_State::clean(void)
@@ -85,4 +146,6 @@ void Main_Menu_State::clean(void)
   pointer->clean();
   delete background;
   delete pointer;
+  
+  state_clean();
 }

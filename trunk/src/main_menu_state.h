@@ -14,11 +14,17 @@ class Main_Menu_State : public State
 private:
   Drawable *background;
   Drawable *pointer;
-  unsigned int selected;
+  unsigned int selected_x, selected_y;
+  
+  FMOD_SOUND *music;
+  FMOD_CHANNEL *channel;
+  
+  FMOD_BOOL sound_paused;
   
 public:
   Main_Menu_State(void);
-  Main_Menu_State(FMOD_SYSTEM *system, Drawable *b, Drawable *p);
+  Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s, FMOD_SOUND *mu,
+                  FMOD_CHANNEL *mch);
   
   void draw(void);
   
@@ -29,8 +35,10 @@ public:
   void special_pressed(int key, int x, int y);
   void special_released(int key, int x, int y);
   
-  unsigned int get_selected(void) {return selected;}
-  void reset_selected(void);
+  unsigned int get_selected(void);
+  
+  void play_sound(void);
+  void pause_sound(void);
   
   void clean(void);
 };

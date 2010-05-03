@@ -26,6 +26,8 @@
 #define LOADING_TEXTURE "loading.png"
 #define PAUSE_ICONS_TEXTURE "pause_icons.png"
 #define PAUSED_NAMES_TEXTURE "names.png"
+#define MAIN_MENU_TEXTURE "main_menu.png"
+#define MAIN_MENU_POINTER_TEXTURE "black_pointer.png"
 
 // character texture files
 #define PLAYER_TEXTURE "Character animation 1.png"
@@ -47,6 +49,7 @@
 #define ENGINEER_SFX "jump sound (not final).wav"
 #define BEAM_SFX "punch sound.wav"
 #define KURT_SFX "jump sound (not final).wav"
+#define MAIN_MENU_MUSIC "background.mp3"
 
 // widths and heights
 #define TILE_WIDTH 100
@@ -62,8 +65,13 @@
 #define ICON_HEIGHT 8
 
 #define MENU_ITEMS 3
+#define MAIN_MENU_ITEMS_X 4
+#define MAIN_MENU_ITEMS_Y 3
 #define POINTER_MOVE 90
-#define MAIN_MENU_POINTER_MOVE 90
+#define MAIN_MENU_POINTER_MOVE_X 185
+#define MAIN_MENU_POINTER_MOVE_Y 58
+#define MAIN_POINTER_START_X 56
+#define MAIN_POINTER_START_Y 498
 
 #define DELTA_DELAY 2
 #define SPECIAL_DELTA_DELAY 3
@@ -101,7 +109,7 @@
 #define PARIS_KISS_NUM 4
 #define PARIS_KISS_RANGE 15
 
-#define LAST_LEVEL 3
+#define LAST_LEVEL_FILE "levels.txt"
 
 typedef enum
 {
