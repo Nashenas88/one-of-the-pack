@@ -13,9 +13,9 @@ else
 endif
 
 SRCS = drawable.cpp texture.cpp player.cpp moveable.cpp character.cpp \
-	state.cpp map.cpp main_menu_state.cpp game_state.cpp pause_state.cpp \
-  FMOD_includes.cpp main.cpp ahnold.cpp special.cpp jumper.cpp engineer.cpp \
-  paris.cpp beam.cpp wonder.cpp
+	state.cpp map.cpp tutorial_state.cpp main_menu_state.cpp game_state.cpp \
+  pause_state.cpp FMOD_includes.cpp main.cpp ahnold.cpp special.cpp \
+  jumper.cpp engineer.cpp paris.cpp beam.cpp wonder.cpp
 HDRS = defines.h
 
 ifeq ($(shell uname),Darwin)

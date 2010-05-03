@@ -13,11 +13,13 @@ using namespace std;
 #include "game_state.h"
 #include "pause_state.h"
 #include "main_menu_state.h"
+#include "tutorial_state.h"
 #include "moveable.h"
 
 State *s;
 State *paused;
 State *main_s;
+State *tutorial;
 vector<State *> stack;
 vector<FMOD_SOUND *> sounds;
 bool loading;
@@ -30,6 +32,7 @@ void initRendering(void);
 void initSound(FMOD_SYSTEM **system);
 void initLoading(void);
 void initMain(int blah);
+void initTutorial(int blah);
 void initLevel(int level);
 void initMaxLevel(void);
 void handleResize(int w, int h);
@@ -67,7 +70,7 @@ int main(int argc, char *argv[])
   // it in 25 miliseconds
   srand((unsigned)time(NULL));
   glutTimerFunc(25, update, 0);
-  glutTimerFunc(25, initMain, 0);
+  glutTimerFunc(25, initTutorial, 0);
   
   glutMainLoop();
   
@@ -121,9 +124,6 @@ void initMain(int blah)
   FMOD_CHANNEL *channel;
   FMOD_RESULT result;
   
-  // initializing the sound system and the sounds
-  initSound(&sound_system);
-  
   Drawable *background, *pointer;
   Texture *main_menu, *pointer_tex;
   
@@ -149,6 +149,50 @@ void initMain(int blah)
   ((Main_Menu_State*)main_s)->play_sound();
   
   s = main_s;
+  loading = false;
+}
+
+void initTutorial(int blah)
+{
+  FMOD_SOUND *sound;
+  FMOD_CHANNEL *channel;
+  FMOD_RESULT result;
+  
+  // initializing the sound system and the sounds
+  initSound(&sound_system);
+  
+  vector<Drawable *> slides;
+  vector<Texture *> textures;
+  unsigned int num_slides;
+  
+  stringstream temp_str;
+  
+  ifstream fin;
+  fin.open(RESOURCES TUTORIAL NUM_TUTORIALS);
+  fin >> num_slides;
+  fin.close();
+  
+  for (unsigned int i = 0; i < num_slides; ++i)
+  {
+    temp_str.str(""); temp_str << RESOURCES TUTORIAL << i << ".png";
+    textures.push_back (new Texture(temp_str.str().c_str()));
+  }
+  for (unsigned int i = 0; i < num_slides; ++i)
+  {
+    slides.push_back(new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, textures.at(i)));
+  }
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES TUTORIAL TUTORIAL_MUSIC,
+                                   FMOD_SOFTWARE, 0, &sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(sound, FMOD_LOOP_NORMAL);
+  ERRCHECK(result);
+  
+  
+  tutorial = new Tutorial_State(slides, sound_system, sound, channel);
+  ((Tutorial_State*)tutorial)->play_sound();
+  
+  s = tutorial;
   loading = false;
 }
 
@@ -420,7 +464,13 @@ void handleKeypress(unsigned char key, int x, int y)
   switch(key)
   {
     case 27: // escape key
-      if (s == main_s)
+      if (s == tutorial)
+      {
+        tutorial->clean();
+        tutorial->state_clean();
+        delete tutorial;
+      }
+      else if (s == main_s)
       {
         main_s->clean();
         delete main_s;
@@ -446,6 +496,7 @@ void handleKeypress(unsigned char key, int x, int y)
         {
           loading = true;
           system_clean();
+          glutPostRedisplay();
           glutTimerFunc(25, initLevel, level);
         }
         else if (((Pause_State *)s)->get_selected() == 2) // quit
@@ -455,6 +506,13 @@ void handleKeypress(unsigned char key, int x, int y)
           s = main_s;
           ((Main_Menu_State*)s)->pause_sound();
         }
+      }
+      else if (s == tutorial)
+      {
+        loading = true;
+        ((Tutorial_State*)tutorial)->pause_sound();
+        glutPostRedisplay();
+        glutTimerFunc(25, initMain, 0);
       }
       else if (s == main_s)
       {
@@ -516,21 +574,33 @@ void update(int delta)
   if (!loading)
   {
     s->update(delta);
-    // this means the goal state has been reached
-    if (delta < 0)
+    if (s == tutorial)
     {
-      loading = true;
-      system_clean();
-      if (++level <= last_level)
+      if (delta < 0)
       {
-        glutTimerFunc(25, initLevel, level);
+        loading = true;
+        ((Tutorial_State*)tutorial)->pause_sound();
+        glutTimerFunc(25, initMain, 0);
       }
-      else
+    }
+    else if (s != main_s)
+    {
+      // this means the goal state has been reached
+      if (delta < 0)
       {
-        printf("You win!\n");
-        exit(0);
+        loading = true;
+        system_clean();
+        if (++level <= last_level)
+        {
+          glutTimerFunc(25, initLevel, level);
+        }
+        else
+        {
+          printf("You win!\n");
+          exit(0);
+        }
+        delta = 0;
       }
-      delta = 0;
     }
   }
   
