@@ -14,6 +14,8 @@
 
 #define RESOURCES "resources/"
 #define LEVEL "Level "
+#define TUTORIAL "tutorial/"
+#define NUM_TUTORIALS "num_tutorials.txt"
 
 // texture files
 #define NUMBER_TEXTURE "numbers.png"
@@ -50,6 +52,7 @@
 #define BEAM_SFX "punch sound.wav"
 #define KURT_SFX "jump sound (not final).wav"
 #define MAIN_MENU_MUSIC "background.mp3"
+#define TUTORIAL_MUSIC "background.mp3"
 
 // widths and heights
 #define TILE_WIDTH 100
