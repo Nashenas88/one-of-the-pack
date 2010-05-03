@@ -29,6 +29,7 @@ private:
   char last_key; // last key that was pressed
   char key_held; // used for activating specials ability/switching to special
   int jump_delta;
+  bool controllable;
   bool debug;
   
   //bool sort_by_height(Special *i, Special *j);

@@ -18,7 +18,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), jump_delta(-1), debug(false) {}
+key_held(0), jump_delta(-1), controllable(false), debug(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -754,27 +754,47 @@ void Game_State::update(int &delta)
     }
     
     speed = c->getVSpeed();
-    c->get_top_left(control_x, control_y);
+    if (!controllable)
+    {
+      if (delta / CAMERA_DELTA == 0)
+      {
+        map->get_goal(control_x, control_y);
+      }
+      else if ((unsigned int) (delta / CAMERA_DELTA) == specials.size() + 1)
+      {
+        controllable = true;
+        p->get_top_left(control_x, control_y);
+      }
+      else
+      {
+        specials.at(delta/CAMERA_DELTA-1)->get_top_left(control_x, control_y);
+      }
+      ++delta;
+    }
+    else
+    {
+      c->get_top_left(control_x, control_y);
+    }
     center_x = SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f;
     if (c != p && ((Special*)c)->get_type() == JUMPER && c->getVSpeed() < 0)
     {
       center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
     }
     else if (speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
-        (c->setVSpeed((int)(TILE_HEIGHT * 1.3f)),
-         will_collide = !c->will_collide_y(map) &&
-         !c->will_collide_tile(map, PLATFORM, NULL) &&
-         !c->will_collide_tile(map, LADDER, NULL) &&
-         !c->will_collide_moveables_y(moveables, -1, NULL) &&
-         !c->will_collide_specials_y(specials, -1, NULL) &&
-         !c->will_collide_rubber_y(map),
-         c->setVSpeed((int) speed),will_collide))
+             (c->setVSpeed((int)(TILE_HEIGHT * 1.3f)),
+              will_collide = !c->will_collide_y(map) &&
+              !c->will_collide_tile(map, PLATFORM, NULL) &&
+              !c->will_collide_tile(map, LADDER, NULL) &&
+              !c->will_collide_moveables_y(moveables, -1, NULL) &&
+              !c->will_collide_specials_y(specials, -1, NULL) &&
+              !c->will_collide_rubber_y(map),
+              c->setVSpeed((int) speed),will_collide))
     {
       center_y = SCREEN_HEIGHT / 3.0f - TILE_HEIGHT;
     }
     else
     {
-    center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
+      center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
     }
     offset_x = center_x - control_x;
     offset_y = center_y - control_y;
@@ -1039,6 +1059,10 @@ void Game_State::update(int &delta)
 
 void Game_State::key_pressed(unsigned char key, int x, int y)
 {
+  if (!controllable)
+  {
+    return;
+  }
   if (key >= 'A' && key <= 'Z')
   {
     key += 'a' - 'A';
@@ -1247,6 +1271,10 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
 
 void Game_State::key_released(unsigned char key, int x, int y)
 {
+  if (!controllable)
+  {
+    return;
+  }
   if (key >= 'A' && key <= 'Z')
   {
     key += 'a' - 'A';
@@ -1309,6 +1337,10 @@ void Game_State::key_released(unsigned char key, int x, int y)
 
 void Game_State::special_pressed(int key, int x, int y)
 {
+  if (!controllable)
+  {
+    return;
+  }
   switch (key)
   {
     case GLUT_KEY_UP:
@@ -1328,6 +1360,10 @@ void Game_State::special_pressed(int key, int x, int y)
 
 void Game_State::special_released(int key, int x, int y)
 {
+  if (!controllable)
+  {
+    return;
+  }
   switch (key)
   {
     case GLUT_KEY_UP:

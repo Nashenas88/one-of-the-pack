@@ -604,7 +604,6 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     }
   }
   
-  
   moves = moveables;
   specs = specials;
   
@@ -644,6 +643,22 @@ void Map::clear_checkpoint(int x, int y)
   if (map[x][y][M_TILE] == NEW_CHECKPOINT)
   {
     map[x][y][M_TILE] = OLD_CHECKPOINT;
+  }
+}
+
+void Map::get_goal(float &x, float &y)
+{
+  for (int i = 0; i < get_width(); ++i)
+  {
+    for (int j = 0; j < get_height(); ++j)
+    {
+      if (map[i][j][M_TILE] == GOAL)
+      {
+        x = i * TILE_WIDTH + get_x();
+        y = j * TILE_HEIGHT + get_y();
+        return;
+      }
+    }
   }
 }
 
