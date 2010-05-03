@@ -12,20 +12,13 @@ using namespace std;
 class Main_Menu_State : public State
 {
 private:
-  FMOD_DSP *dspparameq;
-  Game_State *game_state;
   Drawable *background;
-  Drawable *map;
   Drawable *pointer;
-  Drawable *movers;
-  Drawable *statics;
   unsigned int selected;
-  unsigned int anim_timer;
   
 public:
   Main_Menu_State(void);
-  Main_Menu_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              Drawable *b, Drawable *m, Drawable *p, Texture *icons);
+  Main_Menu_State(FMOD_SYSTEM *system, Drawable *b, Drawable *p);
   
   void draw(void);
   
