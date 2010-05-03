@@ -12,7 +12,6 @@ using namespace std;
 class Pause_State : public State
 {
 private:
-  FMOD_DSP *dspparameq;
   Game_State *game_state;
   Drawable *background;
   Drawable *map;
@@ -25,9 +24,8 @@ private:
   
 public:
   Pause_State(void);
-  Pause_State(FMOD_SYSTEM *system, FMOD_DSP *pe, Game_State *gs,
-              Drawable *b, Drawable *m, Drawable *p, Texture *icons,
-              Drawable *pn);
+  Pause_State(FMOD_SYSTEM *system, Game_State *gs, Drawable *b, Drawable *m,
+              Drawable *p, Texture *icons, Drawable *pn);
   
   void draw(void);
   

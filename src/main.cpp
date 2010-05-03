@@ -12,20 +12,26 @@ using namespace std;
 #include "state.h"
 #include "game_state.h"
 #include "pause_state.h"
+#include "main_menu_state.h"
 #include "moveable.h"
 
 State *s;
 State *paused;
+State *main_s;
 vector<State *> stack;
 vector<FMOD_SOUND *> sounds;
 bool loading;
 Drawable *load_screen;
 int level;
+int last_level;
+FMOD_SYSTEM *sound_system;
 
 void initRendering(void);
 void initSound(FMOD_SYSTEM **system);
 void initLoading(void);
+void initMain(int blah);
 void initLevel(int level);
+void initMaxLevel(void);
 void handleResize(int w, int h);
 void handleKeypress(unsigned char key, int x, int y);
 void handleKeyrelease(unsigned char key, int x, int y);
@@ -46,8 +52,8 @@ int main(int argc, char *argv[])
   glutCreateWindow(GAME_NAME);
   initRendering();
   initLoading();
-  
-  level = 1;
+  level = 0; // signifies main menu
+  initMaxLevel();
   
   /* Set handler functions */
   glutDisplayFunc(drawScene);
@@ -61,7 +67,7 @@ int main(int argc, char *argv[])
   // it in 25 miliseconds
   srand((unsigned)time(NULL));
   glutTimerFunc(25, update, 0);
-  glutTimerFunc(25, initLevel, level);
+  glutTimerFunc(25, initMain, 0);
   
   glutMainLoop();
   
@@ -109,6 +115,49 @@ void initLoading(void)
   load_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
 }
 
+void initMain(int blah)
+{
+  FMOD_SOUND *sound;
+  FMOD_CHANNEL *channel;
+  FMOD_RESULT result;
+  
+  // initializing the sound system and the sounds
+  initSound(&sound_system);
+  
+  Drawable *background, *pointer;
+  Texture *main_menu, *pointer_tex;
+  
+  stringstream temp_str;
+  
+  temp_str.str(""); temp_str << RESOURCES << MAIN_MENU_TEXTURE;
+  main_menu = new Texture(temp_str.str().c_str());
+  temp_str.str(""); temp_str << RESOURCES << MAIN_MENU_POINTER_TEXTURE;
+  pointer_tex = new Texture(temp_str.str().c_str());
+  
+  background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, main_menu);
+  pointer = new Drawable(0.0f, 0.0f, 1, 1, VARIABLE, pointer_tex);
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES MAIN_MENU_MUSIC,
+                                   FMOD_SOFTWARE, 0, &sound);
+  ERRCHECK(result);
+  
+  
+  main_s = new Main_Menu_State(background, pointer, sound_system, sound,
+                               channel);
+  ((Main_Menu_State*)main_s)->play_sound();
+  
+  s = main_s;
+  loading = false;
+}
+
+void initMaxLevel(void)
+{
+  ifstream fin;
+  fin.open(RESOURCES LAST_LEVEL_FILE);
+  fin >> last_level;
+  fin.close();
+}
+
 void initLevel(int level)
 {
   // objects that are needed by the state
@@ -125,12 +174,10 @@ void initLevel(int level)
   vector<Special*> specials;
   vector<Drawable*> numbers;
   Map *m;
-  FMOD_SYSTEM *system;
   FMOD_SOUND *s_sound, *temp_sound;
   vector<FMOD_SOUND *> musics, effects;
   FMOD_CHANNEL *m_channel = 0, *a_channel = 0;
   FMOD_RESULT result;
-  FMOD_DSP *pe;
   
   int num_sounds;
   ifstream file;
@@ -174,11 +221,8 @@ void initLevel(int level)
   temp_string.str(""); temp_string << RESOURCES << PAUSE_ICONS_TEXTURE;
   ps_ic = new Texture(temp_string.str().c_str());
   
-  // initializing the sound system and the sounds
-  initSound(&system);
-  
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PLAYER_SOUND;
-  result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
                                    FMOD_SOFTWARE, 0, &s_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
@@ -192,7 +236,7 @@ void initLevel(int level)
   for (int i = 1; i <= num_sounds; ++i)
   {
     temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << i << SOUND_FILE_TYPE;
-    result = FMOD_System_CreateSound(system, temp_string.str().c_str(),
+    result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
                                      FMOD_SOFTWARE, 0, &temp_sound);
     ERRCHECK(result);
     result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_NORMAL);
@@ -200,7 +244,7 @@ void initLevel(int level)
     
     musics.push_back(temp_sound);
   }
-  result = FMOD_System_CreateSound(system, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -208,7 +252,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -216,7 +260,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -224,7 +268,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -232,7 +276,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -240,7 +284,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -251,7 +295,7 @@ void initLevel(int level)
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
                  3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT, PLAYER_RIGHT,
-                 5, t, RIGHT, false, system, s_sound, m_channel);
+                 5, t, RIGHT, false, sound_system, s_sound, m_channel);
   block1 = new Drawable(0.0f, 0.0f, FLOORS, 1, TILE, tiles);
   block2 = new Drawable(0.0f, 0.0f, FLOORS, 1, TILE, tiles);
   block2->set_cur_frame(2);
@@ -335,9 +379,9 @@ void initLevel(int level)
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
-              p, system, musics, m_channel, effects, a_channel);
-  s = new Game_State(p, m, moveables, specials, numbers, system);
-  paused = new Pause_State(system, pe, (Game_State *)s, paused_background,
+              p, sound_system, musics, m_channel, effects, a_channel);
+  s = new Game_State(p, m, moveables, specials, numbers, sound_system);
+  paused = new Pause_State(sound_system, (Game_State *)s, paused_background,
                            map_image, pointer, ps_ic, paused_names);
   
   // this is for syncing the music in the game
@@ -374,7 +418,15 @@ void handleKeypress(unsigned char key, int x, int y)
   switch(key)
   {
     case 27: // escape key
-      system_clean();
+      if (s == main_s)
+      {
+        main_s->clean();
+        delete main_s;
+      }
+      else
+      {
+        system_clean();
+      }
       exit(0);
       break;
     case '\n':
@@ -397,7 +449,24 @@ void handleKeypress(unsigned char key, int x, int y)
         else if (((Pause_State *)s)->get_selected() == 2) // quit
         {
           system_clean();
-          exit(0);
+          stack.clear();
+          s = main_s;
+          ((Main_Menu_State*)s)->pause_sound();
+        }
+      }
+      else if (s == main_s)
+      {
+        level = ((Main_Menu_State*)s)->get_selected();
+        if (level > last_level)
+        {
+          fprintf(stderr, "Error level %u is not yet implemented\n", level);
+        }
+        else
+        {
+          loading = true;
+          ((Main_Menu_State*)s)->pause_sound();
+          glutPostRedisplay();
+          glutTimerFunc(25, initLevel, level);
         }
       }
       else
@@ -450,7 +519,7 @@ void update(int delta)
     {
       loading = true;
       system_clean();
-      if (++level <= LAST_LEVEL)
+      if (++level <= last_level)
       {
         glutTimerFunc(25, initLevel, level);
       }
