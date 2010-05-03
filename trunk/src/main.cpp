@@ -473,6 +473,7 @@ void handleKeypress(unsigned char key, int x, int y)
       else if (s == main_s)
       {
         main_s->clean();
+        main_s->state_clean();
         delete main_s;
       }
       else
@@ -503,29 +504,49 @@ void handleKeypress(unsigned char key, int x, int y)
         {
           system_clean();
           stack.clear();
-          s = main_s;
-          ((Main_Menu_State*)s)->pause_sound();
+          loading = true;
+          glutPostRedisplay();
+          glutTimerFunc(25, initMain, 0);
         }
       }
       else if (s == tutorial)
       {
         loading = true;
-        ((Tutorial_State*)tutorial)->pause_sound();
         glutPostRedisplay();
+        ((Tutorial_State*)s)->pause_sound();
+        ((Tutorial_State*)s)->clean();
+        delete tutorial;
         glutTimerFunc(25, initMain, 0);
       }
       else if (s == main_s)
       {
         level = ((Main_Menu_State*)s)->get_selected();
-        if (level > last_level)
+        if (level == 11)
+        {
+          loading = true;
+          glutPostRedisplay();
+          ((Main_Menu_State*)s)->pause_sound();
+          ((Main_Menu_State*)s)->clean();
+          delete main_s;
+          glutTimerFunc(25, initTutorial, 0);
+        }
+        else if (level == 12)
+        {
+          main_s->clean();
+          delete main_s;
+          exit(0);
+        }
+        else if (level > last_level)
         {
           fprintf(stderr, "Error level %u is not yet implemented\n", level);
         }
         else
         {
           loading = true;
-          ((Main_Menu_State*)s)->pause_sound();
           glutPostRedisplay();
+          ((Main_Menu_State*)s)->pause_sound();
+          ((Main_Menu_State*)s)->clean();
+          delete main_s;
           glutTimerFunc(25, initLevel, level);
         }
       }
