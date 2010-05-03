@@ -91,4 +91,9 @@ void Tutorial_State::clean(void)
     delete slides.at(i);
   }
   slides.clear();
+  
+  FMOD_RESULT result;
+  
+  result = FMOD_Sound_Release(music);
+  ERRCHECK(result);
 }

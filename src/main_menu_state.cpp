@@ -147,5 +147,8 @@ void Main_Menu_State::clean(void)
   delete background;
   delete pointer;
   
-  state_clean();
+  FMOD_RESULT result;
+  
+  result = FMOD_Sound_Release(music);
+  ERRCHECK(result);
 }

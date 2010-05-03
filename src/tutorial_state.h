@@ -36,6 +36,8 @@ public:
   void play_sound(void);
   void pause_sound(void);
   
+  void reset(void) {current_slide = 0;}
+  
   void clean(void);
 };
 #endif // FLOCK__MAIN_MENU_STATE__H
