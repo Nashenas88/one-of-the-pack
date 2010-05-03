@@ -22,6 +22,7 @@ State *main_s;
 State *tutorial;
 vector<State *> stack;
 vector<FMOD_SOUND *> sounds;
+vector<Texture *> textures_tr;
 bool loading;
 Drawable *load_screen;
 int level;
@@ -422,6 +423,21 @@ void initLevel(int level)
   textures.push_back(kurt);
   textures.push_back(paris);
   
+  textures_tr.push_back(t);
+  textures_tr.push_back(bg);
+  textures_tr.push_back(tiles);
+  textures_tr.push_back(pause_bg);
+  textures_tr.push_back(mi);
+  textures_tr.push_back(pi);
+  textures_tr.push_back(ahnold);
+  textures_tr.push_back(jumper);
+  textures_tr.push_back(nums);
+  textures_tr.push_back(ps_ic);
+  textures_tr.push_back(engineer);
+  textures_tr.push_back(paris);
+  textures_tr.push_back(kurt);
+  textures_tr.push_back(p_names);
+  
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
@@ -497,6 +513,7 @@ void handleKeypress(unsigned char key, int x, int y)
         {
           loading = true;
           system_clean();
+          stack.clear();
           glutPostRedisplay();
           glutTimerFunc(25, initLevel, level);
         }
