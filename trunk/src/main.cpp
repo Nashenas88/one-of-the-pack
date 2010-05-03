@@ -140,6 +140,8 @@ void initMain(int blah)
   result = FMOD_System_CreateSound(sound_system, RESOURCES MAIN_MENU_MUSIC,
                                    FMOD_SOFTWARE, 0, &sound);
   ERRCHECK(result);
+  result = FMOD_Sound_SetMode(sound, FMOD_LOOP_NORMAL);
+  ERRCHECK(result);
   
   
   main_s = new Main_Menu_State(background, pointer, sound_system, sound,
