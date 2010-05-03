@@ -63,6 +63,7 @@
 
 #define MENU_ITEMS 3
 #define POINTER_MOVE 90
+#define MAIN_MENU_POINTER_MOVE 90
 
 #define DELTA_DELAY 2
 #define SPECIAL_DELTA_DELAY 3
