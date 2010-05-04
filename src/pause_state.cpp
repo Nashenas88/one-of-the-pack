@@ -203,6 +203,10 @@ void Pause_State::clean(void)
   delete background;
   delete map;
   delete pointer;
+  delete movers;
+  delete statics;
+  paused_names->clean();
+  delete paused_names;
   game_state->clean();
   delete game_state;
 }

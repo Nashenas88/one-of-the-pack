@@ -685,4 +685,7 @@ void Map::clean(void)
   {
     delete tiles.at(i);
   }
+  tiles.clear();
+  
+  ((Drawable*)this)->clean();
 }

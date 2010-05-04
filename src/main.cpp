@@ -423,12 +423,7 @@ void initLevel(int level)
   textures.push_back(kurt);
   textures.push_back(paris);
   
-  textures_tr.push_back(t);
-  textures_tr.push_back(bg);
   textures_tr.push_back(tiles);
-  textures_tr.push_back(pause_bg);
-  textures_tr.push_back(mi);
-  textures_tr.push_back(pi);
   textures_tr.push_back(ahnold);
   textures_tr.push_back(jumper);
   textures_tr.push_back(nums);
@@ -436,7 +431,6 @@ void initLevel(int level)
   textures_tr.push_back(engineer);
   textures_tr.push_back(paris);
   textures_tr.push_back(kurt);
-  textures_tr.push_back(p_names);
   
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
@@ -680,6 +674,12 @@ void system_clean(void)
     ERRCHECK(result);
   }
   sounds.clear();
+  
+  for (unsigned int i = 0; i < textures_tr.size(); ++i)
+  {
+    delete textures_tr.at(i);
+  }
+  textures_tr.clear();
   
   paused->clean();
   delete paused;
