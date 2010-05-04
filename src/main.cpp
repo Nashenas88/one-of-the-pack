@@ -423,7 +423,6 @@ void initLevel(int level)
   textures.push_back(kurt);
   textures.push_back(paris);
   
-  textures_tr.push_back(tiles);
   textures_tr.push_back(ahnold);
   textures_tr.push_back(jumper);
   textures_tr.push_back(nums);
