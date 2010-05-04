@@ -25,6 +25,7 @@ private:
   FMOD_SOUND *abil_sound;
   FMOD_CHANNEL *abil_channel;
   Drawable *number; // number that will be displayed above special
+  int jump_delta;
   
 public:
   Special(void);
@@ -47,6 +48,9 @@ public:
   void set_mute(bool m);
   void set_volume(float volume);
   void go_home(Map *m);
+  
+  int get_jump_delta(void) {return jump_delta;}
+  void set_jump_delta(int d) {jump_delta = d;}
   
   Drawable *get_number(void) {return number;}
   void set_number(Drawable *num);

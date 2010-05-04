@@ -9,7 +9,6 @@ class Engineer : public Special
 {  
 private:
   FMOD_SOUND *beam_sound;
-  FMOD_SOUND *beam_channel;
 public:
   Engineer(void);
   Engineer(float x, float y, int map_x, int map_y, int num, int frames,

@@ -20,6 +20,7 @@ private:
   vector<Special *> specials; // all specials that can follow player
   vector<Drawable *> numbers; // numbers to place above specials
   vector<Beam *> beams; // all beams flying in the air
+  vector<Beam *> kisses; // paris's kisses
   unsigned int next_special; // num to determine pos in specials
   bool gravity; // is gravity on or off?
   bool collision; // is collision on or off?
@@ -31,8 +32,6 @@ private:
   int jump_delta;
   bool controllable;
   bool debug;
-  
-  //bool sort_by_height(Special *i, Special *j);
   
 public:
   Game_State(void);
