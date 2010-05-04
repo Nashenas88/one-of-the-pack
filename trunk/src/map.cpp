@@ -271,14 +271,20 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
           map[x][y][M_TILE] = rand() % 5 + 1; // randomly selects a block 1-5
         }
       }
+      // rubber
+      else if(red[0] == 0 && green[0] == 255 && blue[0] == 255)
+      {
+        map[x][y][M_COLL] = 1;
+        map[x][y][M_TILE] = RUBBER;
+      }
       // circuit
-      if(red[0] == 0 && green[0] == 0 && blue[0] == 128)
+      else if(red[0] == 0 && green[0] == 0 && blue[0] == 128)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = CIRCUIT;
       }
       // outside of the playable area
-      if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
+      else if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = OUTSIDE;
@@ -352,7 +358,9 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         Moveable *move;
         get_top_left(mx, my);
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                            x, y, PUSH, 1, ts, true, false, NULL);
+                            x, y, PUSH, 1, ts, false, false, NULL);
+        move->set_gravity(true);
+        move->set_freezeable();
         moveables.push_back(move);
       }
       // freezeable moveable block
