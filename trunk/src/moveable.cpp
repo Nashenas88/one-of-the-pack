@@ -420,28 +420,24 @@ void Moveable::setVSpeed(int vs, Map *m, vector<Moveable *> ignore)
   }
   
   bool leave = false;
-  int old;
   
-  old = getVSpeed();
   setVSpeed(vs);
-  if (will_collide_x(m))
+  if (will_collide_y(m))
   {
     for (unsigned int i = 0; i < ignore.size(); ++i)
     {
       ignore.at(i)->setVSpeed(0);
     }
+    setVSpeed(0);
     leave = true;
   }
-  setVSpeed(old);
   
   if (leave)
   {
-    setVSpeed(0);
     return;
   }
   
   ignore.push_back(this);
-  setVSpeed(vs);
   
   for (unsigned int i = 0, j = 0; i < links.size(); ++i)
   {

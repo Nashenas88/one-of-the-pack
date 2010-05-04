@@ -734,8 +734,11 @@ void Game_State::update(int &delta)
       old_speed = specials.at(i)->getHSpeed();
       specials.at(i)->setHSpeed(specials.at(i)->getDirection() == RIGHT?
                                 PLAYER_SPEED:-PLAYER_SPEED);
-      if (specials.at(i)->will_collide_x(map) ||
-          specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+      if ((specials.at(i)->will_collide_x(map) ||
+          specials.at(i)->will_collide_moveables_x(moveables, -1, NULL)) &&
+          !(specials.at(i)->will_collide_y(map) ||
+            specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
+            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
       {
         if (specials.at(i)->get_type() == JUMPER)
         {
