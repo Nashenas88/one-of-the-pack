@@ -1443,6 +1443,14 @@ void Game_State::clean(void)
     specials.at(i)->clean();
     delete specials.at(i);
   }
+  for (unsigned int i = 0; i < beams.size(); ++i)
+  {
+    delete beams.at(i);
+  }
+  for (unsigned int i = 0; i < numbers.size(); ++i)
+  {
+    delete numbers.at(i);
+  }
 }
 
 bool sort_by_height(Special *i, Special *j)

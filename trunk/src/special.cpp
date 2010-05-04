@@ -101,3 +101,8 @@ void Special::use_ability(Map *m) {}
 void Special::move_number(float x, float y){
   number->move(x, y);
 }
+
+void Special::clean(void)
+{
+  delete number;
+}
