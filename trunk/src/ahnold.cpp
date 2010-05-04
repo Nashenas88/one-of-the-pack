@@ -40,9 +40,9 @@ void Ahnold::enable_ability(Map *m)
   }
   
   int block = -1;
-  if (will_collide_tile(m, BREAKABLE, hit))
+  if (will_collide_tile(m, BREAKABLE1, hit))
   {
-    m->remove(hit[0], hit[1]);
+    m->breaker(hit[0], hit[1]);
   }
   else if (will_collide_moveables_x(m->get_moveables(), -1, &block))
   {

@@ -16,7 +16,9 @@ void Beam::use_ability(Map *m)
 {
   int hit[2];
   
-  if (will_collide_tile(m, BREAKABLE, hit))
+  if (will_collide_tile(m, BREAKABLE1, hit) ||
+      will_collide_tile(m, BREAKABLE2, hit) ||
+      will_collide_tile(m, BREAKABLE3, hit))
   {
     play_effect();
   }

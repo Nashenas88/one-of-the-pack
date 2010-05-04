@@ -209,12 +209,12 @@ void initLevel(int level)
 {
   // objects that are needed by the state
   Player *p;
-  Drawable *block1, *background, *breakable, *plat1, *ladder, *paused_background;
+  Drawable *block1, *background, *breakable1, *plat1, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
   Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o, *rubber;
   Drawable *circuit, *n_check, *o_check, *toxic_sludge, *paused_names, *smog;
-  Drawable *br_bl, *bl_bl, *plat2, *plat3, *plat4, *plat5;
+  Drawable *br_bl, *bl_bl, *plat2, *plat3, *plat4, *plat5, *breakable2, *breakable3;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
   Texture *engineer, *paris, *kurt, *p_names;
   vector<Texture*> textures;
@@ -375,7 +375,11 @@ void initLevel(int level)
   bl_bl->set_cur_frame(BR_CORNER_WALL_FRAME);
   bl_bl->change_direction(LEFT);
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
-  breakable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
+  breakable1 = new Drawable(0.0f, 0.0f, BREAKS, 1, TILE, tiles);
+  breakable2 = new Drawable(0.0f, 0.0f, BREAKS, 1, TILE, tiles);
+  breakable2->set_cur_frame(2);
+  breakable3 = new Drawable(0.0f, 0.0f, BREAKS, 1, TILE, tiles);
+  breakable3->set_cur_frame(3);
   moveable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   //moveable->set_cur_frame(MOVEABLE_BLOCK);
   plat1 = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
@@ -391,7 +395,8 @@ void initLevel(int level)
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
   map_image = new Drawable(PAUSE_MAP_X, PAUSE_MAP_Y, 1, 1, VARIABLE, mi);
   pointer = new Drawable(650, 270, 1, 1, VARIABLE, pi);
-  goal = new Drawable(0.0f, 0.0f, GOALT, 1, TILE, tiles);
+  goal = new Drawable(0.0f, 0.0f, LADDS, 1, TILE, tiles);
+  goal->set_cur_frame(2);
   black_hole = new Drawable(0.0f, 0.0f, BH, 1, TILE, tiles);
   toxic_sludge = new Drawable(0.0f, 0.0f, BH, 1, TILE, tiles);
   toxic_sludge->set_cur_frame(T_SLUDGE_FRAME);
@@ -437,7 +442,9 @@ void initLevel(int level)
   v.push_back(plat3);
   v.push_back(plat4);
   v.push_back(plat5);
-  v.push_back(breakable);
+  v.push_back(breakable1);
+  v.push_back(breakable2);
+  v.push_back(breakable3);
   v.push_back(goal);
   v.push_back(black_hole);
   v.push_back(toxic_sludge);
