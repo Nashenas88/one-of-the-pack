@@ -74,7 +74,11 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   setHSpeed(TILE_WIDTH);
   if (!will_collide_Dx(p) &&
       !will_collide_x(m) && 
-      !will_collide_tile(m, PLATFORM, NULL) &&
+      !will_collide_tile(m, PLATFORM1, NULL) &&
+      !will_collide_tile(m, PLATFORM2, NULL) &&
+      !will_collide_tile(m, PLATFORM3, NULL) &&
+      !will_collide_tile(m, PLATFORM4, NULL) &&
+      !will_collide_tile(m, PLATFORM5, NULL) &&
       !will_collide_specials(specials, i) &&
       !will_collide_moveables_x(moveables, -1, NULL))
   {
@@ -91,7 +95,11 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     setHSpeed(2*TILE_WIDTH);
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
-        !will_collide_tile(m, PLATFORM, NULL) &&
+        !will_collide_tile(m, PLATFORM1, NULL) &&
+        !will_collide_tile(m, PLATFORM2, NULL) &&
+        !will_collide_tile(m, PLATFORM3, NULL) &&
+        !will_collide_tile(m, PLATFORM4, NULL) &&
+        !will_collide_tile(m, PLATFORM5, NULL) &&
         !will_collide_specials(specials, i) &&
         !will_collide_moveables_x(moveables, -1, NULL))
     {
@@ -110,7 +118,11 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   setHSpeed(-TILE_WIDTH);
   if (!will_collide_Dx(p) &&
       !will_collide_x(m) && 
-      !will_collide_tile(m, PLATFORM, NULL) &&
+      !will_collide_tile(m, PLATFORM1, NULL) &&
+      !will_collide_tile(m, PLATFORM2, NULL) &&
+      !will_collide_tile(m, PLATFORM3, NULL) &&
+      !will_collide_tile(m, PLATFORM4, NULL) &&
+      !will_collide_tile(m, PLATFORM5, NULL) &&
       !will_collide_specials(specials, i) &&
       !will_collide_moveables_x(moveables, -1, NULL))
   {
@@ -126,7 +138,11 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     temp_move4->add_link(temp_move1);
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
-        !will_collide_tile(m, PLATFORM, NULL) &&
+        !will_collide_tile(m, PLATFORM1, NULL) &&
+        !will_collide_tile(m, PLATFORM2, NULL) &&
+        !will_collide_tile(m, PLATFORM3, NULL) &&
+        !will_collide_tile(m, PLATFORM4, NULL) &&
+        !will_collide_tile(m, PLATFORM5, NULL) &&
         !will_collide_specials(specials, i) &&
         !will_collide_moveables_x(moveables, -1, NULL))
     {

@@ -209,12 +209,12 @@ void initLevel(int level)
 {
   // objects that are needed by the state
   Player *p;
-  Drawable *block1, *background, *breakable, *plat, *ladder, *paused_background;
+  Drawable *block1, *background, *breakable, *plat1, *ladder, *paused_background;
   Drawable *map_image, *pointer, *left_block, *right_block, *left_corner_block;
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
   Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o, *rubber;
   Drawable *circuit, *n_check, *o_check, *toxic_sludge, *paused_names, *smog;
-  Drawable *br_bl, *bl_bl;
+  Drawable *br_bl, *bl_bl, *plat2, *plat3, *plat4, *plat5;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
   Texture *engineer, *paris, *kurt, *p_names;
   vector<Texture*> textures;
@@ -378,7 +378,15 @@ void initLevel(int level)
   breakable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   moveable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   //moveable->set_cur_frame(MOVEABLE_BLOCK);
-  plat = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  plat1 = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  plat2 = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  plat2->set_cur_frame(2);
+  plat3 = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  plat2->set_cur_frame(3);
+  plat4 = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  plat2->set_cur_frame(4);
+  plat5 = new Drawable(0.0f, 0.0f, PLATS, 1, TILE, tiles);
+  plat2->set_cur_frame(5);
   ladder = new Drawable(0.0f, 0.0f, LADDS, 1, TILE, tiles);
   paused_background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, pause_bg);
   map_image = new Drawable(PAUSE_MAP_X, PAUSE_MAP_Y, 1, 1, VARIABLE, mi);
@@ -424,7 +432,11 @@ void initLevel(int level)
   v.push_back(rubber);
   v.push_back(ladder);
   v.push_back(circuit);
-  v.push_back(plat);
+  v.push_back(plat1);
+  v.push_back(plat2);
+  v.push_back(plat3);
+  v.push_back(plat4);
+  v.push_back(plat5);
   v.push_back(breakable);
   v.push_back(goal);
   v.push_back(black_hole);
