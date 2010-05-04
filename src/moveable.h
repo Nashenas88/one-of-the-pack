@@ -48,6 +48,7 @@ public:
   void add_link(Moveable *l) {links.push_back(l);}
   
   bool is_freezeable(void) {return freezeable;}
+  void set_freezeable(void) {freezeable = true;}
   
   void reset(Map *m);
   void move(float x, float y, Map *m);

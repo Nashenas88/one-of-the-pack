@@ -1150,7 +1150,10 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
 {
   if (!controllable)
   {
-    return;
+    if(key == 'q' || key == 'Q')
+    {
+      controllable = true;
+    }
   }
   if (key >= 'A' && key <= 'Z')
   {
