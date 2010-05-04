@@ -737,8 +737,6 @@ void Game_State::update(int &delta)
       old_v = specials.at(i)->getVSpeed();
       if ((specials.at(i)->will_collide_x(map) ||
           specials.at(i)->will_collide_moveables_x(moveables, -1, NULL)) &&
-          (specials.at(i)->will_collide_y(map) ||
-           specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)) &&
           !((specials.at(i)->setVSpeed(-JUMP_HEIGHT),
              specials.at(i)->will_collide_y(map)) ||
             specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
