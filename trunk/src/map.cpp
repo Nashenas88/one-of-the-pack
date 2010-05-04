@@ -58,14 +58,16 @@ void Map::draw(void)
           tile_to_draw->get_y() > -TILE_HEIGHT &&
           tile_to_draw->get_y() <= SCREEN_HEIGHT)
       {
-        if ((above == OUTSIDE && self >= BLOCK1 && self <= BLOCK5) ||
+        if ((above == OUTSIDE && ((self >= BLOCK1 && self <= BLOCK5) ||
+                                  self == BR_BLOCK || self == BL_BLOCK)) ||
             ((top_left == OUTSIDE || top_right == OUTSIDE) &&
              (self == RC_BLOCK || self == LC_BLOCK)))
         {
           tile_to_draw->flip_y();
         }
         tile_to_draw->draw();
-        if ((above == OUTSIDE && self >= BLOCK1 && self <= BLOCK5) ||
+        if ((above == OUTSIDE && ((self >= BLOCK1 && self <= BLOCK5) ||
+                                  self == BR_BLOCK || self == BL_BLOCK)) ||
             ((top_left == OUTSIDE || top_right == OUTSIDE) &&
              (self == RC_BLOCK || self == LC_BLOCK)))
         {
@@ -532,10 +534,10 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
           map[i][j][M_TILE] = L_BLOCK;
         }
         else if (left < BLOCK1 ||
-                 left > RC_BLOCK)
+                 left > BR_BLOCK)
         {
           if (top < BLOCK1 ||
-              top > RC_BLOCK)
+              top > BR_BLOCK)
           {
             map[i][j][M_TILE] = LC_BLOCK;
           }
@@ -563,7 +565,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
           }
         }
         else if (right < BLOCK1 ||
-                 right > RC_BLOCK)
+                 right > BR_BLOCK)
         {
           if(top < BLOCK1 ||
              top > RC_BLOCK)
@@ -590,6 +592,58 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                 bottom == BG)
             {
               map[i][j][M_TILE] = LC_BLOCK;
+            }
+          }
+        }
+      }
+    }
+  }
+  for (unsigned int i = 1; i < width - 1; ++i)
+  {
+    for (unsigned int j = 1; j < height - 1; ++j)
+    {
+      current = map[i][j][M_TILE];
+      left = map[i-1][j][M_TILE];
+      right = map[i+1][j][M_TILE];
+      top = map[i][j-1][M_TILE];
+      top_left = map[i-1][j-1][M_TILE];
+      top_right = map[i+1][j-1][M_TILE];
+      bottom = map[i][j+1][M_TILE];
+      
+      if (current >= BLOCK1 && current <= L_BLOCK)
+      {
+        if (top == L_BLOCK || top == LC_BLOCK)
+        {
+          if ((left >= BLOCK1 && left <= BLOCK5) ||
+              left == LC_BLOCK)
+          {
+            map[i][j][M_TILE] = BL_BLOCK;
+          }
+        }
+        else if (top == R_BLOCK || top == RC_BLOCK)
+        {
+          if ((right >= BLOCK1 && right <= BLOCK5) ||
+              right == RC_BLOCK)
+          {
+            map[i][j][M_TILE] = BR_BLOCK;
+          }
+        }
+        else if (top == OUTSIDE)
+        {
+          if (bottom == L_BLOCK || bottom == LC_BLOCK)
+          {
+            if ((left >= BLOCK1 && left <= BLOCK5) ||
+                left == LC_BLOCK)
+            {
+              map[i][j][M_TILE] = BL_BLOCK;
+            }
+          }
+          else if (bottom == R_BLOCK || bottom == RC_BLOCK)
+          {
+            if ((right >= BLOCK1 && right <= BLOCK5) ||
+                right == RC_BLOCK)
+            {
+              map[i][j][M_TILE] = BR_BLOCK;
             }
           }
         }
