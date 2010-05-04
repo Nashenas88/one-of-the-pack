@@ -555,6 +555,7 @@ void handleKeypress(unsigned char key, int x, int y)
       {
         loading = true;
         glutPostRedisplay();
+        ((Tutorial_State*)s)->reset();
         ((Tutorial_State*)s)->pause_sound();
         ((Tutorial_State*)s)->clean();
         delete tutorial;
@@ -642,6 +643,7 @@ void update(int delta)
       if (delta < 0)
       {
         loading = true;
+        ((Tutorial_State*)tutorial)->reset();
         ((Tutorial_State*)tutorial)->pause_sound();
         glutTimerFunc(25, initMain, 0);
       }
