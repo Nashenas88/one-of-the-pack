@@ -33,15 +33,15 @@ Beam *Engineer::enable_ability(Map *m)
   
   if (getDirection() == RIGHT)
   {
-    return new Beam(get_x() + TILE_WIDTH / 2, get_y(), BEAM_NUM, BEAM_ANIM,
-                    get_texture(), RIGHT, BEAM_SPEED, get_system(),
-                    beam_sound, a_channel);
+    return new Beam(get_x() + TILE_WIDTH / 2, get_y(), BEAM_NUM,
+                    ENGINEER_BEAM_ANIM, get_texture(), RIGHT, BEAM_SPEED,
+                    get_system(), beam_sound, a_channel, (special_type)get_type());
   }
   else if (getDirection() == LEFT)
   {
-    return new Beam(get_x() - TILE_WIDTH / 2, get_y(), BEAM_NUM, BEAM_ANIM,
-                    get_texture(), LEFT, -BEAM_SPEED, get_system(),
-                    beam_sound, a_channel);
+    return new Beam(get_x() - TILE_WIDTH / 2, get_y(), BEAM_NUM,
+                    ENGINEER_BEAM_ANIM, get_texture(), LEFT, -BEAM_SPEED,
+                    get_system(), beam_sound, a_channel, (special_type)get_type());
   }
   return NULL;
 }

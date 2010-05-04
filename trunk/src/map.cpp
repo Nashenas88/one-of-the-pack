@@ -316,7 +316,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                      x, y, 1, 5, PARIS_KISS_NUM,
                                      texs.at(PARIS), LEFT, system,
                                      musics.at(sound_num), m_channel,
-                                     effects.at(PARIS), a_channel));
+                                     effects.at(PARIS), a_channel,
+                                     effects.at(BEAM)));
         ++sound_num;
       }
       // engineer helper

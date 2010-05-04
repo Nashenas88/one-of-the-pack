@@ -5,6 +5,7 @@
 #include "jumper.h"
 #include "ahnold.h"
 #include "engineer.h"
+#include "paris.h"
 #include "wonder.h"
 
 bool sort_by_height (Special *i, Special *j);
@@ -50,6 +51,10 @@ void Game_State::draw(void)
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
     beams.at(i)->draw();
+  }
+  for (unsigned int i = 0; i < kisses.size(); ++i)
+  {
+    kisses.at(i)->draw();
   }
   
   // then the specials, except for the one you are controlling
@@ -177,10 +182,43 @@ void Game_State::update(int &delta)
       to_delete.at(j) = to_delete.at(j) - 1;
     }
   }
+  to_delete.clear();
   
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
     beams.at(i)->move(beams.at(i)->getHSpeed(), 0);
+  }
+  
+  for (unsigned int i = 0; i < kisses.size(); ++i)
+  {
+    int pos[2];
+    if (kisses.at(i)->will_collide_tile(map, BOUNCER_CLOSED_R, pos) ||
+        kisses.at(i)->will_collide_tile(map, BOUNCER_CLOSED_L, pos))
+    {
+      kisses.at(i)->play_effect();
+      map->open_bouncer(pos[0], pos[1]);
+      delete kisses.at(i);
+      to_delete.push_back(i);
+    }
+    else if (kisses.at(i)->will_collide_x(map) ||
+             kisses.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+    {
+      kisses.at(i)->play_effect();
+      delete kisses.at(i);
+      to_delete.push_back(i);
+    }
+  }
+  for(unsigned int i = 0; i < to_delete.size(); ++i)
+  {
+    kisses.erase(kisses.begin() + to_delete.at(i));
+    for (unsigned int j = i; j < to_delete.size(); ++j)
+    {
+      to_delete.at(j) = to_delete.at(j) - 1;
+    }
+  }
+  for(unsigned int i = 0; i < kisses.size(); ++i)
+  {
+    kisses.at(i)->move(kisses.at(i)->getHSpeed(), 0);
   }
   
   // if the specials are hitting any black holes, reset their positions
@@ -494,7 +532,7 @@ void Game_State::update(int &delta)
       {
         continue;
       }
-      specials.at(i)->move(0, specials.at(i)->getVSpeed());
+      specials.at(i)->setVSpeed(specials.at(i)->getVSpeed());
     }
     
     gravity = !p->will_collide_tile(map, LADDER, NULL);
@@ -688,6 +726,44 @@ void Game_State::update(int &delta)
     }
   }
   
+  int old_speed;
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if (c == p && specials.at(i)->is_following())
+    {
+      old_speed = specials.at(i)->getHSpeed();
+      specials.at(i)->setHSpeed(specials.at(i)->getDirection() == RIGHT?
+                                PLAYER_SPEED:-PLAYER_SPEED);
+      if (specials.at(i)->will_collide_x(map) ||
+          specials.at(i)->will_collide_moveables_x(moveables, -1, NULL))
+      {
+        if (specials.at(i)->get_type() == JUMPER)
+        {
+          specials.at(i)->use_ability(map);
+        }
+        else
+        {
+          if (specials.at(i)->get_jump_delta() > JUMP_DELAY &&
+              !(specials.at(i)->get_bounce() && specials.at(i)->getVSpeed() < 0))
+          {
+            specials.at(i)->set_jump_delta(-1);
+          }
+          else if (specials.at(i)->get_jump_delta() != -1 &&
+              !(specials.at(i)->get_bounce() && specials.at(i)->getVSpeed() < 0))
+          {
+            specials.at(i)->setVSpeed(-JUMP_HEIGHT);
+            specials.at(i)->set_jump_delta(specials.at(i)->get_jump_delta() + 1);
+          }
+          else
+          {
+            specials.at(i)->set_jump_delta(specials.at(i)->get_jump_delta() + 1);
+          }
+        }
+      }
+      specials.at(i)->setHSpeed(old_speed);
+    }
+  }
+  
   // right before moving moveables, make sure they shouldn't be reset
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
@@ -717,11 +793,13 @@ void Game_State::update(int &delta)
         ((Kurt*)specials.at(i))->get_ability())
     {
       ((Drawable*)specials.at(i))->move(specials.at(i)->getHSpeed(), 0);
-      specials.at(i)->move_number(specials.at(i)->getHSpeed(), 0);
+      specials.at(i)->move_number(specials.at(i)->getHSpeed(),
+                                  specials.at(i)->getVSpeed());
     }
     else
     {
-      specials.at(i)->move(specials.at(i)->getHSpeed(), 0);
+      specials.at(i)->move(specials.at(i)->getHSpeed(),
+                           specials.at(i)->getVSpeed());
     }
   }
   
@@ -843,6 +921,10 @@ void Game_State::update(int &delta)
       {
         ((Drawable *)beams.at(i))->move(mx, my);
       }
+      for (unsigned int i = 0; i < kisses.size(); ++i)
+      {
+        ((Drawable *)kisses.at(i))->move(mx, my);
+      }
     }
   }
   
@@ -953,23 +1035,7 @@ void Game_State::update(int &delta)
           }
           else if (specials.at(i)->get_type() == PARIS)
           {
-            int coords[2];
-            float temp_speed;
-            temp_speed = specials.at(i)->getHSpeed();
-            if (specials.at(i)->getDirection() == RIGHT)
-            {
-              specials.at(i)->setHSpeed(PARIS_KISS_RANGE);
-            }
-            else
-            {
-              specials.at(i)->setHSpeed(-PARIS_KISS_RANGE);
-            }
-            if (specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_R, coords) ||
-                specials.at(i)->will_collide_tile(map, BOUNCER_CLOSED_L, coords))
-            {
-              map->open_bouncer(coords[0], coords[1]);
-            }
-            specials.at(i)->setHSpeed((int)temp_speed);
+            kisses.push_back(((Paris *) specials.at(i))->enable_ability(map));
           }
           specials.at(i)->set_delta(-1);
         }
@@ -1033,6 +1099,7 @@ void Game_State::update(int &delta)
     a_delta = beams.at(i)->get_delta();
     if (a_delta > BEAM_DELTA_DELAY)
     {
+      beams.at(i)->set_delta(0);
       cur_frame = beams.at(i)->get_cur_frame();
       if (cur_frame == beams.at(i)->get_num_frames())
       {
@@ -1046,6 +1113,28 @@ void Game_State::update(int &delta)
     else
     {
       beams.at(i)->set_delta(++a_delta);
+    }
+  }
+  // animation for kisses
+  for (unsigned int i = 0; i < kisses.size(); ++i)
+  {
+    a_delta = kisses.at(i)->get_delta();
+    if (a_delta > KISSES_DELTA_DELAY)
+    {
+      kisses.at(i)->set_delta(0);
+      cur_frame = kisses.at(i)->get_cur_frame();
+      if (cur_frame == kisses.at(i)->get_num_frames())
+      {
+        kisses.at(i)->set_cur_frame(1);
+      }
+      else
+      {
+        kisses.at(i)->set_cur_frame(++cur_frame);
+      }
+    }
+    else
+    {
+      kisses.at(i)->set_delta(++a_delta);
     }
   }
   
@@ -1446,6 +1535,10 @@ void Game_State::clean(void)
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
     delete beams.at(i);
+  }
+  for (unsigned int i = 0; i < kisses.size(); ++i)
+  {
+    delete kisses.at(i);
   }
   for (unsigned int i = 0; i < numbers.size(); ++i)
   {

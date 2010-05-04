@@ -36,7 +36,8 @@
 #define AHNOLD_TEXTURE "Ahnold.png"
 #define JUMPER_TEXTURE "Funblob.png"
 #define ENGINEER_TEXTURE "Thinkblob.png"
-#define BEAM_ANIM 3
+#define ENGINEER_BEAM_ANIM 5
+#define PARIS_BEAM_ANIM 3
 #define PARIS_TEXTURE "Cutieblob.png"
 #define KURT_TEXTURE "Wonderblob.png"
 
@@ -82,6 +83,7 @@
 #define ENGINEER_DELTA_DELAY 0
 #define PARIS_DELTA_DELAY 1
 #define BEAM_DELTA_DELAY 2
+#define KISSES_DELTA_DELAY 4
 
 #define BORDER 100
 #define COLLISION_SPACE 0.8f;

@@ -339,6 +339,14 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
   // initializing player and all other objects
   p = new Player(SCREEN_WIDTH / 2.0f - TILE_WIDTH / 2.0f,
                  3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT, PLAYER_RIGHT,

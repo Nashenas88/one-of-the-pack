@@ -12,7 +12,7 @@ Special::Special(float x, float y, int map_x, int map_y, int num, int frames,
                  FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch),
 following(true), controllable(false), num_abil_frames(abil_frames),
-abil_sound(as), abil_channel(ac), number(NULL)
+abil_sound(as), abil_channel(ac), number(NULL), jump_delta(-1)
 {
   loc[0] = map_x;
   loc[1] = map_y;
