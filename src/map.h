@@ -59,6 +59,9 @@ public:
   void clear_checkpoint(int x, int y);
   
   void get_goal(float &x, float &y);
+  void breaker(int x, int y) {map[x][y][M_TILE] = BREAKABLE2;map[x][y][M_COLL] = BREAKING;}
+  
+  void update_breaks(void);
   
   void calculate_location(Drawable *d, int &x, int &y);
   

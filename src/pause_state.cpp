@@ -41,7 +41,9 @@ void Pause_State::draw(void)
     {
       switch(m->get_tile(i, j))
       {
-        case BREAKABLE:
+        case BREAKABLE1:
+        case BREAKABLE2:
+        case BREAKABLE3:
           statics->set_tex_num(BREAK_ICON);
           statics->move(-statics->get_x() + PAUSE_MAP_X + (i - 1) * 2,
                         -statics->get_y() + PAUSE_MAP_Y + (j - 1) * 2);

@@ -32,6 +32,7 @@ private:
   int jump_delta;
   bool controllable;
   bool debug;
+  int odd;
   
 public:
   Game_State(void);

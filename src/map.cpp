@@ -384,7 +384,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         Moveable *move;
         get_top_left(mx, my);
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                            x, y, BREAKABLE, 1, ts, false, true, NULL);
+                            x, y, BLOCKS, 1, ts, false, true, NULL);
         moveables.push_back(move);
       }
       // moving rubber moveable block
@@ -422,7 +422,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       else if(red[0] == 0 && green[0] == 128 && blue[0] == 255)
       {
         map[x][y][M_COLL] = 1;
-        map[x][y][M_TILE] = BREAKABLE;
+        map[x][y][M_TILE] = BREAKABLE1;
       }
       // goal
       else if(red[0] == 255 && green[0] == 255 && blue[0] == 0)
@@ -741,6 +741,25 @@ void Map::get_goal(float &x, float &y)
         x = i * TILE_WIDTH + get_x();
         y = j * TILE_HEIGHT + get_y();
         return;
+      }
+    }
+  }
+}
+
+void Map::update_breaks(void)
+{
+  for (int i = 0; i < get_width(); ++i)
+  {
+    for (int j = 0; j < get_height(); ++j)
+    {
+      if (map[i][j][M_TILE] == BREAKABLE2)
+      {
+        map[i][j][M_TILE] = BREAKABLE3;
+      }
+      else if (map[i][j][M_TILE] == BREAKABLE3)
+      {
+        map[i][j][M_TILE] = BG;
+        map[i][j][M_COLL] = 0;
       }
     }
   }

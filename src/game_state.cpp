@@ -19,7 +19,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), jump_delta(-1), controllable(false), debug(false) {}
+key_held(0), jump_delta(-1), controllable(false), debug(false), odd(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -1151,6 +1151,13 @@ void Game_State::update(int &delta)
       kisses.at(i)->set_delta(++a_delta);
     }
   }
+  
+  if(odd == 5)
+  {
+    map->update_breaks();
+  }
+  
+  odd = (odd + 1) % 6;
   
   // reset gravity for next run
   if (collision)

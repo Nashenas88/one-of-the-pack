@@ -151,7 +151,9 @@ typedef enum
   PLATFORM3,
   PLATFORM4,
   PLATFORM5,
-  BREAKABLE,
+  BREAKABLE1,
+  BREAKABLE2,
+  BREAKABLE3,
   GOAL,
   BLACK_HOLE,
   TOXIC_SLUDGE,
@@ -173,6 +175,8 @@ enum
   BR_CORNER_WALL_FRAME,
 };
 
+#define BREAKING 10
+
 enum
 {
   FLOORS = 1,
@@ -180,7 +184,7 @@ enum
   BLOCKS,
   PLATS,
   LADDS,
-  GOALT,
+  BREAKS,
   PUSH,
   BH,
   BOUNCERS,
