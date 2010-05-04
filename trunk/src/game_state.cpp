@@ -871,7 +871,11 @@ void Game_State::update(int &delta)
     else if (speed > 0 && !c->will_collide_tile(map, LADDER, NULL) &&
              (c->setVSpeed((int)(TILE_HEIGHT * 1.3f)),
               will_collide = !c->will_collide_y(map) &&
-              !c->will_collide_tile(map, PLATFORM, NULL) &&
+              !c->will_collide_tile(map, PLATFORM1, NULL) &&
+              !c->will_collide_tile(map, PLATFORM2, NULL) &&
+              !c->will_collide_tile(map, PLATFORM3, NULL) &&
+              !c->will_collide_tile(map, PLATFORM4, NULL) &&
+              !c->will_collide_tile(map, PLATFORM5, NULL) &&
               !c->will_collide_tile(map, LADDER, NULL) &&
               !c->will_collide_moveables_y(moveables, -1, NULL) &&
               !c->will_collide_specials_y(specials, -1, NULL) &&

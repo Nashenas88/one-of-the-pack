@@ -228,7 +228,11 @@ bool Character::will_collide_platform(Map *m)
   {
     for (int j = ty; j <= by; ++j)
     {
-      if(m->get_tile(i,j) == PLATFORM)
+      if(m->get_tile(i,j) == PLATFORM1 ||
+         m->get_tile(i,j) == PLATFORM2 ||
+         m->get_tile(i,j) == PLATFORM3 ||
+         m->get_tile(i,j) == PLATFORM4 ||
+         m->get_tile(i,j) == PLATFORM5)
       {
         if (j * TILE_HEIGHT + tym + PLAYER_SPEED >= tyo)
         {

@@ -406,7 +406,17 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       // platform (can jump from bottom)
       else if(red[0] == 128 && green[0] == 128 && blue[0] == 128)
       {
-        map[x][y][M_TILE] = PLATFORM;
+        if (x > 0)
+        {
+          do
+          {
+            map[x][y][M_TILE] = rand() % 5 + PLATFORM1; // randomly selects a block 1-5
+          } while (map[x-1][y][M_TILE] == map[x][y][M_TILE]);
+        }
+        else
+        {
+          map[x][y][M_TILE] = rand() % 5 + PLATFORM1; // randomly selects a block 1-5
+        }
       }
       // breakeabe block
       else if(red[0] == 0 && green[0] == 128 && blue[0] == 255)

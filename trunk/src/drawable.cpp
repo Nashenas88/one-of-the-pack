@@ -146,19 +146,19 @@ void Drawable::draw(void)
     {
       // top left
       glTexCoord2d(corners[0][1], corners[1][0]);
-      glVertex3i(0, height, 0);
+      glVertex3i(0, 0, 0);
       
       // top right
       glTexCoord2d(corners[0][0], corners[1][0]);
-      glVertex3i(width, height, 0);
+      glVertex3i(width, 0, 0);
       
       // bottom right
       glTexCoord2d(corners[0][0], corners[1][1]);
-      glVertex3i(width, 0, 0);
+      glVertex3i(width, height, 0);
       
       // bottom left
       glTexCoord2d(corners[0][1], corners[1][1]);
-      glVertex3i(0, 0, 0);
+      glVertex3i(0, height, 0);
     }
     else
     {
