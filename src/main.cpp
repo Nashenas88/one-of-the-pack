@@ -214,6 +214,7 @@ void initLevel(int level)
   Drawable *right_corner_block, *moveable, *goal, *block2, *block3, *block4;
   Drawable *block5, *black_hole, *bouncer_cr, *bouncer_cl, *bouncer_o, *rubber;
   Drawable *circuit, *n_check, *o_check, *toxic_sludge, *paused_names, *smog;
+  Drawable *br_bl, *bl_bl;
   Texture *t, *bg, *tiles, *pause_bg, *mi, *pi, *ahnold, *jumper, *nums, *ps_ic;
   Texture *engineer, *paris, *kurt, *p_names;
   vector<Texture*> textures;
@@ -368,6 +369,11 @@ void initLevel(int level)
   left_corner_block->set_cur_frame(LEFT_CORNER_WALL_FRAME);
   right_corner_block = new Drawable(0.0f, 0.0f, SIDES_CORNERS, 1, TILE, tiles);
   right_corner_block->set_cur_frame(RIGHT_CORNER_WALL_FRAME);
+  br_bl = new Drawable(0.0f, 0.0f, SIDES_CORNERS, 1, TILE, tiles);
+  br_bl->set_cur_frame(BR_CORNER_WALL_FRAME);
+  bl_bl = new Drawable(0.0f, 0.0f, SIDES_CORNERS, 1, TILE, tiles);
+  bl_bl->set_cur_frame(BR_CORNER_WALL_FRAME);
+  bl_bl->change_direction(LEFT);
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, bg);
   breakable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
   moveable = new Drawable(0.0f, 0.0f, BLOCKS, 1, TILE, tiles);
@@ -413,6 +419,8 @@ void initLevel(int level)
   v.push_back(right_block);
   v.push_back(left_corner_block);
   v.push_back(right_corner_block);
+  v.push_back(br_bl);
+  v.push_back(bl_bl);
   v.push_back(rubber);
   v.push_back(ladder);
   v.push_back(circuit);
