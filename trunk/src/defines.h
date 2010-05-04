@@ -109,7 +109,7 @@
 #define KURT_ABILITY_FRAMES 3
 #define KURT_MUSIC_NUM 5
 
-#define PARIS_KISS_NUM 4
+#define PARIS_KISS_NUM 5
 #define PARIS_KISS_RANGE 15
 
 #define LAST_LEVEL_FILE "levels.txt"
