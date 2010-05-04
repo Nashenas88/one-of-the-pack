@@ -17,8 +17,8 @@ void Moveable::reset(Map *m)
 {
   int move_x, move_y;
   
-  move_x = loc[0] * TILE_WIDTH + m->get_x() - get_x();
-  move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
+  move_x = (int)(loc[0] * TILE_WIDTH + m->get_x() - get_x());
+  move_y = (int)(loc[1] * TILE_HEIGHT + m->get_y() - get_y());
   setHSpeed(move_x, m);
   setVSpeed(move_y, m);
   

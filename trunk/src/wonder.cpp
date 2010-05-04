@@ -140,7 +140,7 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
       temp_move5->add_link(temp_move4);
     }
   }
-  setHSpeed(old_speed);
+  setHSpeed((int)old_speed);
   
   summoned = true;
   
