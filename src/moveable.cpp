@@ -80,8 +80,8 @@ bool Moveable::will_collide_Dy(Drawable *d)
   get_top_left(left_x1, top_y1);
   top_y1 += getVSpeed();
   d->get_top_left(left_x2, top_y2);
-  right_x1 = left_x1 + get_width() - 1;
-  right_x2 = left_x2 + d->get_width() - 1;
+  right_x1 = left_x1 + get_width();
+  right_x2 = left_x2 + d->get_width();
   bottom_y1 = top_y1 + get_height() - 1;
   bottom_y2 = top_y2 + d->get_height() - 1;
   
@@ -196,7 +196,7 @@ bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
       }
     }
     
-    if (skip == true) continue;
+    if (skip) continue;
     
     if (will_collide_Dx(moveables.at(i)))
     {
@@ -231,7 +231,7 @@ bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
       }
     }
     
-    if (skip == true) continue;
+    if (skip) continue;
     
     if (will_collide_Dy(moveables.at(i)))
     {
