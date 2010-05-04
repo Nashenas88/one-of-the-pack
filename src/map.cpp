@@ -595,11 +595,9 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   
   // move every moveable 10 pixels in every direction and form
   // a link with any moveables it collides with
-  int block, old, x, y;
+  int block, old;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
-    calculate_location(moveables.at(i), x, y);
-    fprintf(stderr, "%i is at %i,%i\n", i, x, y);
     for (int speed = -10; speed <= 10; speed += 20)
     {
       // check in the x
@@ -619,11 +617,6 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         moveables.at(i)->add_link(moveables.at(block));
       }
       moveables.at(i)->map_setVSpeed(old);
-    }
-    for (unsigned int j = 0; j < moveables.at(i)->get_links().size(); ++j)
-    {
-      calculate_location(moveables.at(i)->get_links().at(j), x, y);
-      fprintf(stderr, "\tlink %i at %i,%i\n", j, x, y);
     }
   }
   
