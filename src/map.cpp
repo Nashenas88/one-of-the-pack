@@ -600,7 +600,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
             map[i][j][M_TILE] = R_BLOCK;
             if ((top_left == OUTSIDE && left >= BLOCK1 && left <= L_BLOCK) ||
                 (top_right == OUTSIDE && right >= BLOCK1 && right <= L_BLOCK) &&
-                bottom == BG)
+                (bottom == BG || bottom > BR_BLOCK))
             {
               map[i][j][M_TILE] = RC_BLOCK;
             }
@@ -611,7 +611,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
             map[i][j][M_TILE] = L_BLOCK;
             if ((top_left == OUTSIDE && left >= BLOCK1 && left <= L_BLOCK) ||
                 (top_right == OUTSIDE && right >= BLOCK1 && right <= L_BLOCK) &&
-                bottom == BG)
+                (bottom == BG || bottom > BR_BLOCK))
             {
               map[i][j][M_TILE] = LC_BLOCK;
             }

@@ -404,7 +404,7 @@ bool Character::will_collide_rubber_y(Map *m)
   int temp_speed;
   bool answer;
   temp_speed = getHSpeed();
-  setHSpeed(0);
+  setHSpeed(GRAVITY_SPEED);
   answer = will_collide_tile(m, RUBBER, NULL);
   setHSpeed(temp_speed);
   return answer;
