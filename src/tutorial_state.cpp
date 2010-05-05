@@ -26,6 +26,10 @@ void Tutorial_State::update(int &delta)
   {
     delta = -1;
   }
+  else
+  {
+    delta = 0;
+  }
   state_update();
 }
 
