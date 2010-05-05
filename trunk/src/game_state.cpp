@@ -334,14 +334,20 @@ void Game_State::update(int &delta)
       }
       else
       {
-        if (!specials.at(i)->get_jump())
+        if (!specials.at(i)->will_collide_y(map) &&
+            !specials.at(i)->will_collide_tile(map, LADDER, NULL) &&
+            !specials.at(i)->will_collide_moveables_y(moveables, -1, NULL) &&
+            !specials.at(i)->will_collide_platform(map))
         {
-          specials.at(i)->set_jump(y);
-        }
-        else if (y <= specials.at(i)->get_jump())
-        {
-          specials.at(i)->set_jump(0);
-          specials.at(i)->set_bounce(false);
+          if (!specials.at(i)->get_jump())
+          {
+            specials.at(i)->set_jump(y);
+          }
+          else if (y <= specials.at(i)->get_jump())
+          {
+            specials.at(i)->set_jump(0);
+            specials.at(i)->set_bounce(false);
+          }
         }
         
         // if we are not a jumper reset gravity
