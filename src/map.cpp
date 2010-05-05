@@ -354,7 +354,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // moveable block
-      else if(red[0] == 128 && green[0] == 0 && blue[0] == 0)
+      else if(red[0] == 190 && green[0] == 190)
       {
         float mx, my;
         Moveable *move;
@@ -362,11 +362,13 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
                             x, y, PUSH, 1, ts, false, false, NULL);
         move->set_gravity(true);
+        move->set_group_num(blue[0]);
         move->set_freezeable();
         moveables.push_back(move);
+        groups.push_back(blue[0]);
       }
       // freezeable moveable block
-      else if(red[0] == 0 && green[0] == 64 && blue[0] == 64)
+      else if(red[0] == 180 && green[0] == 180)
       {
         float mx, my;
         Moveable *move;
@@ -374,21 +376,25 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
                             x, y, PUSH, 1, ts, true, false, NULL);
         move->set_gravity(false);
+        move->set_group_num(blue[0]);
         move->set_cur_frame(FREEZEABLE_FRAME);
         moveables.push_back(move);
+        groups.push_back(blue[0]);
       }
       // static rubber moveable block
-      else if(red[0] == 64 && green[0] == 255 && blue[0] == 64)
+      else if(red[0] == 170 && green[0] == 170)
       {
         float mx, my;
         Moveable *move;
         get_top_left(mx, my);
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
                             x, y, BLOCKS, 1, ts, false, true, NULL);
+        move->set_group_num(blue[0]);
         moveables.push_back(move);
+        groups.push_back(blue[0]);
       }
       // moving rubber moveable block
-      else if(red[0] == 64 && green[0] == 128 && blue[0] == 128)
+      else if(red[0] == 160 && green[0] == 160)
       {
         float mx, my;
         Moveable *move;
@@ -396,7 +402,9 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
                             x, y, PUSH, 1, ts, false, true, NULL);
         move->map_setHSpeed(HOVER_SLIDE_SPEED);
+        move->set_group_num(blue[0]);
         moveables.push_back(move);
+        groups.push_back(blue[0]);
       }
       // ladder
       else if(red[0] == 128 && green[0] == 128 && blue[0] == 0)
@@ -444,12 +452,16 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         map[x][y][M_TILE] = SMOG;
       }
       // moving platform
-      else if(red[0] == 128 && green[0] == 0 && blue[0] == 128)
+      else if(red[0] == 150 && green[0] == 150)
       {
         float mx, my;
         get_top_left(mx, my);
-        moveables.push_back(new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
-                                         x, y, BLOCKS, 1, ts, false, false, NULL));
+        Moveable *move;
+        move = new Moveable(x * TILE_WIDTH + mx, y * TILE_HEIGHT + my,
+                            x, y, BLOCKS, 1, ts, false, false, NULL);
+        move->set_group_num(blue[0]);
+        moveables.push_back(move);
+        groups.push_back(blue[0]);                                  
       }
       // player start position
       else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)
@@ -661,36 +673,16 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     }
   }
   
-  // move every moveable 10 pixels in every direction and form
-  // a link with any moveables it collides with
-  int block, old;
-  for (unsigned int i = 0; i < moveables.size(); ++i)
+  for(int i = 0; i < moveables.size(); ++i)
   {
-    for (int speed = -10; speed <= 10; speed += 20)
+    for(int j = 0; j < moveables.size(); ++j)
     {
-      // check in the x
-      old = moveables.at(i)->getHSpeed();
-      moveables.at(i)->map_setHSpeed(speed);
-      if (moveables.at(i)->will_collide_moveables_x(moveables, i, &block))
+      if (i == j) 
+        continue;
+      if (groups.at(i) == groups.at(j))
       {
-        moveables.at(i)->add_link(moveables.at(block));
+        moveables.at(i)->add_link(moveables.at(j));
       }
-      moveables.at(i)->map_setHSpeed(old);
-      
-      // check in the y
-      old = moveables.at(i)->getVSpeed();
-      moveables.at(i)->map_setVSpeed(speed);
-      if (moveables.at(i)->will_collide_moveables_y(moveables, i, &block))
-      {
-        moveables.at(i)->add_link(moveables.at(block));
-      }
-      moveables.at(i)->move(speed, 0);
-      if (moveables.at(i)->will_collide_moveables_y(moveables, i, &block))
-      {
-        moveables.at(i)->add_link(moveables.at(block));
-      }
-      moveables.at(i)->move(-speed, 0);
-      moveables.at(i)->map_setVSpeed(old);
     }
   }
   

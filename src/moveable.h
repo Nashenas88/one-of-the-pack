@@ -20,6 +20,9 @@ private:
   // original location
   int loc[2];
   
+  // group number
+  int group_num;
+  
   // vertical and horizontal speed
   int v_speed, h_speed;
   
@@ -46,6 +49,8 @@ public:
   bool get_rubber(void) {return rubber;}
   vector<Moveable *> get_links(void) {return links;}
   void add_link(Moveable *l) {links.push_back(l);}
+  int get_group_num() {return group_num;}
+  void set_group_num(int gn) {group_num = gn;}
   
   bool is_freezeable(void) {return freezeable;}
   void set_freezeable(void) {freezeable = true;}
