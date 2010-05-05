@@ -89,10 +89,12 @@ void Tutorial_State::pause_sound(void)
 
 void Tutorial_State::clean(void)
 {
-  for (unsigned int i = 0; i < slides.size(); ++i)
+  vector<Drawable *>::iterator it;
+  for (it = slides.begin(); it != slides.end(); )
   {
-    slides.at(i)->clean();
-    delete slides.at(i);
+    (*it)->clean();
+    delete *it;
+    it = slides.erase(it);
   }
   slides.clear();
   
