@@ -381,8 +381,26 @@ void Game_State::update(int &delta)
   
   // check for collision on everyone
   // collision is always on for moveables
+  vector<int> groups_checked;
+  unsigned int k;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
+    for (k = 0; k < groups_checked.size(); ++k)
+    {
+      if (moveables.at(i)->get_group_num() == groups_checked.at(k))
+      {
+        break;
+      }
+    }
+    if (k != groups_checked.size())
+    {
+      continue;
+    }
+    else
+    {
+      groups_checked.push_back(moveables.at(i)->get_group_num());
+    }
+    
     if (moveables.at(i)->get_gravity())
     {
       moveables.at(i)->setVSpeed(GRAVITY_SPEED, map);
