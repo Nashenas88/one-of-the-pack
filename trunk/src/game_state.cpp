@@ -728,6 +728,7 @@ void Game_State::update(int &delta)
     }
   }
   
+  /*
   int old_speed, old_v;
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
@@ -774,7 +775,7 @@ void Game_State::update(int &delta)
       }
       specials.at(i)->setHSpeed(old_speed);
     }
-  }
+  }*/
   
   // right before moving moveables, make sure they shouldn't be reset
   for (unsigned int i = 0; i < moveables.size(); ++i)
