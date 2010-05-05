@@ -35,6 +35,7 @@ public:
   
   void play_sound(void);
   void pause_sound(void);
+  void pause_sound(bool b);
   
   void reset(void) {current_slide = 0;}
   

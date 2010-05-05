@@ -36,6 +36,8 @@ public:
   void special_pressed(int key, int x, int y);
   void special_released(int key, int x, int y);
   
+  void pause_sounds(void);
+  
   unsigned int get_selected(void) {return selected;}
   void reset_selected(void);
   

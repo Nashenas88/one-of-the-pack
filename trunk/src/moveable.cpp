@@ -171,24 +171,12 @@ bool Moveable::will_collide_y(Map *m)
 bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
-  bool skip = false;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
-    skip = false;
-    if (cur == (int)i)
+    if (group_num == moveables.at(i)->get_group_num())
     {
       continue;
     }
-    for (unsigned int j = 0; j < get_links().size(); j++)
-    {
-      if (moveables.at(i) == get_links().at(j))
-      {
-        skip = true;
-        break;
-      }
-    }
-    
-    if (skip) continue;
     
     if (will_collide_Dx(moveables.at(i)))
     {
@@ -205,25 +193,12 @@ bool Moveable::will_collide_moveables_x(vector<Moveable *>moveables, int cur,
 bool Moveable::will_collide_moveables_y(vector<Moveable *>moveables, int cur,
                                        int *collide)
 {
-  bool skip = false;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
-    skip = false;
-    if (cur == (int)i)
+    if (group_num == moveables.at(i)->get_group_num())
     {
       continue;
     }
-    
-    for (unsigned int j = 0; j < get_links().size(); j++)
-    {
-      if (moveables.at(i) == get_links().at(j))
-      {
-        skip = true;
-        break;
-      }
-    }
-    
-    if (skip) continue;
     
     if (will_collide_Dy(moveables.at(i)))
     {
@@ -299,45 +274,8 @@ bool Moveable::will_collide_tile(Map *m, tile_type tile, int coordinates[2])
   return false;
 }
 
-bool Moveable::will_collide_rubber_x(Map *m)
-{
-  int temp_speed;
-  bool answer;
-  temp_speed = getVSpeed();
-  setVSpeed(0);
-  answer = will_collide_tile(m, RUBBER, NULL);
-  setVSpeed(temp_speed);
-  return answer;
-}
-
-bool Moveable::will_collide_rubber_y(Map *m)
-{
-  int temp_speed;
-  bool answer;
-  temp_speed = getHSpeed();
-  setHSpeed(0);
-  answer = will_collide_tile(m, RUBBER, NULL);
-  setHSpeed(temp_speed);
-  return answer;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void Moveable::setHSpeed(int hs, Map *m)
 {
-  vector<Moveable *> ignore;
-  ignore.push_back(this);
   h_speed = hs;
   if (creator)
   {
@@ -352,24 +290,33 @@ void Moveable::setHSpeed(int hs, Map *m)
       break;
     }
   }
-  if (i != links.size())
+  if (i != links.size() || will_collide_x(m))
   {
-    for (i = 0; i < links.size(); ++i)
+    if(rubber)
     {
-      links.at(i)->setHSpeed(0);
+      for(i = 0; i < links.size(); ++i)
+      {
+        links.at(i)->setHSpeed(hs);
+      }
+      h_speed = hs;
     }
-    h_speed = 0;
-    if (creator)
+    else
     {
-      ((Special*)creator)->setHSpeed(0);
+      for (i = 0; i < links.size(); ++i)
+      {
+        links.at(i)->setHSpeed(0);
+      }
+      h_speed = 0;
+      if (creator)
+      {
+        ((Special*)creator)->setHSpeed(0);
+      }
     }
   }
 }
 
 void Moveable::setVSpeed(int vs, Map *m)
 {
-  vector<Moveable *> ignore;
-  ignore.push_back(this);
   v_speed = vs;
   if (creator)
   {
@@ -384,7 +331,7 @@ void Moveable::setVSpeed(int vs, Map *m)
       break;
     }
   }
-  if (i != links.size())
+  if (i != links.size() || will_collide_y(m))
   {
     for (i = 0; i < links.size(); ++i)
     {
@@ -395,5 +342,14 @@ void Moveable::setVSpeed(int vs, Map *m)
     {
       ((Special*)creator)->setVSpeed(0);
     }
+  }
+}
+
+void Moveable::set_gravity(bool g)
+{
+  gravity = g;
+  for (unsigned int i = 0; i < links.size(); ++i)
+  {
+    links.at(i)->set_grav(g);
   }
 }

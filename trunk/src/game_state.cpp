@@ -7,7 +7,6 @@
 #include "engineer.h"
 #include "paris.h"
 #include "wonder.h"
-#include "rdtsc.h"
 
 bool sort_by_height (Special *i, Special *j);
 
@@ -20,7 +19,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), jump_delta(-1), controllable(false), debug(false), odd(false) {}
+key_held(0), jump_delta(-1), controllable(false), odd(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -83,7 +82,6 @@ void Game_State::draw(void)
 // needs to be updated
 void Game_State::update(int &delta)
 {
-  unsigned long start = rdtsc();
   // are we hitting the goal?
   // no need to do anything else if we are
   if (collision && p->will_collide_tile(map, GOAL, NULL))
@@ -424,15 +422,6 @@ void Game_State::update(int &delta)
         moveables.at(i)->setHSpeed(0, map);
       }
     }
-    /*
-    if(moveables.at(i)->will_collide_rubber_x(map))
-    {
-      moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
-    }
-    if(moveables.at(i)->will_collide_rubber_y(map))
-    {
-      moveables.at(i)->setVSpeed(-moveables.at(i)->getVSpeed(), map);
-    }*/
   }
   if (collision)
   {
@@ -1138,9 +1127,6 @@ void Game_State::update(int &delta)
     gravity = true;
   }
   state_update();
-  
-  unsigned long end = rdtsc();
-  if(debug)printf("Time taken in update %lu\n", (end - start));
 }
 
 void Game_State::key_pressed(unsigned char key, int x, int y)
@@ -1320,9 +1306,6 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
         }
       }
       break;
-    case 'z':
-      debug = !debug;
-      break;
     case ' ':
       if (c != p && ((Special*)c)->get_type() == JUMPER)
       {
@@ -1385,14 +1368,6 @@ void Game_State::key_released(unsigned char key, int x, int y)
     case 'd':
       c->setHSpeed(a?last_x=true,-PLAYER_SPEED:0);
       d = false;
-      break;
-    // below is for debugging only
-    // remove for final game version
-    case 'h':
-      collision = !collision;
-      gravity = false;
-      c->setVSpeed(0);
-      p->setVSpeed(0);
       break;
     case '1':
     case '2':
@@ -1511,6 +1486,17 @@ void Game_State::reset_keys(void)
   d = false;
   last_key = 0;
   key_held = 0;
+}
+
+void Game_State::pause_sounds(void)
+{
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if(!specials.at(i)->is_paused())
+    {
+      specials.at(i)->pause_sound();
+    }
+  }
 }
 
 void Game_State::clean(void)

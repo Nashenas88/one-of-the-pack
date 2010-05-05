@@ -31,7 +31,6 @@ private:
   char key_held; // used for activating specials ability/switching to special
   int jump_delta;
   bool controllable;
-  bool debug;
   int odd;
   
 public:
@@ -57,6 +56,8 @@ public:
   void key_released(unsigned char key, int x, int y);
   void special_pressed(int key, int x, int y);
   void special_released(int key, int x, int y);
+  
+  void pause_sounds(void);
   
   // changes the volume, should be used when
   // entering and exiting the pause state

@@ -191,7 +191,6 @@ void initTutorial(int blah)
   
   
   tutorial = new Tutorial_State(slides, sound_system, sound, channel);
-  ((Tutorial_State*)tutorial)->play_sound();
   
   s = tutorial;
   loading = false;
@@ -544,6 +543,7 @@ void handleKeypress(unsigned char key, int x, int y)
         else if (((Pause_State *)s)->get_selected() == 1) // restart
         {
           loading = true;
+          ((Pause_State*)s)->pause_sounds();
           system_clean();
           stack.clear();
           glutPostRedisplay();
@@ -562,8 +562,8 @@ void handleKeypress(unsigned char key, int x, int y)
       {
         loading = true;
         glutPostRedisplay();
-        ((Tutorial_State*)s)->reset();
         ((Tutorial_State*)s)->pause_sound();
+        ((Tutorial_State*)s)->reset();
         ((Tutorial_State*)s)->clean();
         delete tutorial;
         glutTimerFunc(25, initMain, 0);
@@ -650,8 +650,10 @@ void update(int delta)
       if (delta < 0)
       {
         loading = true;
-        ((Tutorial_State*)tutorial)->reset();
         ((Tutorial_State*)tutorial)->pause_sound();
+        ((Tutorial_State*)tutorial)->reset();
+        ((Tutorial_State*)tutorial)->clean();
+        delete tutorial;
         glutTimerFunc(25, initMain, 0);
       }
     }
@@ -661,6 +663,7 @@ void update(int delta)
       if (delta < 0)
       {
         loading = true;
+        ((Game_State*)s)->pause_sounds();
         system_clean();
         if (++level <= last_level)
         {
