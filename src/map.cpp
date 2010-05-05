@@ -673,9 +673,9 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     }
   }
   
-  for(int i = 0; i < moveables.size(); ++i)
+  for(unsigned int i = 0; i < moveables.size(); ++i)
   {
-    for(int j = 0; j < moveables.size(); ++j)
+    for(unsigned int j = 0; j < moveables.size(); ++j)
     {
       if (i == j) 
         continue;
