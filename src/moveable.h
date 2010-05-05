@@ -28,10 +28,9 @@ private:
   Kurt *creator;
   vector<Moveable *> links;
   
-  void setVSpeed(int vs, Map *m, vector<Moveable *> ignore);
-  void setHSpeed(int hs, Map *m, vector<Moveable *> ignore);
   void setVSpeed(int vs) {v_speed = vs;}
   void setHSpeed(int hs) {h_speed = hs;}
+  void set_grav(bool g) {gravity = g;}
 public:
   // constructors
   Moveable(void);
@@ -44,11 +43,11 @@ public:
   int getHSpeed(void) {return h_speed;}
   void setHSpeed(int hs, Map *m);
   bool get_gravity(void) {return gravity;}
-  void set_gravity(bool g) {gravity = g;}
+  void set_gravity(bool g);
   bool get_rubber(void) {return rubber;}
   vector<Moveable *> get_links(void) {return links;}
   void add_link(Moveable *l) {links.push_back(l);}
-  int get_group_num() {return group_num;}
+  int get_group_num(void) {return group_num;}
   void set_group_num(int gn) {group_num = gn;}
   
   bool is_freezeable(void) {return freezeable;}
@@ -69,8 +68,6 @@ public:
   bool will_collide_moveables_y(vector<Moveable *> moveables, int cut, int *collide);
   bool will_collide_specials_x(vector<Special *> specials, int *collide);
   bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
-  bool will_collide_rubber_x(Map *m);
-  bool will_collide_rubber_y(Map *m);
   
 };
 #endif // FLOCK__MOVEABLE__H

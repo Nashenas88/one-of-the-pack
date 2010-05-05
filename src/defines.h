@@ -53,8 +53,8 @@
 #define PARIS_SFX "paris kiss.ogg"
 #define BEAM_SFX "beam connect (effect).ogg"
 #define KURT_SFX "platform transform.ogg"
-#define MAIN_MENU_MUSIC "background.mp3"
-#define TUTORIAL_MUSIC "background.mp3"
+#define MAIN_MENU_MUSIC "Title Screen.ogg"
+#define TUTORIAL_MUSIC "Title Screen.ogg"
 
 // widths and heights
 #define TILE_WIDTH 100

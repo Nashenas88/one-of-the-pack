@@ -197,6 +197,11 @@ void Pause_State::reset_selected(void)
   }
 }
 
+void Pause_State::pause_sounds(void)
+{
+  game_state->pause_sounds();
+}
+
 void Pause_State::clean(void)
 {
   background->clean();

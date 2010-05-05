@@ -39,6 +39,10 @@ void Tutorial_State::key_pressed(unsigned char key, int x, int y)
   {
     case ' ':
       ++current_slide;
+      if (current_slide == 1)
+      {
+        play_sound();
+      }
       break;
     default:
       break;
@@ -71,7 +75,7 @@ void Tutorial_State::play_sound(void)
 // (might possibly be renamed)
 void Tutorial_State::pause_sound(void)
 {
-  if (music == NULL || channel == NULL)
+  if (music == NULL || channel == NULL || current_slide == 0)
   {
     return;
   }
@@ -82,6 +86,21 @@ void Tutorial_State::pause_sound(void)
   ERRCHECK(result);
   
   sound_paused = !sound_paused;
+  
+  result = FMOD_Channel_SetPaused(channel, sound_paused);
+  ERRCHECK(result);
+}
+
+void Tutorial_State::pause_sound(bool b)
+{
+  if (music == NULL || channel == NULL || current_slide == 0)
+  {
+    return;
+  }
+  
+  FMOD_RESULT result;
+  
+  sound_paused = b;
   
   result = FMOD_Channel_SetPaused(channel, sound_paused);
   ERRCHECK(result);
@@ -98,8 +117,11 @@ void Tutorial_State::clean(void)
   }
   slides.clear();
   
-  FMOD_RESULT result;
-  
-  result = FMOD_Sound_Release(music);
-  ERRCHECK(result);
+  if (current_slide > 0)
+  {
+    FMOD_RESULT result;
+    
+    result = FMOD_Sound_Release(music);
+    ERRCHECK(result);
+  }
 }

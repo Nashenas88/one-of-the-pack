@@ -61,6 +61,11 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
   float old_speed = getHSpeed();
   move_loc = moveables.size();
   Moveable *temp_move1, *temp_move2, *temp_move3, *temp_move4, *temp_move5;
+  temp_move1 = NULL;
+  temp_move2 = NULL;
+  temp_move3 = NULL;
+  temp_move4 = NULL;
+  temp_move5 = NULL;
   int x, y;
   m->calculate_location(this, x, y);
   
@@ -110,7 +115,9 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
       temp_move3->set_cur_frame(5);
       moveables.push_back(temp_move3);
       
+      temp_move1->add_link(temp_move3);
       temp_move2->add_link(temp_move3);
+      temp_move3->add_link(temp_move1);
       temp_move3->add_link(temp_move2);
     }
   }
@@ -136,6 +143,16 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
     
     temp_move1->add_link(temp_move4);
     temp_move4->add_link(temp_move1);
+    if (temp_move2)
+    {
+      temp_move2->add_link(temp_move4);
+      temp_move4->add_link(temp_move2);
+      if (temp_move3)
+      {
+        temp_move3->add_link(temp_move4);
+        temp_move4->add_link(temp_move3);
+      }
+    }
     if (!will_collide_Dx(p) &&
         !will_collide_x(m) && 
         !will_collide_tile(m, PLATFORM1, NULL) &&
@@ -152,8 +169,20 @@ std::vector<Moveable*> Kurt::enable_ability(Map *m, int i, Player* p,
                                 this);
       moveables.push_back(temp_move5);
       
+      temp_move1->add_link(temp_move5);
       temp_move4->add_link(temp_move5);
+      temp_move5->add_link(temp_move1);
       temp_move5->add_link(temp_move4);
+      if (temp_move2)
+      {
+        temp_move2->add_link(temp_move5);
+        temp_move5->add_link(temp_move2);
+        if (temp_move3)
+        {
+          temp_move3->add_link(temp_move5);
+          temp_move5->add_link(temp_move3);
+        }
+      }
     }
   }
   setHSpeed((int)old_speed);
