@@ -14,7 +14,6 @@ private:
   // floating moving platforms from normal blocks
   bool gravity;
   bool rubber;
-  bool resetted;
   bool freezeable;
   
   // original location
@@ -56,7 +55,6 @@ public:
   void set_freezeable(void) {freezeable = true;}
   
   void reset(Map *m);
-  void move(float x, float y, Map *m);
   void move(float x, float y);
   
   // TO ONLY BE USED IN MAP.CPP

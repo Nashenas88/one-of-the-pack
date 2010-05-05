@@ -2,11 +2,11 @@
 #include "special.h"
 
 Moveable::Moveable(void)
-:Drawable(),gravity(false),rubber(false),resetted(false),v_speed(0),h_speed(0) {}
+:Drawable(),gravity(false),rubber(false),v_speed(0),h_speed(0) {}
 
 Moveable::Moveable(float x, float y, int start_x, int start_y, int num,
                    int frames, Texture *tex, bool g, bool r, Kurt *c)
-:Drawable(x, y, num, frames, TILE, tex), gravity(g), rubber(r), resetted(false),
+:Drawable(x, y, num, frames, TILE, tex), gravity(g), rubber(r),
 freezeable(g), v_speed(0), h_speed(0), creator(c)
 {
   loc[0] = start_x;
@@ -15,25 +15,17 @@ freezeable(g), v_speed(0), h_speed(0), creator(c)
 
 void Moveable::reset(Map *m)
 {
-  int move_x, move_y;
+  float move_x, move_y;
   
-  move_x = (int)(loc[0] * TILE_WIDTH + m->get_x() - get_x());
-  move_y = (int)(loc[1] * TILE_HEIGHT + m->get_y() - get_y());
-  setHSpeed(move_x, m);
-  setVSpeed(move_y, m);
-  
-  resetted = true;
-}
-
-void Moveable::move(float x, float y, Map *m)
-{
-  move(x, y);
-  if (resetted)
+  move_x = loc[0] * TILE_WIDTH + m->get_x() - get_x();
+  move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
+  move(move_x, move_y);
+  for (unsigned int i = 0; i < links.size(); ++i)
   {
-    setHSpeed(0, m);
-    setVSpeed(0, m);
-    resetted = false;
+    links.at(i)->move(move_x, move_y);
   }
+  setHSpeed(0, m);
+  setVSpeed(0, m);
 }
 
 void Moveable::move(float x, float y)
@@ -405,114 +397,3 @@ void Moveable::setVSpeed(int vs, Map *m)
     }
   }
 }
-/*
-void Moveable::setVSpeed(int vs, Map *m)
-{
-  vector<Moveable *> ignore;
-  ignore.push_back(this);
-  v_speed = vs;
-  if (creator)
-  {
-    ((Special*)creator)->setVSpeed(vs);
-  }
-  for (unsigned int i = 0; i < links.size(); ++i)
-  {
-    links.at(i)->setVSpeed(vs, m, ignore);
-  }
-}
-
-void Moveable::setHSpeed(int hs, Map *m, vector<Moveable *> ignore)
-{
-  for (unsigned int i = 0; i < ignore.size(); ++i)
-  {
-    if (ignore.at(i) == this)
-    {
-      return;
-    }
-  }
-  
-  bool leave = false;
-  int old;
-  
-  old = getHSpeed();
-  setHSpeed(hs);
-  if (will_collide_x(m))
-  {
-    for (unsigned int i = 0; i < ignore.size(); ++i)
-    {
-      ignore.at(i)->setHSpeed(0);
-    }
-    leave = true;
-  }
-  setHSpeed(old);
-  
-  if (leave)
-  {
-    setHSpeed(0);
-    return;
-  }
-  
-  ignore.push_back(this);
-  setHSpeed(hs);
-  
-  for (unsigned int i = 0, j = 0; i < links.size(); ++i)
-  {
-    for (j = 0; j < ignore.size(); ++j)
-    {
-      if (links.at(i) == ignore.at(j))
-      {
-        break;
-      }
-    }
-    if (j == ignore.size())
-    {
-      links.at(i)->setHSpeed(hs, m, ignore);
-    }
-  }
-}
-
-void Moveable::setVSpeed(int vs, Map *m, vector<Moveable *> ignore)
-{
-  for (unsigned int i = 0; i < ignore.size(); ++i)
-  {
-    if (ignore.at(i) == this)
-    {
-      return;
-    }
-  }
-  
-  bool leave = false;
-  
-  setVSpeed(vs);
-  if (will_collide_y(m))
-  {
-    for (unsigned int i = 0; i < ignore.size(); ++i)
-    {
-      ignore.at(i)->setVSpeed(0);
-    }
-    setVSpeed(0);
-    leave = true;
-  }
-  
-  if (leave)
-  {
-    return;
-  }
-  
-  ignore.push_back(this);
-  
-  for (unsigned int i = 0, j = 0; i < links.size(); ++i)
-  {
-    for (j = 0; j < ignore.size(); ++j)
-    {
-      if (links.at(i) == ignore.at(j))
-      {
-        break;
-      }
-    }
-    if (j == ignore.size())
-    {
-      links.at(i)->setVSpeed(vs, m, ignore);
-    }
-  }
-}*/
