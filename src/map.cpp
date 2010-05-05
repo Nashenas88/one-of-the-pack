@@ -684,6 +684,12 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       {
         moveables.at(i)->add_link(moveables.at(block));
       }
+      moveables.at(i)->move(speed, 0);
+      if (moveables.at(i)->will_collide_moveables_y(moveables, i, &block))
+      {
+        moveables.at(i)->add_link(moveables.at(block));
+      }
+      moveables.at(i)->move(-speed, 0);
       moveables.at(i)->map_setVSpeed(old);
     }
   }
