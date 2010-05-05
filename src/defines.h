@@ -48,10 +48,11 @@
 // sound files
 #define PLAYER_SOUND "Default.ogg"
 #define AHNOLD_SFX "punch sound.wav"
-#define JUMPER_SFX "jump sound (not final).wav"
-#define ENGINEER_SFX "jump sound (not final).wav"
-#define BEAM_SFX "punch sound.wav"
-#define KURT_SFX "jump sound (not final).wav"
+#define JUMPER_SFX "big jump.ogg"
+#define ENGINEER_SFX "beam fire.ogg"
+#define PARIS_SFX "paris kiss.ogg"
+#define BEAM_SFX "beam connect (effect).ogg"
+#define KURT_SFX "platform transform.ogg"
 #define MAIN_MENU_MUSIC "background.mp3"
 #define TUTORIAL_MUSIC "background.mp3"
 

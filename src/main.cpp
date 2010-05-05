@@ -308,7 +308,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES ENGINEER_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -316,7 +316,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES KURT_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -324,7 +324,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES PARIS_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -332,7 +332,7 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES BEAM_SFX, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
