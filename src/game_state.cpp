@@ -406,6 +406,7 @@ void Game_State::update(int &delta)
         moveables.at(i)->setHSpeed(0, map);
       }
     }
+    /*
     if(moveables.at(i)->will_collide_rubber_x(map))
     {
       moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
@@ -413,7 +414,7 @@ void Game_State::update(int &delta)
     if(moveables.at(i)->will_collide_rubber_y(map))
     {
       moveables.at(i)->setVSpeed(-moveables.at(i)->getVSpeed(), map);
-    }
+    }*/
   }
   if (collision)
   {
@@ -728,55 +729,6 @@ void Game_State::update(int &delta)
     }
   }
   
-  /*
-  int old_speed, old_v;
-  for (unsigned int i = 0; i < specials.size(); ++i)
-  {
-    if (c == p && specials.at(i)->is_following())
-    {
-      old_speed = specials.at(i)->getHSpeed();
-      specials.at(i)->setHSpeed(specials.at(i)->getDirection() == RIGHT?
-                                PLAYER_SPEED:-PLAYER_SPEED);
-      old_v = specials.at(i)->getVSpeed();
-      if ((specials.at(i)->will_collide_x(map) ||
-          specials.at(i)->will_collide_moveables_x(moveables, -1, NULL)) &&
-          !((specials.at(i)->setVSpeed(-JUMP_HEIGHT),
-             specials.at(i)->will_collide_y(map)) ||
-            specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
-            specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
-      {
-        specials.at(i)->setVSpeed(old_v);
-        if (specials.at(i)->get_type() == JUMPER)
-        {
-          specials.at(i)->use_ability(map);
-        }
-        else
-        {
-          if (specials.at(i)->get_jump_delta() > JUMP_DELAY &&
-              !(specials.at(i)->get_bounce() && specials.at(i)->getVSpeed() < 0))
-          {
-            specials.at(i)->set_jump_delta(-1);
-          }
-          else if (specials.at(i)->get_jump_delta() != -1 &&
-              !(specials.at(i)->get_bounce() && specials.at(i)->getVSpeed() < 0))
-          {
-            specials.at(i)->setVSpeed(-JUMP_HEIGHT);
-            specials.at(i)->set_jump_delta(specials.at(i)->get_jump_delta() + 1);
-          }
-          else
-          {
-            specials.at(i)->set_jump_delta(specials.at(i)->get_jump_delta() + 1);
-          }
-        }
-      }
-      else
-      {
-        specials.at(i)->setVSpeed(old_v);
-      }
-      specials.at(i)->setHSpeed(old_speed);
-    }
-  }*/
-  
   // right before moving moveables, make sure they shouldn't be reset
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
@@ -790,7 +742,7 @@ void Game_State::update(int &delta)
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     moveables.at(i)->move(moveables.at(i)->getHSpeed(),
-                          moveables.at(i)->getVSpeed(), map);
+                          moveables.at(i)->getVSpeed());
   }
   
   // move specials in the x
