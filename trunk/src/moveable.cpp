@@ -329,6 +329,19 @@ bool Moveable::will_collide_rubber_y(Map *m)
   return answer;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Moveable::setHSpeed(int hs, Map *m)
 {
   vector<Moveable *> ignore;
@@ -338,12 +351,61 @@ void Moveable::setHSpeed(int hs, Map *m)
   {
     ((Special*)creator)->setHSpeed(hs);
   }
-  for (unsigned int i = 0; i < links.size(); ++i)
+  unsigned int i;
+  for (i = 0; i < links.size(); ++i)
   {
-    links.at(i)->setHSpeed(hs, m, ignore);
+    links.at(i)->setHSpeed(hs);
+    if (links.at(i)->will_collide_x(m))
+    {
+      break;
+    }
+  }
+  if (i != links.size())
+  {
+    for (i = 0; i < links.size(); ++i)
+    {
+      links.at(i)->setHSpeed(0);
+    }
+    h_speed = 0;
+    if (creator)
+    {
+      ((Special*)creator)->setHSpeed(0);
+    }
   }
 }
 
+void Moveable::setVSpeed(int vs, Map *m)
+{
+  vector<Moveable *> ignore;
+  ignore.push_back(this);
+  v_speed = vs;
+  if (creator)
+  {
+    ((Special*)creator)->setVSpeed(vs);
+  }
+  unsigned int i;
+  for (i = 0; i < links.size(); ++i)
+  {
+    links.at(i)->setVSpeed(vs);
+    if (links.at(i)->will_collide_y(m))
+    {
+      break;
+    }
+  }
+  if (i != links.size())
+  {
+    for (i = 0; i < links.size(); ++i)
+    {
+      links.at(i)->setVSpeed(0);
+    }
+    v_speed = 0;
+    if (creator)
+    {
+      ((Special*)creator)->setVSpeed(0);
+    }
+  }
+}
+/*
 void Moveable::setVSpeed(int vs, Map *m)
 {
   vector<Moveable *> ignore;
@@ -453,4 +515,4 @@ void Moveable::setVSpeed(int vs, Map *m, vector<Moveable *> ignore)
       links.at(i)->setVSpeed(vs, m, ignore);
     }
   }
-}
+}*/

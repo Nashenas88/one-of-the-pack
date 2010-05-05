@@ -31,6 +31,7 @@ private:
   vector<Drawable *> tiles;
   vector<Moveable *> moves;
   vector<Special *> specs;
+  vector<int> groups;
   
 public:
   Map(void);
