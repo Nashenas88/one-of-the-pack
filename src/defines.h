@@ -43,10 +43,10 @@
 
 // sound file stuff
 #define NUM_SOUNDS_FILE "sounds.txt"
-#define SOUND_FILE_TYPE ".mp3"
+#define SOUND_FILE_TYPE ".ogg"
 
 // sound files
-#define PLAYER_SOUND "Default.mp3"
+#define PLAYER_SOUND "Default.ogg"
 #define AHNOLD_SFX "punch sound.wav"
 #define JUMPER_SFX "jump sound (not final).wav"
 #define ENGINEER_SFX "jump sound (not final).wav"
