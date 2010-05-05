@@ -7,6 +7,7 @@
 #include "engineer.h"
 #include "paris.h"
 #include "wonder.h"
+#include "rdtsc.h"
 
 bool sort_by_height (Special *i, Special *j);
 
@@ -82,6 +83,7 @@ void Game_State::draw(void)
 // needs to be updated
 void Game_State::update(int &delta)
 {
+  unsigned long start = rdtsc();
   // are we hitting the goal?
   // no need to do anything else if we are
   if (collision && p->will_collide_tile(map, GOAL, NULL))
@@ -1165,6 +1167,9 @@ void Game_State::update(int &delta)
     gravity = true;
   }
   state_update();
+  
+  unsigned long end = rdtsc();
+  if(debug)printf("Time taken in update %lu\n", (end - start));
 }
 
 void Game_State::key_pressed(unsigned char key, int x, int y)
