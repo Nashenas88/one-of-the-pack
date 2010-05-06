@@ -67,6 +67,7 @@ public:
   bool will_collide_moveables_x(vector<Moveable *> moveables, int cut, int *collide);
   bool will_collide_moveables_y(vector<Moveable *> moveables, int cut, int *collide);
   bool will_collide_specials_x(vector<Special *> specials, int *collide);
+  bool will_collide_specials_y(vector<Special *> specials, int *collide);
   bool will_collide_tile(Map *m, tile_type tile, int coordinates[2]);
   
 };
