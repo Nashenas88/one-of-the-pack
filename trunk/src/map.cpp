@@ -101,7 +101,7 @@ bool Map::make_rubber(int x, int y)
 bool Map::return_from_rubber(int x, int y)
 {
   if (map[x][y][M_TILE] == RUBBER && map[x][y][M_COLL] != 1 &&
-      map[x][y][M_COLL] != CIRCUIT)
+      map[x][y][M_COLL] != CIRCUIT && map[x][y][M_COLL] <= RUBBER)
   {
     map[x][y][M_TILE] = map[x][y][M_COLL] - 1;
     map[x][y][M_COLL] = 1;
@@ -276,7 +276,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
       // rubber
       else if(red[0] == 0 && green[0] == 255 && blue[0] == 255)
       {
-        map[x][y][M_COLL] = 1;
+        map[x][y][M_COLL] = OUTSIDE;
         map[x][y][M_TILE] = RUBBER;
       }
       // circuit
