@@ -24,12 +24,12 @@ void Ahnold::use_ability(Map *m)
 
 void Ahnold::enable_ability(Map *m)
 {
-  float old_speed;
+  float old_speedH, old_speedV;
   int hit[2];
   
   play_effect();
   
-  old_speed = getHSpeed();
+  old_speedH = getHSpeed();
   if (getDirection() == RIGHT)
   {
     setHSpeed(PUNCH_RANGE);
@@ -40,6 +40,8 @@ void Ahnold::enable_ability(Map *m)
   }
   
   int block = -1;
+  old_speedV = getVSpeed();
+  setVSpeed(0);
   if (will_collide_tile(m, BREAKABLE1, hit))
   {
     m->breaker(hit[0], hit[1]);
@@ -57,6 +59,6 @@ void Ahnold::enable_ability(Map *m)
       move->setHSpeed(getHSpeed() / PUNCH_RANGE * HOVER_SLIDE_SPEED, m);
     }
   }
-  
-  setHSpeed((int)old_speed);
+  setVSpeed((int)old_speedV);
+  setHSpeed((int)old_speedH);
 }
