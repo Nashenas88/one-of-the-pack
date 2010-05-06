@@ -1383,6 +1383,14 @@ void Game_State::key_released(unsigned char key, int x, int y)
       c->setHSpeed(a?last_x=true,-PLAYER_SPEED:0);
       d = false;
       break;
+    // below is for debugging only
+ 	  // remove for final game version
+ 	  case 'h':
+ 	    collision = !collision;
+ 	    gravity = false;
+ 	    c->setVSpeed(0);
+      p->setVSpeed(0);
+      break;
     case '1':
     case '2':
     case '3':

@@ -74,8 +74,8 @@ bool Moveable::will_collide_Dy(Drawable *d)
   get_top_left(left_x1, top_y1);
   top_y1 += getVSpeed();
   d->get_top_left(left_x2, top_y2);
-  right_x1 = left_x1 + get_width();
-  right_x2 = left_x2 + d->get_width();
+  right_x1 = left_x1 + get_width() - 1;
+  right_x2 = left_x2 + d->get_width() - 1;
   bottom_y1 = top_y1 + get_height() - 1;
   bottom_y2 = top_y2 + d->get_height() - 1;
   
@@ -283,37 +283,9 @@ void Moveable::setHSpeed(int hs, Map *m)
   {
     ((Special*)creator)->setHSpeed(hs);
   }
-  unsigned int i;
-  for (i = 0; i < links.size(); ++i)
+  for (unsigned int i = 0; i < links.size(); ++i)
   {
     links.at(i)->setHSpeed(hs);
-    if (links.at(i)->will_collide_x(m))
-    {
-      break;
-    }
-  }
-  if (i != links.size() || will_collide_x(m))
-  {
-    if(rubber)
-    {
-      for(i = 0; i < links.size(); ++i)
-      {
-        links.at(i)->setHSpeed(hs);
-      }
-      h_speed = hs;
-    }
-    else
-    {
-      for (i = 0; i < links.size(); ++i)
-      {
-        links.at(i)->setHSpeed(0);
-      }
-      h_speed = 0;
-      if (creator)
-      {
-        ((Special*)creator)->setHSpeed(0);
-      }
-    }
   }
 }
 
@@ -324,26 +296,9 @@ void Moveable::setVSpeed(int vs, Map *m)
   {
     ((Special*)creator)->setVSpeed(vs);
   }
-  unsigned int i;
-  for (i = 0; i < links.size(); ++i)
+  for (unsigned int i = 0; i < links.size(); ++i)
   {
     links.at(i)->setVSpeed(vs);
-    if (links.at(i)->will_collide_y(m))
-    {
-      break;
-    }
-  }
-  if (i != links.size() || will_collide_y(m))
-  {
-    for (i = 0; i < links.size(); ++i)
-    {
-      links.at(i)->setVSpeed(0);
-    }
-    v_speed = 0;
-    if (creator)
-    {
-      ((Special*)creator)->setVSpeed(0);
-    }
   }
 }
 
