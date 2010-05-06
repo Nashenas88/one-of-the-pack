@@ -458,14 +458,17 @@ void Game_State::update(int &delta)
             specials.at(i)->will_collide_specials_y(specials, i, NULL) ||
             specials.at(i)->will_collide_moveables_y(moveables, -1, NULL))
         {
-          c->setVSpeed(0);
-          c->set_jump(0);
-          c->set_bounce(false);
-        }
-        else if (c->will_collide_rubber_y(map))
-        {
-          c->setVSpeed(-GRAVITY_SPEED);
-          c->set_bounce(true);
+          if (c->will_collide_rubber_y(map))
+          {
+            c->setVSpeed(-GRAVITY_SPEED);
+            c->set_bounce(true);
+          }
+          else
+          {
+            c->setVSpeed(0);
+            c->set_jump(0);
+            c->set_bounce(false);
+          }
         }
         if (specials.at(i)->will_collide_x(map) ||
             specials.at(i)->will_collide_moveables_x(moveables, -1, NULL) ||
@@ -481,14 +484,18 @@ void Game_State::update(int &delta)
           specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
           specials.at(i)->will_collide_platform(map))
       {
-        specials.at(i)->setVSpeed(0);
-        specials.at(i)->set_jump(0);
-        specials.at(i)->set_bounce(false);
-      }
-      else if (specials.at(i)->will_collide_rubber_y(map))
-      {
-        specials.at(i)->setVSpeed(-GRAVITY_SPEED);
-        specials.at(i)->set_bounce(true);
+        if (specials.at(i)->will_collide_rubber_y(map))
+        {
+          std::cout << i << " collided with rubber\n";
+          specials.at(i)->setVSpeed(-GRAVITY_SPEED);
+          specials.at(i)->set_bounce(true);
+        }
+        else
+        {
+          specials.at(i)->setVSpeed(0);
+          specials.at(i)->set_jump(0);
+          specials.at(i)->set_bounce(false);
+        }
       }
     }
     
