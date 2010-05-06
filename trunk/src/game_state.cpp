@@ -226,18 +226,20 @@ void Game_State::update(int &delta)
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     if((specials.at(i)->will_collide_tile(map, BLACK_HOLE, NULL) ||
-        specials.at(i)->will_collide_tile(map, TOXIC_SLUDGE, NULL)) &&
-       !(specials.at(i)->will_collide_y(map) ||
-         specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
+        specials.at(i)->will_collide_tile(map, TOXIC_SLUDGE, NULL) ||
+        specials.at(i)->will_collide_tile(map, SMOG, NULL)) &&
+        !(specials.at(i)->will_collide_y(map) ||
+        specials.at(i)->will_collide_moveables_y(moveables, -1, NULL)))
     {
       specials.at(i)->go_home(map);
     }
   }
   
   if (c == p && (p->will_collide_tile(map, BLACK_HOLE, NULL) ||
-                 p->will_collide_tile(map, TOXIC_SLUDGE, NULL)) &&
-      !(p->will_collide_y(map) ||
-        p->will_collide_moveables_y(moveables, -1, NULL)))
+                 p->will_collide_tile(map, TOXIC_SLUDGE, NULL) ||
+                 p->will_collide_tile(map, SMOG, NULL)) &&
+                 !(p->will_collide_y(map) ||
+                 p->will_collide_moveables_y(moveables, -1, NULL)))
   {
     p->reset(map);
   }
