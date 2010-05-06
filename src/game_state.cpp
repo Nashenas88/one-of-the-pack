@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "math.h"
 #include "game_state.h"
@@ -387,8 +388,11 @@ void Game_State::update(int &delta)
   // collision is always on for moveables
   vector<int> groups_checked;
   unsigned int k;
+  bool collide_x, collide_y;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
+    collide_x = false;
+    collide_y = false;
     for (k = 0; k < groups_checked.size(); ++k)
     {
       if (moveables.at(i)->get_group_num() == groups_checked.at(k))
@@ -400,11 +404,6 @@ void Game_State::update(int &delta)
     {
       continue;
     }
-    else
-    {
-      groups_checked.push_back(moveables.at(i)->get_group_num());
-    }
-    
     if (moveables.at(i)->get_gravity())
     {
       moveables.at(i)->setVSpeed(GRAVITY_SPEED, map);
@@ -412,6 +411,7 @@ void Game_State::update(int &delta)
     if(moveables.at(i)->will_collide_y(map) ||
        moveables.at(i)->will_collide_moveables_y(moveables, i, NULL))
     {
+      collide_y = true;
       moveables.at(i)->setVSpeed(0, map);
     }
     
@@ -419,6 +419,7 @@ void Game_State::update(int &delta)
        moveables.at(i)->will_collide_specials_x(specials, NULL) ||
        moveables.at(i)->will_collide_moveables_x(moveables, i, NULL))
     {
+      collide_x = true;
       if (moveables.at(i)->get_rubber())
       {
         moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
@@ -427,6 +428,11 @@ void Game_State::update(int &delta)
       {
         moveables.at(i)->setHSpeed(0, map);
       }
+    }
+    
+    if (collide_x || collide_y)
+    {
+      groups_checked.push_back(moveables.at(i)->get_group_num());
     }
   }
   if (collision)

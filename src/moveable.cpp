@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "moveable.h"
 #include "special.h"
 
