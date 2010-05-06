@@ -411,6 +411,7 @@ void Game_State::update(int &delta)
       moveables.at(i)->setVSpeed(GRAVITY_SPEED, map);
     }
     if(moveables.at(i)->will_collide_y(map) ||
+       moveables.at(i)->will_collide_specials_y(specials, NULL) ||
        moveables.at(i)->will_collide_moveables_y(moveables, i, NULL))
     {
       collide_y = true;

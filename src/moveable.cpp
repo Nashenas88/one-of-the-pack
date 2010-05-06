@@ -235,6 +235,27 @@ bool Moveable::will_collide_specials_x(vector<Special *>specials, int *collide)
   return false;
 }
 
+bool Moveable::will_collide_specials_y(vector<Special *>specials, int *collide)
+{
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    if (specials.at(i)->get_type() == KURT &&
+        (Kurt*)specials.at(i) == creator)
+    {
+      continue;
+    }
+    if (specials.at(i)->will_collide_Dy(this,false))
+    {
+      if (collide)
+      {
+        *collide = i;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 bool Moveable::will_collide_tile(Map *m, tile_type tile, int coordinates[2])
 {
   int lx, rx, ty, by;
