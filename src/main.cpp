@@ -551,6 +551,7 @@ void handleKeypress(unsigned char key, int x, int y)
         }
         else if (((Pause_State *)s)->get_selected() == 2) // quit
         {
+          ((Pause_State*)s)->pause_sounds();
           system_clean();
           stack.clear();
           loading = true;
