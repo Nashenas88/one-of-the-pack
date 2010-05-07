@@ -26,6 +26,7 @@
 #define MAP1 "level.bmp"
 #define MAP_IMAGE "level.png"
 #define LOADING_TEXTURE "loading.png"
+#define CONTROL_TEXTURE "controls.png"
 #define PAUSE_ICONS_TEXTURE "pause_icons.png"
 #define PAUSED_NAMES_TEXTURE "names.png"
 #define MAIN_MENU_TEXTURE "main_menu.png"
@@ -69,10 +70,10 @@
 #define ICON_WIDTH 8
 #define ICON_HEIGHT 8
 
-#define MENU_ITEMS 3
+#define MENU_ITEMS 4
 #define MAIN_MENU_ITEMS_X 4
 #define MAIN_MENU_ITEMS_Y 3
-#define POINTER_MOVE 90
+#define POINTER_MOVE 55
 #define MAIN_MENU_POINTER_MOVE_X 185
 #define MAIN_MENU_POINTER_MOVE_Y 58
 #define MAIN_POINTER_START_X 207

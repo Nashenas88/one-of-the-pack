@@ -144,7 +144,7 @@ void Pause_State::key_pressed(unsigned char key, int x, int y)
       if(selected == 0)
       {
         selected = MENU_ITEMS - 1;
-        pointer->move(0, POINTER_MOVE * 2);
+        pointer->move(0, POINTER_MOVE * MENU_ITEMS - 1);
       }
       else
       {
@@ -156,7 +156,7 @@ void Pause_State::key_pressed(unsigned char key, int x, int y)
       selected = (++selected) % MENU_ITEMS;
       if (selected == 0)
       {
-        pointer->move(0, -POINTER_MOVE * 2);
+        pointer->move(0, -POINTER_MOVE * MENU_ITEMS - 1);
       }
       else
       {

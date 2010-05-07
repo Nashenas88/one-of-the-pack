@@ -24,7 +24,9 @@ vector<State *> stack;
 vector<FMOD_SOUND *> sounds;
 vector<Texture *> textures_tr;
 bool loading;
+bool control;
 Drawable *load_screen;
+Drawable *control_screen;
 int level;
 int last_level;
 FMOD_SYSTEM *sound_system;
@@ -114,9 +116,15 @@ void initLoading(void)
   stringstream ss;
   
   loading = true;
+  control = false;
   ss << RESOURCES << LOADING_TEXTURE;
   tex = new Texture(ss.str().c_str());
   load_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
+  
+  ss.str("");
+  ss << RESOURCES << CONTROL_TEXTURE;
+  tex = new Texture(ss.str().c_str());
+  control_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
 }
 
 void initMain(int blah)
@@ -511,6 +519,7 @@ void handleKeypress(unsigned char key, int x, int y)
   switch(key)
   {
     case 27: // escape key
+      control_screen->clean();
       if (s == tutorial)
       {
         tutorial->clean();
@@ -531,7 +540,11 @@ void handleKeypress(unsigned char key, int x, int y)
       break;
     case '\n':
     case '\r':
-      if (s == paused)
+      if (control)
+      {
+        control = false;
+      }
+      else if (s == paused)
       {
         if (((Pause_State *)s)->get_selected() == 0) // return
         {
@@ -540,7 +553,11 @@ void handleKeypress(unsigned char key, int x, int y)
           ((Game_State *)s)->unpause_volume();
           stack.pop_back();
         }
-        else if (((Pause_State *)s)->get_selected() == 1) // restart
+        else if (((Pause_State *)s)->get_selected() == 1) // controls
+        {
+          control = true;
+        }
+        else if (((Pause_State *)s)->get_selected() == 2) // restart
         {
           loading = true;
           ((Pause_State*)s)->pause_sounds();
@@ -549,7 +566,7 @@ void handleKeypress(unsigned char key, int x, int y)
           glutPostRedisplay();
           glutTimerFunc(25, initLevel, level);
         }
-        else if (((Pause_State *)s)->get_selected() == 2) // quit
+        else if (((Pause_State *)s)->get_selected() == 3) // quit
         {
           ((Pause_State*)s)->pause_sounds();
           system_clean();
@@ -572,7 +589,7 @@ void handleKeypress(unsigned char key, int x, int y)
       else if (s == main_s)
       {
         level = ((Main_Menu_State*)s)->get_selected();
-        if (level == 11)
+        if (level == 11) // Tutorial
         {
           loading = true;
           glutPostRedisplay();
@@ -581,8 +598,9 @@ void handleKeypress(unsigned char key, int x, int y)
           delete main_s;
           glutTimerFunc(25, initTutorial, 0);
         }
-        else if (level == 12)
+        else if (level == 12) // Quit
         {
+          control_screen->clean();
           main_s->clean();
           delete main_s;
           exit(0);
@@ -698,6 +716,10 @@ void drawScene(void)
   if (loading)
   {
     load_screen->draw();
+  }
+  else if (control)
+  {
+    control_screen->draw();
   }
   else
   {
