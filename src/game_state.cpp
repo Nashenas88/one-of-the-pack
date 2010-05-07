@@ -12,7 +12,7 @@
 bool sort_by_height (Special *i, Special *j);
 
 Game_State::Game_State(void)
-:p(NULL), c(NULL), map(NULL), gravity(true), collision(true) {}
+:p(NULL), c(NULL), map(NULL), gravity(true), collision(true), shift(false) {}
 
 Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
                        vector<Special *> sps, vector<Drawable *> nums,
@@ -20,7 +20,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), jump_delta(-1), controllable(false), odd(false) {}
+key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -865,6 +865,60 @@ void Game_State::update(int &delta)
     {
       center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
     }
+    
+    if (shift)
+    {
+      float diff, dist_b, dist_a;
+      if (shift_x == 1) // right
+      {
+        dist_b = calculate_distance();
+        shift_loc[0] += 20;
+        dist_a = calculate_distance();
+        diff = dist_a - dist_b;
+        if (diff > 0 && dist_a > 1000)
+        {
+          shift_loc[0] -= 20;
+        }
+      }
+      else if (shift_x == 2) // left
+      {
+        dist_b = calculate_distance();
+        shift_loc[0] -= 20;
+        dist_a = calculate_distance();
+        diff = dist_a - dist_b;
+        if (diff > 0 && dist_a > 1000)
+        {
+          shift_loc[0] += 20;
+        }
+      }
+      
+      if (shift_y == 1) // up
+      {
+        dist_b = calculate_distance();
+        shift_loc[1] -= 20;
+        dist_a = calculate_distance();
+        diff = dist_a - dist_b;
+        if (diff > 0 && dist_a > 1000)
+        {
+          shift_loc[1] += 20;
+        }
+      }
+      else if (shift_y == 2) // down
+      {
+        dist_b = calculate_distance();
+        shift_loc[1] += 20;
+        dist_a = calculate_distance();
+        diff = dist_a - dist_b;
+        if (diff > 0 && dist_a > 1000)
+        {
+          shift_loc[1] -= 20;
+        }
+      }
+      
+      control_x = shift_loc[0];
+      control_y = shift_loc[1];
+    }
+    
     offset_x = center_x - control_x;
     offset_y = center_y - control_y;
     
@@ -915,6 +969,11 @@ void Game_State::update(int &delta)
       for (unsigned int i = 0; i < kisses.size(); ++i)
       {
         ((Drawable *)kisses.at(i))->move(mx, my);
+      }
+      if (shift)
+      {
+        shift_loc[0] += mx;
+        shift_loc[1] += my;
       }
     }
   }
@@ -1142,6 +1201,14 @@ void Game_State::update(int &delta)
     gravity = true;
   }
   state_update();
+}
+
+float Game_State::calculate_distance(void)
+{
+  float dx, dy;
+  dx = shift_loc[0] - c->get_x();
+  dy = shift_loc[1] - c->get_y();
+  return sqrt(dx * dx + dy * dy);
 }
 
 void Game_State::key_pressed(unsigned char key, int x, int y)
@@ -1428,20 +1495,55 @@ void Game_State::special_pressed(int key, int x, int y)
   {
     return;
   }
-  switch (key)
+  if (glutGetModifiers() == GLUT_ACTIVE_SHIFT)
   {
-    case GLUT_KEY_UP:
-      key_pressed('w', x, y);
-      break;
-    case GLUT_KEY_DOWN:
-      key_pressed('s', x, y);
-      break;
-    case GLUT_KEY_RIGHT:
-      key_pressed('d', x, y);
-      break;
-    case GLUT_KEY_LEFT:
-      key_pressed('a', x, y);
-      break;
+    if (!shift)
+    {
+      shift = true;
+      c->get_top_left(shift_loc[0], shift_loc[1]);
+      w = false;
+      a = false;
+      s = false;
+      d = false;
+    }
+    switch(key)
+    {
+      case GLUT_KEY_UP:
+        shift_y_pos = false;
+        shift_y = 1;
+        break;
+      case GLUT_KEY_DOWN:
+        shift_y_pos = true;
+        shift_y = 2;
+        break;
+      case GLUT_KEY_RIGHT:
+        shift_x_pos = true;
+        shift_x = 1;
+        break;
+      case GLUT_KEY_LEFT:
+        shift_x_pos = false;
+        shift_x = 2;
+        break;
+    }
+  }
+  else
+  {
+    shift = false;
+    switch (key)
+    {
+      case GLUT_KEY_UP:
+        key_pressed('w', x, y);
+        break;
+      case GLUT_KEY_DOWN:
+        key_pressed('s', x, y);
+        break;
+      case GLUT_KEY_RIGHT:
+        key_pressed('d', x, y);
+        break;
+      case GLUT_KEY_LEFT:
+        key_pressed('a', x, y);
+        break;
+    }
   }
 }
 
@@ -1451,20 +1553,42 @@ void Game_State::special_released(int key, int x, int y)
   {
     return;
   }
-  switch (key)
+  if (glutGetModifiers() == GLUT_ACTIVE_SHIFT)
   {
-    case GLUT_KEY_UP:
-      key_released('w', x, y);
-      break;
-    case GLUT_KEY_DOWN:
-      key_released('s', x, y);
-      break;
-    case GLUT_KEY_RIGHT:
-      key_released('d', x, y);
-      break;
-    case GLUT_KEY_LEFT:
-      key_released('a', x, y);
-      break;
+    switch(key)
+    {
+      case GLUT_KEY_UP:
+        shift_y = -1;
+        break;
+      case GLUT_KEY_DOWN:
+        shift_y = -1;
+        break;
+      case GLUT_KEY_RIGHT:
+        shift_x = -1;
+        break;
+      case GLUT_KEY_LEFT:
+        shift_x = -1;
+        break;
+    }
+  }
+  else
+  {
+    shift = false;
+    switch (key)
+    {
+      case GLUT_KEY_UP:
+        key_released('w', x, y);
+        break;
+      case GLUT_KEY_DOWN:
+        key_released('s', x, y);
+        break;
+      case GLUT_KEY_RIGHT:
+        key_released('d', x, y);
+        break;
+      case GLUT_KEY_LEFT:
+        key_released('a', x, y);
+        break;
+    }
   }
 }
 
