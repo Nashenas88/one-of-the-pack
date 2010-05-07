@@ -31,7 +31,15 @@ private:
   char key_held; // used for activating specials ability/switching to special
   int jump_delta;
   bool controllable;
+  bool shift;
   int odd;
+  float shift_loc[2];
+  int shift_x;
+  int shift_y;
+  bool shift_x_pos;
+  bool shift_y_pos;
+  
+  float calculate_distance(void);
   
 public:
   Game_State(void);
