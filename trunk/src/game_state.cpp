@@ -1226,6 +1226,16 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
   }
   switch (key)
   {
+    case 127: // backspace
+      if (c == p)
+      {
+        ((Player*)c)->reset(map);
+      }
+      else
+      {
+        ((Special*)c)->go_home(map);
+      }
+      break;
     if (!gravity)
     {
       case 'w':
