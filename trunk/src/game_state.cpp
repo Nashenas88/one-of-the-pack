@@ -388,56 +388,78 @@ void Game_State::update(int &delta)
   
   // check for collision on everyone
   // collision is always on for moveables
-  vector<int> groups_checked;
+  vector<int> groups_checked_x;
+  vector<int> groups_checked_y;
   unsigned int k;
   bool collide_x, collide_y;
+  bool checked_x, checked_y;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     collide_x = false;
     collide_y = false;
-    for (k = 0; k < groups_checked.size(); ++k)
+    checked_x = false;
+    checked_y = false;
+    for (k = 0; k < groups_checked_x.size(); ++k)
     {
-      if (moveables.at(i)->get_group_num() == groups_checked.at(k))
+      if (moveables.at(i)->get_group_num() == groups_checked_x.at(k))
       {
-        break;
+        checked_x = true;
       }
     }
-    if (k != groups_checked.size())
+    for (k = 0; k < groups_checked_y.size(); ++k)
+    {
+      if (moveables.at(i)->get_group_num() == groups_checked_y.at(k))
+      {
+        checked_y = true;
+      }
+    }
+    if (checked_x && checked_y)
     {
       continue;
     }
-    if (moveables.at(i)->get_gravity())
-    {
-      moveables.at(i)->setVSpeed(GRAVITY_SPEED, map);
-    }
-    if(moveables.at(i)->will_collide_y(map) ||
-       moveables.at(i)->will_collide_specials_y(specials, NULL) ||
-       moveables.at(i)->will_collide_moveables_y(moveables, i, NULL))
-    {
-      collide_y = true;
-      moveables.at(i)->setVSpeed(0, map);
-    }
     
-    int b;
-    if((b = moveables.at(i)->will_collide_x(map),b?(debug?printf("in x\n"):b):b,b) ||
-       moveables.at(i)->will_collide_specials_x(specials, NULL) ||
-       moveables.at(i)->will_collide_moveables_x(moveables, i, NULL))
+    if (!checked_y)
     {
-      collide_x = true;
-      if (moveables.at(i)->get_rubber())
+      if (moveables.at(i)->get_gravity())
       {
-        moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
+        moveables.at(i)->setVSpeed(GRAVITY_SPEED, map);
       }
-      else
+      if(moveables.at(i)->will_collide_y(map) ||
+         moveables.at(i)->will_collide_specials_y(specials, NULL) ||
+         moveables.at(i)->will_collide_moveables_y(moveables, i, NULL))
       {
-        moveables.at(i)->setHSpeed(0, map);
+        collide_y = true;
+        moveables.at(i)->setVSpeed(0, map);
       }
     }
-    else if (debug) printf("not colliding\n");
     
-    if (collide_x || collide_y)
+    if(!checked_x)
     {
-      groups_checked.push_back(moveables.at(i)->get_group_num());
+      int b;
+      if((b = moveables.at(i)->will_collide_x(map),b?(debug?printf("in x\n"):b):b,b) ||
+         moveables.at(i)->will_collide_specials_x(specials, NULL) ||
+         moveables.at(i)->will_collide_moveables_x(moveables, i, NULL))
+      {
+        collide_x = true;
+        if (moveables.at(i)->get_rubber())
+        {
+          moveables.at(i)->setHSpeed(-moveables.at(i)->getHSpeed(), map);
+        }
+        else
+        {
+          moveables.at(i)->setHSpeed(0, map);
+        }
+      }
+      else if (debug) printf("not colliding\n");
+    }
+    
+    if (collide_x)
+    {
+      groups_checked_x.push_back(moveables.at(i)->get_group_num());
+    }
+    if (collide_y)
+    {
+      groups_checked_y.push_back(moveables.at(i)->get_group_num());
     }
   }
   if (collision)
