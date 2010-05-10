@@ -73,7 +73,7 @@ public:
                 vector<Texture*> texs, Character *player,
                 FMOD_SYSTEM *system, vector<FMOD_SOUND *> musics,
                 FMOD_CHANNEL *m_channel, vector<FMOD_SOUND *> effects,
-                FMOD_CHANNEL *a_channel);
+                FMOD_CHANNEL *a_channel, vector<FMOD_SOUND *> collects);
   
   void clean(void);
 };

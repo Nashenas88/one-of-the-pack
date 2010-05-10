@@ -230,7 +230,7 @@ void initLevel(int level)
   vector<Drawable*> numbers;
   Map *m;
   FMOD_SOUND *s_sound, *temp_sound;
-  vector<FMOD_SOUND *> musics, effects;
+  vector<FMOD_SOUND *> musics, effects, collects;
   FMOD_CHANNEL *m_channel = 0, *a_channel = 0;
   FMOD_RESULT result;
   
@@ -353,6 +353,46 @@ void initLevel(int level)
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
   ERRCHECK(result);
   effects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES AHNOLD_COLLECT, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  collects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES ENGINEER_COLLECT, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  collects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_COLLECT, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  collects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES KURT_COLLECT, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  collects.push_back(temp_sound);
+  sounds.push_back(temp_sound);
+  
+  result = FMOD_System_CreateSound(sound_system, RESOURCES PARIS_COLLECT, FMOD_SOFTWARE,
+                                   0, &temp_sound);
+  ERRCHECK(result);
+  result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
+  ERRCHECK(result);
+  collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
   // initializing player and all other objects
@@ -480,7 +520,7 @@ void initLevel(int level)
   m = new Map(v);
   temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
-              p, sound_system, musics, m_channel, effects, a_channel);
+              p, sound_system, musics, m_channel, effects, a_channel, collects);
   s = new Game_State(p, m, moveables, specials, numbers, sound_system);
   paused = new Pause_State(sound_system, (Game_State *)s, paused_background,
                            map_image, pointer, ps_ic, paused_names);

@@ -57,6 +57,13 @@
 #define MAIN_MENU_MUSIC "Title Screen.ogg"
 #define TUTORIAL_MUSIC "Title Screen.ogg"
 
+// collect sounds
+#define AHNOLD_COLLECT "ahnold get.ogg"
+#define ENGINEER_COLLECT "engineer get.ogg"
+#define JUMPER_COLLECT "jumper get.ogg"
+#define KURT_COLLECT "prime get.ogg"
+#define PARIS_COLLECT "paris get.ogg"
+
 // widths and heights
 #define TILE_WIDTH 100
 #define TILE_HEIGHT 100

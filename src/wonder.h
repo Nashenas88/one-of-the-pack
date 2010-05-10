@@ -16,7 +16,8 @@ public:
   Kurt(void);
   Kurt(float x, float y, int map_x, int map_y, int num, int frames,
          int abil_frames, Texture *tex, direc dir, FMOD_SYSTEM *sys,
-         FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac);
+         FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac,
+         FMOD_SOUND *cs);
   
   bool get_ability(void) {return ability;}
   bool get_summoned(void) {return summoned;}
