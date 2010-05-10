@@ -141,7 +141,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                    vector<Texture*> texs, Character *player,
                    FMOD_SYSTEM *system, vector<FMOD_SOUND *> musics,
                    FMOD_CHANNEL *m_channel, vector<FMOD_SOUND *> effects,
-                   FMOD_CHANNEL *a_channel)
+                   FMOD_CHANNEL *a_channel, vector<FMOD_SOUND *> collects)
 {
   ifstream file;
   unsigned char red[1], green[1], blue[1], alpha[1];
@@ -300,7 +300,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                       x, y, 1, 5, AHNOLD_PUNCH_NUM,
                                       texs.at(AHNOLD), LEFT,
                                       system, musics.at(sound_num), m_channel,
-                                      effects.at(AHNOLD), a_channel));
+                                      effects.at(AHNOLD), a_channel,
+                                      collects.at(AHNOLD)));
         ++sound_num;
       }
       // jumping helper
@@ -312,7 +313,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                       x, y, 1, 5, JUMPER_JUMP_NUM,
                                       texs.at(JUMPER), LEFT, system,
                                       musics.at(sound_num), m_channel,
-                                      effects.at(JUMPER), a_channel));
+                                      effects.at(JUMPER), a_channel,
+                                      collects.at(JUMPER)));
         ++sound_num;
       }
       // paris helper
@@ -325,7 +327,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                      texs.at(PARIS), LEFT, system,
                                      musics.at(sound_num), m_channel,
                                      effects.at(PARIS), a_channel,
-                                     effects.at(BEAM)));
+                                     effects.at(BEAM),
+                                     collects.at(PARIS)));
         ++sound_num;
       }
       // engineer helper
@@ -338,7 +341,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                         texs.at(ENGINEER), LEFT, system,
                                         musics.at(sound_num), m_channel,
                                         effects.at(ENGINEER), a_channel,
-                                        effects.at(BEAM)));
+                                        effects.at(BEAM),
+                                        collects.at(ENGINEER)));
         ++sound_num;
       }
       // Kurt helper
@@ -350,7 +354,8 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
                                     x, y, 1, 5, KURT_GUITAR_NUM,
                                     texs.at(KURT), LEFT, system,
                                     musics.at(sound_num), m_channel,
-                                    effects.at(KURT), a_channel));
+                                    effects.at(KURT), a_channel,
+                                    collects.at(KURT)));
         ++sound_num;
       }
       // moveable block

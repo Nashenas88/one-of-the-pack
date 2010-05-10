@@ -15,10 +15,10 @@ Kurt::Kurt(void)
 Kurt::Kurt(float x, float y, int map_x, int map_y, int num, int frames,
                int abil_frames, Texture *tex, direc dir, FMOD_SYSTEM *sys,
                FMOD_SOUND *music, FMOD_CHANNEL *ch, FMOD_SOUND *as,
-               FMOD_CHANNEL *ac)
+               FMOD_CHANNEL *ac, FMOD_SOUND *cs)
 :Special(x, y, map_x, map_y, num, frames, abil_frames, tex, dir, 0, 0, KURT,
-         sys, music, ch, as, ac), ability(false), summoned(false), move_loc(0),
-num_created(0)
+         sys, music, ch, as, ac, cs), ability(false), summoned(false),
+move_loc(0), num_created(0)
 {
   ability = false;
 }

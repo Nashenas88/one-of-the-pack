@@ -9,10 +9,11 @@ Special::Special(void)
 Special::Special(float x, float y, int map_x, int map_y, int num, int frames,
                  int abil_frames, Texture *tex, direc dir, int vs, int hs,
                  special_type t, FMOD_SYSTEM *sys, FMOD_SOUND *so,
-                 FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac)
+                 FMOD_CHANNEL *ch, FMOD_SOUND *as, FMOD_CHANNEL *ac,
+                 FMOD_SOUND *cs)
 :Character(x, y, num, frames, tex, dir, vs, hs, sys, so, ch),
 following(true), controllable(false), num_abil_frames(abil_frames),
-abil_sound(as), abil_channel(ac), number(NULL), jump_delta(-1)
+abil_sound(as), abil_channel(ac), collect_sound(cs), number(NULL), jump_delta(-1)
 {
   loc[0] = map_x;
   loc[1] = map_y;
@@ -23,6 +24,10 @@ abil_sound(as), abil_channel(ac), number(NULL), jump_delta(-1)
 void Special::start_following(void)
 {
   following = true;
+  if (!controllable)
+  {
+    play_collect();
+  }
   controllable = true;
   set_shadow(false);
 }
@@ -39,6 +44,14 @@ void Special::play_effect(void)
   
   result = FMOD_System_PlaySound(get_system(), FMOD_CHANNEL_FREE, abil_sound,
                                  0, &abil_channel);
+  ERRCHECK(result);
+}
+
+void Special::play_collect(void)
+{
+  FMOD_RESULT result;
+  result = FMOD_System_PlaySound(get_system(), FMOD_CHANNEL_FREE, collect_sound,
+                                 0, &collect_channel);
   ERRCHECK(result);
 }
 

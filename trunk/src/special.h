@@ -24,6 +24,8 @@ private:
   bool mute;
   FMOD_SOUND *abil_sound;
   FMOD_CHANNEL *abil_channel;
+  FMOD_SOUND *collect_sound;
+  FMOD_CHANNEL *collect_channel;
   Drawable *number; // number that will be displayed above special
   int jump_delta;
   
@@ -32,7 +34,7 @@ public:
   Special(float x, float y, int map_x, int map_y, int num, int frames,
           int abil_frames, Texture *tex, direc dir, int vs, int hs,
           special_type t, FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch,
-          FMOD_SOUND *as, FMOD_CHANNEL *ac);
+          FMOD_SOUND *as, FMOD_CHANNEL *ac, FMOD_SOUND *cs);
   
   unsigned int get_abil_frames(void) {return num_abil_frames;}
   special_type get_type(void) {return type;}
@@ -43,6 +45,7 @@ public:
   bool is_controllable(void) {return controllable;}
   
   void play_effect(void);
+  void play_collect(void);
   
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
