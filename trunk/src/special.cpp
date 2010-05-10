@@ -55,6 +55,11 @@ void Special::play_collect(void)
   ERRCHECK(result);
 }
 
+void Special::set_collect_volume(float vol)
+{
+  FMOD_Channel_SetVolume(collect_channel, vol);
+}
+
 void Special::set_mute(bool m)
 {
   mute = m;
