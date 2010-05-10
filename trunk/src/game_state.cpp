@@ -26,12 +26,12 @@ key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false),debug
 void Game_State::draw(void)
 {
   vector<Special *> sorted_draw;
-  
+
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     sorted_draw.push_back(specials.at(i));
   }
-  
+
   for (unsigned int i = 0; i < sorted_draw.size(); ++i)
   {
     if (!sorted_draw.at(i)->is_following())
@@ -40,7 +40,7 @@ void Game_State::draw(void)
       sorted_draw.erase(sorted_draw.begin() + i);
     }
   }
-  
+
   // first the map
   map->draw();
   // then the moveables
@@ -48,7 +48,7 @@ void Game_State::draw(void)
   {
     moveables.at(i)->draw();
   }
-  
+
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
     beams.at(i)->draw();
@@ -57,7 +57,7 @@ void Game_State::draw(void)
   {
     kisses.at(i)->draw();
   }
-  
+
   // then the specials, except for the one you are controlling
   // the closer to the player, the higher up they should be drawn
   // (1st special should be drawn over 2nd special, etc.)
@@ -65,7 +65,7 @@ void Game_State::draw(void)
   {
     sorted_draw.at(i)->draw();
   }
-  
+
   for (unsigned int i = 0; i < specials.size() ; ++i)
   {
     // don't draw number of special you're controlling
@@ -90,12 +90,12 @@ void Game_State::update(int &delta)
     delta = -1;
     return;
   }
-  
+
   vector<int> to_delete;
   int coords[2];
   int which;
   int j;
-  
+
   for (int i = 0; i < (int) beams.size(); ++i)
   {
     if (beams.at(i)->will_collide_tile(map, CIRCUIT, coords))
@@ -103,7 +103,7 @@ void Game_State::update(int &delta)
       beams.at(i)->play_effect();
       delete beams.at(i);
       to_delete.push_back(i);
-      
+
       map->convert_circuit(coords[0], coords[1]);
     }
     else
@@ -115,13 +115,13 @@ void Game_State::update(int &delta)
           beams.at(i)->play_effect();
           delete beams.at(i);
           to_delete.push_back(i);
-          
+
           if (j == RUBBER && map->get_coll(coords[0], coords[1]) == CIRCUIT)
           {
             map->unconvert_circuit(coords[0], coords[1]);
             break;
           }
-          
+
           // make sure the blocks we'll be checking are in the map
           if (coords[0] - 1 < 0)
           {
@@ -139,7 +139,7 @@ void Game_State::update(int &delta)
           {
             coords[1] = map->get_height() - 1;
           }
-          
+
           // try to convert the blocks
           for (int k = coords[0] - 1; k < coords[0] + 2; ++k)
           {
@@ -184,12 +184,12 @@ void Game_State::update(int &delta)
     }
   }
   to_delete.clear();
-  
+
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
     beams.at(i)->move(beams.at(i)->getHSpeed(), 0);
   }
-  
+
   for (unsigned int i = 0; i < kisses.size(); ++i)
   {
     int pos[2];
@@ -221,7 +221,7 @@ void Game_State::update(int &delta)
   {
     kisses.at(i)->move(kisses.at(i)->getHSpeed(), 0);
   }
-  
+
   // if the specials are hitting any black holes, reset their positions
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
@@ -234,7 +234,7 @@ void Game_State::update(int &delta)
       specials.at(i)->go_home(map);
     }
   }
-  
+
   if (c == p && (p->will_collide_tile(map, BLACK_HOLE, NULL) ||
                  p->will_collide_tile(map, TOXIC_SLUDGE, NULL) ||
                  p->will_collide_tile(map, SMOG, NULL)) &&
@@ -249,21 +249,21 @@ void Game_State::update(int &delta)
     p->set_checkpoint(loc[0], loc[1]);
     map->clear_checkpoint(loc[0], loc[1]);
   }
-  
+
   float x, y, map_x, map_y;
   int num_following = 0;
   bool player_movey;
-  
+
   c->get_top_left(x, y);
   map->get_top_left(map_x, map_y);
-  
+
   // reset everything's horizontal speeds
   p->setHSpeed(0);
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     specials.at(i)->setHSpeed(0);
   }
-  
+
   // change speed of controlled player
   // if keys are being pressed
   if (last_x && a && !(c != p && ((Special*)c)->get_type() == KURT &&
@@ -276,7 +276,7 @@ void Game_State::update(int &delta)
   {
     c->setHSpeed(PLAYER_SPEED);
   }
-  
+
   // if there is no collision, allow the
   // controlled character to fly around
   if (!collision)
@@ -290,13 +290,13 @@ void Game_State::update(int &delta)
       c->setVSpeed(PLAYER_SPEED);
     }
   }
-  
+
   // reset gravity for everything
   if (gravity)
   {
     int x, y;
     map->calculate_location(p, x, y);
-    
+
     if (p->get_bounce() && p->get_jump() && y >= p->get_jump())
     {
       p->setVSpeed(-GRAVITY_SPEED);
@@ -320,7 +320,7 @@ void Game_State::update(int &delta)
       }
       p->setVSpeed(GRAVITY_SPEED);
     }
-    
+
     for (unsigned int i = 0; i < specials.size(); ++i)
     {
       if (specials.at(i)->get_type() == KURT &&
@@ -328,7 +328,7 @@ void Game_State::update(int &delta)
       {
         continue;
       }
-      
+
       map->calculate_location(specials.at(i), x, y);
       if (specials.at(i)->get_bounce() && specials.at(i)->get_jump() &&
           y >= specials.at(i)->get_jump())
@@ -352,7 +352,7 @@ void Game_State::update(int &delta)
             specials.at(i)->set_bounce(false);
           }
         }
-        
+
         // if we are not a jumper reset gravity
         if (specials.at(i)->get_type() != JUMPER)
         {
@@ -379,13 +379,13 @@ void Game_State::update(int &delta)
       }
     }
   }
-  
+
   bool follow_spec = false, follow_move = false;;
   int follow = -1;
   int mov_follow = -1;
   int temp_speed;
   vector<Moveable *> links, ignore;
-  
+
   // check for collision on everyone
   // collision is always on for moveables
   vector<int> groups_checked_x;
@@ -417,7 +417,7 @@ void Game_State::update(int &delta)
     {
       continue;
     }
-    
+
     if (!checked_y)
     {
       if (moveables.at(i)->get_gravity())
@@ -432,7 +432,7 @@ void Game_State::update(int &delta)
         moveables.at(i)->setVSpeed(0, map);
       }
     }
-    
+
     if(!checked_x)
     {
       int b;
@@ -452,7 +452,7 @@ void Game_State::update(int &delta)
       }
       else if (debug) printf("not colliding\n");
     }
-    
+
     if (collide_x)
     {
       groups_checked_x.push_back(moveables.at(i)->get_group_num());
@@ -472,7 +472,7 @@ void Game_State::update(int &delta)
       {
         continue;
       }
-      
+
       // if we are controlling this special, then just change the speed
       // the movement is done when we check for map collision
       if (c == specials.at(i))
@@ -500,7 +500,7 @@ void Game_State::update(int &delta)
         }
         continue;
       }
-      
+
       // move specials in the y if they can
       if (specials.at(i)->will_collide_y(map) ||
           specials.at(i)->will_collide_tile(map, LADDER, NULL) ||
@@ -516,7 +516,7 @@ void Game_State::update(int &delta)
         specials.at(i)->set_bounce(true);
       }
     }
-    
+
     // we need to check for following
     vector<Special *>sorted_specials;
     for (unsigned int i = 0; i < specials.size(); ++i)
@@ -524,7 +524,7 @@ void Game_State::update(int &delta)
       sorted_specials.push_back(specials.at(i));
     }
     sort(sorted_specials.begin(), sorted_specials.end(), sort_by_height);
-    
+
     for (unsigned int i = 0; i < sorted_specials.size();  ++i)
     {
       if (sorted_specials.at(i)->get_type() == KURT &&
@@ -532,13 +532,13 @@ void Game_State::update(int &delta)
       {
         continue;
       }
-      
+
       temp_speed = sorted_specials.at(i)->getVSpeed();
       sorted_specials.at(i)->setVSpeed(GRAVITY_SPEED);
       follow_move = sorted_specials.at(i)->will_collide_moveables_y(moveables, -1, &mov_follow);
       follow_spec = sorted_specials.at(i)->will_collide_specials_y(sorted_specials, i, &follow);
       sorted_specials.at(i)->setVSpeed(temp_speed);
-      
+
       // if on special or moveable, move with them
       if (follow_spec && follow >= 0 && !p->will_collide_Dx(sorted_specials.at(follow)))
       {
@@ -583,7 +583,7 @@ void Game_State::update(int &delta)
       }
       specials.at(i)->setVSpeed(specials.at(i)->getVSpeed());
     }
-    
+
     gravity = !p->will_collide_tile(map, LADDER, NULL);
     if (!gravity)
     {
@@ -599,7 +599,7 @@ void Game_State::update(int &delta)
       {
         p->setVSpeed(0);
       }
-      
+
       int temp;
       temp = p->getVSpeed();
       p->move(0, temp);
@@ -621,13 +621,13 @@ void Game_State::update(int &delta)
       p->setVSpeed(-GRAVITY_SPEED);
       p->set_bounce(true);
     }
-    
+
     // change falling speed to PLAYER_SPEED when too close to floor
     // this is to deal with case when you are 10 + 20 * i pixels from
     // the ground and you leave the ladder
     // alse check to see if we should follow any specials or moveables
     // because we are standing on them
-    
+
     temp_speed = p->getVSpeed();
     p->setVSpeed(GRAVITY_SPEED);
     follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
@@ -637,7 +637,7 @@ void Game_State::update(int &delta)
       follow_spec = follow_spec && !p->will_collide_tile(map, LADDER, NULL);
     }
     p->setVSpeed(temp_speed);
-    
+
     // if on special or moveable, move with them
     if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
     {
@@ -655,9 +655,9 @@ void Game_State::update(int &delta)
         p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
       }
     }
-    
+
     player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map);
-    
+
     if (!player_movey && !follow_spec && !follow_move &&
         p->getVSpeed() == GRAVITY_SPEED)
     {
@@ -669,7 +669,7 @@ void Game_State::update(int &delta)
         follow_spec = follow_spec && !p->will_collide_tile(map, LADDER, NULL);
       }
       follow_move = p->will_collide_moveables_y(moveables, -1, &mov_follow);
-      
+
       // if on special or moveable, move with them
       if (follow_spec && follow >= 0 && !p->will_collide_Dx(specials.at(follow)))
       {
@@ -687,7 +687,7 @@ void Game_State::update(int &delta)
           p->setVSpeed(moveables.at(mov_follow)->getVSpeed());
         }
       }
-      
+
       player_movey = !p->will_collide_y(map) && !p->will_collide_platform(map) &&
                      !p->will_collide_tile(map, LADDER, NULL);
     }
@@ -697,7 +697,7 @@ void Game_State::update(int &delta)
       p->set_jump(0);
       p->set_bounce(false);
     }
-    
+
     if (c != p)
     {
       p->setHSpeed(p->will_collide_x(map) ||
@@ -705,14 +705,14 @@ void Game_State::update(int &delta)
                    p->will_collide_rubber_x(map)?
                    0 : p->getHSpeed());
     }
-    
+
     // check for horizontal collision with human controlled character
     c->setHSpeed(c->will_collide_x(map) ||
                  c->will_collide_moveables_x(moveables, -1, NULL) ||
                  c->will_collide_rubber_x(map)?
                  0 : c->getHSpeed());
   }
-  
+
   // check for following in specials
   float dx, dy, dist;
   for (unsigned int i = 0; i < specials.size(); ++i)
@@ -732,7 +732,7 @@ void Game_State::update(int &delta)
       if (specials.at(i)->is_controllable())
       {
         ++num_following;
-        
+
         // if the special is not too close and it's not colliding with anything
         // then change its speed
         if (dist > TOO_CLOSE + (num_following-1)*TILE_WIDTH && follow != (int)i)
@@ -774,7 +774,7 @@ void Game_State::update(int &delta)
       }
     }
   }
-  
+
   // right before moving moveables, make sure they shouldn't be reset
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
@@ -783,14 +783,14 @@ void Game_State::update(int &delta)
       moveables.at(i)->reset(map);
     }
   }
-  
+
   // move moveables
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     moveables.at(i)->move(moveables.at(i)->getHSpeed(),
                           moveables.at(i)->getVSpeed());
   }
-  
+
   // move specials in the x
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
@@ -813,14 +813,14 @@ void Game_State::update(int &delta)
                            specials.at(i)->getVSpeed());
     }
   }
-  
+
   c->move(c->getHSpeed(), c->getVSpeed());
   if (c != p)
   {
     ((Special *)c)->get_number()->move(c->getHSpeed(), c->getVSpeed());
     p->move(p->getHSpeed(), p->getVSpeed());
   }
-  
+
   if(map_slide_effect)
   {
     float center_x, center_y;
@@ -841,7 +841,7 @@ void Game_State::update(int &delta)
         }
       }
     }
-    
+
     speed = c->getVSpeed();
     if (!controllable)
     {
@@ -889,7 +889,7 @@ void Game_State::update(int &delta)
     {
       center_y = 3.0f * SCREEN_HEIGHT / 4.0f - TILE_HEIGHT;
     }
-    
+
     if (shift)
     {
       float diff, dist_b, dist_a;
@@ -915,7 +915,7 @@ void Game_State::update(int &delta)
           shift_loc[0] += 20;
         }
       }
-      
+
       if (shift_y == 1) // up
       {
         dist_b = calculate_distance();
@@ -938,14 +938,14 @@ void Game_State::update(int &delta)
           shift_loc[1] -= 20;
         }
       }
-      
+
       control_x = shift_loc[0];
       control_y = shift_loc[1];
     }
-    
+
     offset_x = center_x - control_x;
     offset_y = center_y - control_y;
-    
+
     if (map_slide_effect > 3 * SLIDE_COUNTER / 4)
     {
       move_x = offset_x / (2 * map_slide_effect);
@@ -957,10 +957,10 @@ void Game_State::update(int &delta)
       move_x = offset_x / map_slide_effect;
       move_y = offset_y / map_slide_effect;
     }
-    
+
     mx = (int)move_x;
     my = (int)move_y;
-    
+
     if (mx < SMALLEST_MOVEMENT && mx > -SMALLEST_MOVEMENT)
     {
       mx = 0;
@@ -969,7 +969,7 @@ void Game_State::update(int &delta)
     {
       my = 0;
     }
-    
+
     if (mx || my)
     {
       map->move(mx, my);
@@ -1001,7 +1001,7 @@ void Game_State::update(int &delta)
       }
     }
   }
-  
+
   // animation for plyer
   if (c == p && p->get_num_frames() > 1 && p->getHSpeed() != 0 &&
       (a || d))
@@ -1009,7 +1009,7 @@ void Game_State::update(int &delta)
     if (delta > DELTA_DELAY)
     {
       int current_frame;
-      
+
       delta = 0;
       current_frame = p->get_cur_frame();
       ++current_frame;
@@ -1029,7 +1029,7 @@ void Game_State::update(int &delta)
   {
     p->set_cur_frame(1);
   }
-  
+
   // animation for specials
   // for the jumper, when jumping and at the last animation
   // turn gravity back on
@@ -1145,7 +1145,7 @@ void Game_State::update(int &delta)
       if (a_delta > DELTA_DELAY)
       {
         int current_frame;
-        
+
         specials.at(i)->set_delta(0);
         current_frame = specials.at(i)->get_cur_frame();
         ++current_frame;
@@ -1166,7 +1166,7 @@ void Game_State::update(int &delta)
       specials.at(i)->set_cur_frame(1);
     }
   }
-  
+
   // animation for beams
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
@@ -1211,14 +1211,14 @@ void Game_State::update(int &delta)
       kisses.at(i)->set_delta(++a_delta);
     }
   }
-  
+
   if(odd == 5)
   {
     map->update_breaks();
   }
-  
+
   odd = (odd + 1) % 6;
-  
+
   // reset gravity for next run
   if (collision)
   {
@@ -1379,13 +1379,13 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       c = p;
       c->setVSpeed(0);
       c->setHSpeed(0);
-      
+
       c->set_volume(MAX_VOLUME);
       for (unsigned int i = 0; i < specials.size(); ++i)
       {
         specials.at(i)->set_volume(MAX_VOLUME);
       }
-      
+
       map_slide_effect = SLIDE_COUNTER;
       break;
     case '1':
@@ -1407,7 +1407,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
           c = specials.at(key - 49);
           c->setVSpeed(0);
           c->setHSpeed(0);
-          
+
           p->set_volume(UNFOCUSED_VOLUME);
           for (unsigned int i = 0; i < specials.size(); ++i)
           {
@@ -1417,7 +1417,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
             }
             specials.at(i)->set_volume(UNFOCUSED_VOLUME);
           }
-          
+
           map_slide_effect = SLIDE_COUNTER;
         }
       }
@@ -1442,7 +1442,7 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
       {
         i = -1;
       }
-      
+
       if (c->will_collide_y(map) ||
           c->will_collide_platform(map) ||
           c->will_collide_tile(map, LADDER, NULL) ||
