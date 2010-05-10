@@ -237,6 +237,7 @@ bool Moveable::will_collide_specials_x(vector<Special *>specials, int *collide)
 
 bool Moveable::will_collide_specials_y(vector<Special *>specials, int *collide)
 {
+  int old;
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
     if (specials.at(i)->get_type() == KURT &&
@@ -244,14 +245,18 @@ bool Moveable::will_collide_specials_y(vector<Special *>specials, int *collide)
     {
       continue;
     }
-    if (specials.at(i)->will_collide_Dy(this,false))
+    old = specials.at(i)->getVSpeed();
+    specials.at(i)->setVSpeed(0);
+    if (specials.at(i)->will_collide_Dy(this,true))
     {
       if (collide)
       {
         *collide = i;
       }
+      specials.at(i)->setVSpeed(old);
       return true;
     }
+    specials.at(i)->setVSpeed(old);
   }
   return false;
 }

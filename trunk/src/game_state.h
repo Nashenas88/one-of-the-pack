@@ -38,6 +38,7 @@ private:
   int shift_y;
   bool shift_x_pos;
   bool shift_y_pos;
+  bool debug;
   
   float calculate_distance(void);
   

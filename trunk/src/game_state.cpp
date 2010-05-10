@@ -20,7 +20,7 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false) {}
+key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false),debug(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
@@ -418,7 +418,8 @@ void Game_State::update(int &delta)
       moveables.at(i)->setVSpeed(0, map);
     }
     
-    if(moveables.at(i)->will_collide_x(map) ||
+    int b;
+    if((b = moveables.at(i)->will_collide_x(map),b?(debug?printf("in x\n"):b):b,b) ||
        moveables.at(i)->will_collide_specials_x(specials, NULL) ||
        moveables.at(i)->will_collide_moveables_x(moveables, i, NULL))
     {
@@ -432,6 +433,7 @@ void Game_State::update(int &delta)
         moveables.at(i)->setHSpeed(0, map);
       }
     }
+    else if (debug) printf("not colliding\n");
     
     if (collide_x || collide_y)
     {
@@ -1468,6 +1470,9 @@ void Game_State::key_released(unsigned char key, int x, int y)
  	    gravity = false;
  	    c->setVSpeed(0);
       p->setVSpeed(0);
+      break;
+    case 'z':
+      debug = !debug;
       break;
     case '1':
     case '2':
