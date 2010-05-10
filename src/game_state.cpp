@@ -1405,6 +1405,8 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
             c != specials.at(key - 49))
         {
           c = specials.at(key - 49);
+          ((Special*)c)->set_collect_volume(0.10f);
+          ((Special*)c)->play_collect();
           c->setVSpeed(0);
           c->setHSpeed(0);
 

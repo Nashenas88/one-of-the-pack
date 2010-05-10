@@ -363,7 +363,7 @@ void initLevel(int level)
   collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES ENGINEER_COLLECT, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_COLLECT, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -371,7 +371,7 @@ void initLevel(int level)
   collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_COLLECT, FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, RESOURCES ENGINEER_COLLECT, FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);

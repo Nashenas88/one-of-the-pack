@@ -47,6 +47,8 @@ public:
   void play_effect(void);
   void play_collect(void);
   
+  void set_collect_volume(float vol);
+  
   bool get_mute(void) {return mute;}
   void set_mute(bool m);
   void set_volume(float volume);
