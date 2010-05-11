@@ -77,7 +77,7 @@
 #define ICON_WIDTH 8
 #define ICON_HEIGHT 8
 
-#define MENU_ITEMS 4
+#define MENU_ITEMS 3
 #define MAIN_MENU_ITEMS_X 4
 #define MAIN_MENU_ITEMS_Y 3
 #define POINTER_MOVE 55
