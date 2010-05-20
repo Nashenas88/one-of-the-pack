@@ -1250,7 +1250,8 @@ void Game_State::key_pressed(unsigned char key, int x, int y)
   }
   switch (key)
   {
-    case 127: // backspace
+    case 8: // backspace on windows
+    case 127: // backspace on mac
       if (c == p)
       {
         ((Player*)c)->reset(map);
