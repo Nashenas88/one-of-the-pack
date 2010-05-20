@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "FMOD_includes.h"
 
 void ERRCHECK(FMOD_RESULT result)

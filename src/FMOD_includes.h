@@ -7,9 +7,14 @@
   #include "/Developer/FMOD Programmers API Mac/examples/common/wincompat.h"
   #include <stdio.h>
 #else
-  #include "C:/Program Files/FMOD SoundSystem/FMOD Programmers API Win32/api/inc/fmod.hpp"
-  #include "C:/Program Files/FMOD SoundSystem/FMOD Programmers API Win32/api/inc/fmod_errors.h"
-  #include <windows.h>
+  #ifdef __linux__
+    #include "fmod.hpp"
+    #include "fmod_errors.h"
+  #else
+    #include "C:/Program Files/FMOD SoundSystem/FMOD Programmers API Win32/api/inc/fmod.hpp"
+    #include "C:/Program Files/FMOD SoundSystem/FMOD Programmers API Win32/api/inc/fmod_errors.h"
+    #include <windows.h>
+  #endif
 #endif
 
 void ERRCHECK(FMOD_RESULT result);

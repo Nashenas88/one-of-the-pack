@@ -21,8 +21,7 @@ private:
   
 public:
   Tutorial_State(void);
-  Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s, FMOD_SOUND *mu,
-                 FMOD_CHANNEL *mch);
+  Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s, FMOD_SOUND *mu);
   
   void draw(void);
   

@@ -19,8 +19,7 @@ private:
   
 public:
   Main_Menu_State(void);
-  Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s, FMOD_SOUND *mu,
-                  FMOD_CHANNEL *mch);
+  Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s, FMOD_SOUND *mu);
   
   void draw(void);
   

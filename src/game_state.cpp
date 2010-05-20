@@ -435,8 +435,7 @@ void Game_State::update(int &delta)
 
     if(!checked_x)
     {
-      int b;
-      if((b = moveables.at(i)->will_collide_x(map),b?(debug?printf("in x\n"):b):b,b) ||
+      if(moveables.at(i)->will_collide_x(map) ||
          moveables.at(i)->will_collide_specials_x(specials, NULL) ||
          moveables.at(i)->will_collide_moveables_x(moveables, i, NULL))
       {
@@ -450,7 +449,6 @@ void Game_State::update(int &delta)
           moveables.at(i)->setHSpeed(0, map);
         }
       }
-      else if (debug) printf("not colliding\n");
     }
 
     if (collide_x)
