@@ -130,7 +130,6 @@ void initLoading(void)
 void initMain(int blah)
 {
   FMOD_SOUND *sound;
-  FMOD_CHANNEL *channel;
   FMOD_RESULT result;
   
   Drawable *background, *pointer;
@@ -153,8 +152,7 @@ void initMain(int blah)
   ERRCHECK(result);
   
   
-  main_s = new Main_Menu_State(background, pointer, sound_system, sound,
-                               channel);
+  main_s = new Main_Menu_State(background, pointer, sound_system, sound);
   ((Main_Menu_State*)main_s)->play_sound();
   
   s = main_s;
@@ -164,7 +162,6 @@ void initMain(int blah)
 void initTutorial(int blah)
 {
   FMOD_SOUND *sound;
-  FMOD_CHANNEL *channel;
   FMOD_RESULT result;
   
   // initializing the sound system and the sounds
@@ -198,7 +195,7 @@ void initTutorial(int blah)
   ERRCHECK(result);
   
   
-  tutorial = new Tutorial_State(slides, sound_system, sound, channel);
+  tutorial = new Tutorial_State(slides, sound_system, sound);
   
   s = tutorial;
   loading = false;

@@ -4,9 +4,9 @@ Main_Menu_State::Main_Menu_State(void)
 : State() {}
 
 Main_Menu_State::Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s,
-                                 FMOD_SOUND *mu, FMOD_CHANNEL *mch)
-:State(s), background(b), pointer(p), selected_x(0), selected_y(0), music(mu),
-channel(mch)
+                                 FMOD_SOUND *mu)
+ :State(s), background(b), pointer(p), selected_x(0), selected_y(0), music(mu),
+  channel(NULL)
 {
   pointer->move(-pointer->get_x() + MAIN_POINTER_START_X,
                 -pointer->get_y() + MAIN_POINTER_START_Y);

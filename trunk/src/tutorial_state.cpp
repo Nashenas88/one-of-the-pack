@@ -4,8 +4,8 @@ Tutorial_State::Tutorial_State(void)
 : State() {}
 
 Tutorial_State::Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s,
-                                 FMOD_SOUND *mu, FMOD_CHANNEL *mch)
-:State(s), slides(images), current_slide(0), music(mu), channel(mch)
+                                 FMOD_SOUND *mu)
+:State(s), slides(images), current_slide(0), music(mu), channel(NULL)
 {}
 
 void Tutorial_State::draw(void)
