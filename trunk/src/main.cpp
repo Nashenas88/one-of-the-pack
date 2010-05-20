@@ -240,11 +240,11 @@ void initLevel(int level)
   
   
   // initializing the texture
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PLAYER_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << PLAYER_TEXTURE;
   t = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << BACKGROUND_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << BACKGROUND_TEXTURE;
   bg = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << TILE_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << TILE_TEXTURE;
   tiles = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << PAUSED_BACKGROUND;
   pause_bg = new Texture(temp_string.str().c_str());
@@ -252,15 +252,15 @@ void initLevel(int level)
   mi = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << POINTER_TEXTURE;
   pi = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << AHNOLD_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << AHNOLD_TEXTURE;
   ahnold = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << JUMPER_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << JUMPER_TEXTURE;
   jumper = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << ENGINEER_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << ENGINEER_TEXTURE;
   engineer = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PARIS_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << PARIS_TEXTURE;
   paris = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << KURT_TEXTURE;
+  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << KURT_TEXTURE;
   kurt = new Texture(temp_string.str().c_str());
   temp_string.str(""); temp_string << RESOURCES << PAUSED_NAMES_TEXTURE;
   p_names = new Texture(temp_string.str().c_str());
@@ -558,26 +558,26 @@ void handleKeypress(unsigned char key, int x, int y)
   }
   switch(key)
   {
-    case 27: // escape key
-      control_screen->clean();
-      if (s == tutorial)
-      {
-        tutorial->clean();
-        tutorial->state_clean();
-        delete tutorial;
-      }
-      else if (s == main_s)
-      {
-        main_s->clean();
-        main_s->state_clean();
-        delete main_s;
-      }
-      else
-      {
-        system_clean();
-      }
-      exit(0);
-      break;
+    //case 27: // escape key
+    //  control_screen->clean();
+    //  if (s == tutorial)
+    //  {
+    //    tutorial->clean();
+    //    tutorial->state_clean();
+    //    delete tutorial;
+    //  }
+    //  else if (s == main_s)
+    //  {
+    //    main_s->clean();
+    //    main_s->state_clean();
+    //    delete main_s;
+    //  }
+    //  else
+    //  {
+    //    system_clean();
+    //  }
+    //  exit(0);
+    //  break;
     case '\n':
     case '\r':
       if (control)
