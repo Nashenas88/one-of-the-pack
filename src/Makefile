@@ -32,7 +32,8 @@ ifeq ($(shell uname),Darwin)
   	mkdir ../$(APP_NAME).app/Contents; \
     mkdir ../$(APP_NAME).app/Contents/MacOS; \
     mkdir ../$(APP_NAME).app/Contents/Resources; \
-    cp -R ../Mac\ OS\ X/* ../$(APP_NAME).app/Contents/; \
+    cp -R ../Mac\ OS\ X/*Info* ../$(APP_NAME).app/Contents/; \
+    cp -R ../Mac\ OS\ X/*icns ../$(APP_NAME).app/Contents/Resources; \
     cp -R ../$(FMOD_LIB) ../$(APP_NAME).app/Contents/Resources/; \
     cp -R ../resources/* ../$(APP_NAME).app/Contents/Resources/; \
     cp ../$(PROG) ../$(APP_NAME).app/Contents/MacOS;
