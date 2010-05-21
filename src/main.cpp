@@ -60,25 +60,47 @@ int main(int argc, char *argv[])
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
   
+  // the following code determines whether or not
+  // the program is running inside of an app (Mac OS X)
   #ifdef __APPLE__
-    unsigned int i, s;
-    for (i = 0, s = 0; i < strlen(argv[0]); ++i)
+    bool enter = true;
+    if (argc > 1)
     {
-      if (argv[0][i] == '/')
+      if (strncmp(argv[1], "--no-app", 8) == 0)
       {
-        s = i + 1;
+        resources = (char*)malloc(sizeof(char) * (strlen(RESOURCES) + 1));
+        memcpy(resources, RESOURCES, strlen(RESOURCES));
+        resources[strlen(RESOURCES)] = '\0';
+        enter = false;
       }
     }
-    
-    resources = (char*)malloc(sizeof(char) * (s + strlen("../Resources/") + 1));
-    memcpy(resources, argv[0], s);
-    resources[s] = '\0';
-    strcat(resources, "../Resources/");
-    resources[s + strlen("../Resources/") + 1] = '\0';
+    if (enter)
+    {
+      unsigned int i, s;
+      for (i = 0, s = 0; i < strlen(argv[0]); ++i)
+      {
+        if (argv[0][i] == '/')
+        {
+          s = i + 1;
+        }
+      }
+      
+      stringstream tmp_str;
+      tmp_str.str("");
+      for (i = 0; i < s; ++i)
+      {
+        tmp_str << argv[0][i];
+      }
+      tmp_str << "../Resources/";
+      
+      resources = (char*)malloc(sizeof(char) * (strlen(tmp_str.str().c_str()) + 1));
+      memcpy(resources, tmp_str.str().c_str(), strlen(tmp_str.str().c_str()));
+      resources[strlen(tmp_str.str().c_str())] = '\0';
+    }
   #else
     resources = (char*)malloc(sizeof(char) * (strlen(RESOURCES) + 1));
     memcpy(resources, RESOURCES, strlen(RESOURCES));
-    resources[strlen(RESOURCES) + 1] = '\0';
+    resources[strlen(RESOURCES)] = '\0';
   #endif
   
   /* create window */
@@ -216,7 +238,10 @@ void initTutorial(int blah)
   stringstream temp_str;
   
   ifstream fin;
-  fin.open(RESOURCES TUTORIAL NUM_TUTORIALS);
+  
+  temp_str.str(""); temp_str << resources << TUTORIAL NUM_TUTORIALS;
+  
+  fin.open(temp_str.str().c_str());
   fin >> num_slides;
   fin.close();
   
@@ -247,7 +272,10 @@ void initTutorial(int blah)
 void initMaxLevel(void)
 {
   ifstream fin;
-  fin.open(RESOURCES LAST_LEVEL_FILE);
+  stringstream temp_str;
+  
+  temp_str.str(""); temp_str << resources << LAST_LEVEL_FILE;
+  fin.open(temp_str.str().c_str());
   fin >> last_level;
   fin.close();
 }
@@ -692,6 +720,7 @@ void handleKeypress(unsigned char key, int x, int y)
         }
         else if (level == 12) // Quit
         {
+          free(resources);
           control_screen->clean();
           main_s->clean();
           delete main_s;
@@ -824,7 +853,6 @@ void drawScene(void)
 // clean up all data
 void system_clean(void)
 {
-  free (resources);
   for (unsigned int i = 0; i < sounds.size(); ++i)
   {
     FMOD_RESULT result;
