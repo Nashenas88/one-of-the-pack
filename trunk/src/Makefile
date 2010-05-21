@@ -24,6 +24,18 @@ ifeq ($(shell uname),Darwin)
 	FMOD_LIB_P = /Developer/FMOD\ Programmers\ API\ Mac/api/lib
 	FMOD_LIB = libfmodex.dylib
 	ARCH = -arch i386
+  RUN_ANYWHERE = install_name_tool -change ./$(FMOD_LIB) \
+  	@executable_path/../Resources/$(FMOD_LIB) ../$(PROG)
+  APP_NAME = One\ of\ the\ Pack
+  MAKE_APP = rm -rf ../$(APP_NAME).app; \
+  	mkdir ../$(APP_NAME).app; \
+  	mkdir ../$(APP_NAME).app/Contents; \
+    mkdir ../$(APP_NAME).app/Contents/MacOS; \
+    mkdir ../$(APP_NAME).app/Contents/Resources; \
+    cp -R ../Mac\ OS\ X/* ../$(APP_NAME).app/Contents/; \
+    cp -R ../$(FMOD_LIB) ../$(APP_NAME).app/Contents/Resources/; \
+    cp -R ../resources/* ../$(APP_NAME).app/Contents/Resources/; \
+    mv ../$(PROG) ../$(APP_NAME).app/Contents/MacOS;
 else
 	LIBS = -lSOIL -lglut -lGLU -pthread
 	FMOD_LIB_P = /usr/local/lib
@@ -52,7 +64,7 @@ all: ../$(PROG)
 	$(CC) $(ARCH) -c $(CFLAGS) -o $@ $(LINUX_FMOD_INCL) $(INCL) $<;
 
 ../$(PROG): $(OBJECTS)
-	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS)
+	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS); $(RUN_ANYWHERE); $(MAKE_APP)
 
 clean:
 	rm -f $(OBJECTS)

@@ -10,9 +10,9 @@ else
 	CFLAGS = -Wall
 endif
 
-all: $(PROG)
+all: $(PROG) $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
 
-$(PROG):
+$(PROG): $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
 	cd $(SRC_DIR); make
 
 clean:

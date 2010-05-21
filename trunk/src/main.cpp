@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#ifdef __APPLE__
+#include <dlfcn.h>
+#endif
+
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -29,6 +33,7 @@ Drawable *load_screen;
 Drawable *control_screen;
 int level;
 int last_level;
+char* resources;
 FMOD_SYSTEM *sound_system;
 
 void initRendering(void);
@@ -53,6 +58,27 @@ int main(int argc, char *argv[])
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+  
+  #ifdef __APPLE__
+    unsigned int i, s;
+    for (i = 0, s = 0; i < strlen(argv[0]); ++i)
+    {
+      if (argv[0][i] == '/')
+      {
+        s = i + 1;
+      }
+    }
+    
+    resources = (char*)malloc(sizeof(char) * (s + strlen("../Resources/") + 1));
+    memcpy(resources, argv[0], s);
+    resources[s] = '\0';
+    strcat(resources, "../Resources/");
+    resources[s + strlen("../Resources/") + 1] = '\0';
+  #else
+    resources = (char*)malloc(sizeof(char) * (strlen(RESOURCES) + 1));
+    resources = RESOURCES;
+    resources[strlen(RESOURCES) + 1] = '\0';
+  #endif
   
   /* create window */
   glutCreateWindow(GAME_NAME);
@@ -134,12 +160,12 @@ void initLoading(void)
   
   loading = true;
   control = false;
-  ss << RESOURCES << LOADING_TEXTURE;
+  ss << resources << LOADING_TEXTURE;
   tex = new Texture(ss.str().c_str());
   load_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
   
   ss.str("");
-  ss << RESOURCES << CONTROL_TEXTURE;
+  ss << resources << CONTROL_TEXTURE;
   tex = new Texture(ss.str().c_str());
   control_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
 }
@@ -154,15 +180,16 @@ void initMain(int blah)
   
   stringstream temp_str;
   
-  temp_str.str(""); temp_str << RESOURCES << MAIN_MENU_TEXTURE;
+  temp_str.str(""); temp_str << resources << MAIN_MENU_TEXTURE;
   main_menu = new Texture(temp_str.str().c_str());
-  temp_str.str(""); temp_str << RESOURCES << MAIN_MENU_POINTER_TEXTURE;
+  temp_str.str(""); temp_str << resources << MAIN_MENU_POINTER_TEXTURE;
   pointer_tex = new Texture(temp_str.str().c_str());
   
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, main_menu);
   pointer = new Drawable(0.0f, 0.0f, 1, 1, VARIABLE, pointer_tex);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES MAIN_MENU_MUSIC,
+  temp_str.str(""); temp_str << resources << MAIN_MENU_MUSIC;
+  result = FMOD_System_CreateSound(sound_system, temp_str.str().c_str(),
                                    FMOD_SOFTWARE, 0, &sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(sound, FMOD_LOOP_NORMAL);
@@ -194,7 +221,7 @@ void initTutorial(int blah)
   
   for (unsigned int i = 0; i < num_slides; ++i)
   {
-    temp_str.str(""); temp_str << RESOURCES TUTORIAL << i << ".png";
+    temp_str.str(""); temp_str << resources << TUTORIAL << i << ".png";
     textures.push_back (new Texture(temp_str.str().c_str()));
   }
   for (unsigned int i = 0; i < num_slides; ++i)
@@ -202,7 +229,8 @@ void initTutorial(int blah)
     slides.push_back(new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, textures.at(i)));
   }
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES TUTORIAL TUTORIAL_MUSIC,
+  temp_str.str(""); temp_str << resources << TUTORIAL TUTORIAL_MUSIC;
+  result = FMOD_System_CreateSound(sound_system, temp_str.str().c_str(),
                                    FMOD_SOFTWARE, 0, &sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(sound, FMOD_LOOP_NORMAL);
@@ -250,32 +278,32 @@ void initLevel(int level)
   stringstream temp_string;
   
   // initializing the texture
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << PLAYER_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << PLAYER_TEXTURE;
   t = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << BACKGROUND_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << BACKGROUND_TEXTURE;
   bg = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << TILE_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << TILE_TEXTURE;
   tiles = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << PAUSED_BACKGROUND;
+  temp_string.str(""); temp_string << resources << PAUSED_BACKGROUND;
   pause_bg = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP_IMAGE;
+  temp_string.str(""); temp_string << resources << LEVEL << level << "/" << MAP_IMAGE;
   mi = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << POINTER_TEXTURE;
+  temp_string.str(""); temp_string << resources << POINTER_TEXTURE;
   pi = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << AHNOLD_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << AHNOLD_TEXTURE;
   ahnold = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << JUMPER_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << JUMPER_TEXTURE;
   jumper = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << ENGINEER_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << ENGINEER_TEXTURE;
   engineer = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << PARIS_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << PARIS_TEXTURE;
   paris = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << KURT_TEXTURE;
+  temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << KURT_TEXTURE;
   kurt = new Texture(temp_string.str().c_str());
-  temp_string.str(""); temp_string << RESOURCES << PAUSED_NAMES_TEXTURE;
+  temp_string.str(""); temp_string << resources << PAUSED_NAMES_TEXTURE;
   p_names = new Texture(temp_string.str().c_str());
   
-  temp_string.str(""); temp_string << RESOURCES << NUMBER_TEXTURE;
+  temp_string.str(""); temp_string << resources << NUMBER_TEXTURE;
   nums = new Texture(temp_string.str().c_str());
   for (unsigned int i = 1; i < 10; ++i)
   {
@@ -283,24 +311,24 @@ void initLevel(int level)
     numbers.at(i-1)->set_cur_frame(i);
   }
   
-  temp_string.str(""); temp_string << RESOURCES << PAUSE_ICONS_TEXTURE;
+  temp_string.str(""); temp_string << resources << PAUSE_ICONS_TEXTURE;
   ps_ic = new Texture(temp_string.str().c_str());
   
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << PLAYER_SOUND;
+  temp_string.str(""); temp_string << resources << LEVEL << level << "/" << PLAYER_SOUND;
   result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
                                    FMOD_SOFTWARE, 0, &s_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
   
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << NUM_SOUNDS_FILE;
+  temp_string.str(""); temp_string << resources << LEVEL << level << "/" << NUM_SOUNDS_FILE;
   file.open (temp_string.str().c_str(), ios::in);
   file >> num_sounds;
   file.close();
   
   for (int i = 1; i <= num_sounds; ++i)
   {
-    temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << i << SOUND_FILE_TYPE;
+    temp_string.str(""); temp_string << resources << LEVEL << level << "/" << i << SOUND_FILE_TYPE;
     result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
                                      FMOD_SOFTWARE, 0, &temp_sound);
     ERRCHECK(result);
@@ -309,7 +337,9 @@ void initLevel(int level)
     
     musics.push_back(temp_sound);
   }
-  result = FMOD_System_CreateSound(sound_system, RESOURCES AHNOLD_SFX, FMOD_SOFTWARE,
+  
+  temp_string.str(""); temp_string << resources << AHNOLD_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -317,7 +347,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << JUMPER_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -325,7 +356,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES ENGINEER_SFX, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << ENGINEER_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -333,7 +365,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES KURT_SFX, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << KURT_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -341,7 +374,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES PARIS_SFX, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << PARIS_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -349,7 +383,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES BEAM_SFX, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << BEAM_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -357,7 +392,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_SFX, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << JUMPER_SFX;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -365,7 +401,8 @@ void initLevel(int level)
   effects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES AHNOLD_COLLECT, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << AHNOLD_COLLECT;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -373,7 +410,8 @@ void initLevel(int level)
   collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES JUMPER_COLLECT, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << JUMPER_COLLECT;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -381,7 +419,8 @@ void initLevel(int level)
   collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES ENGINEER_COLLECT, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << ENGINEER_COLLECT;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -389,7 +428,8 @@ void initLevel(int level)
   collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES KURT_COLLECT, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << KURT_COLLECT;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -397,7 +437,8 @@ void initLevel(int level)
   collects.push_back(temp_sound);
   sounds.push_back(temp_sound);
   
-  result = FMOD_System_CreateSound(sound_system, RESOURCES PARIS_COLLECT, FMOD_SOFTWARE,
+  temp_string.str(""); temp_string << resources << PARIS_COLLECT;
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -528,7 +569,7 @@ void initLevel(int level)
   textures_tr.push_back(kurt);
   
   m = new Map(v);
-  temp_string.str(""); temp_string << RESOURCES << LEVEL << level << "/" << MAP1;
+  temp_string.str(""); temp_string << resources << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
               p, sound_system, musics, m_channel, effects, a_channel, collects);
   s = new Game_State(p, m, moveables, specials, numbers, sound_system);
@@ -568,7 +609,7 @@ void handleKeypress(unsigned char key, int x, int y)
   }
   switch(key)
   {
-    //case 27: // escape key
+    case 27: // escape key
     //  control_screen->clean();
     //  if (s == tutorial)
     //  {
@@ -782,6 +823,7 @@ void drawScene(void)
 // clean up all data
 void system_clean(void)
 {
+  free (resources);
   for (unsigned int i = 0; i < sounds.size(); ++i)
   {
     FMOD_RESULT result;
