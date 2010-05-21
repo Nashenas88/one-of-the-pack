@@ -66,8 +66,10 @@ all: ../$(PROG)
 ../$(PROG): $(OBJECTS)
 	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS)
 
+ifeq ($(shell uname),Darwin)
 app: ../$(PROG)
 	$(RUN_ANYWHERE); $(MAKE_APP)
+endif
 
 clean:
 	rm -f $(OBJECTS)
