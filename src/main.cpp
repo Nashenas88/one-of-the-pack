@@ -58,8 +58,18 @@ int main(int argc, char *argv[])
   glutCreateWindow(GAME_NAME);
   initRendering();
   initLoading();
-  level = 0; // signifies main menu
+  if (argc == 1)
+  {
+    level = 0; // signifies main menu
+  }
+  else
+  {
+    sscanf(argv[1], "%d", &level);
+  }
   initMaxLevel();
+  
+  // initializing the sound system and the sounds
+  initSound(&sound_system);
   
   /* Set handler functions */
   glutDisplayFunc(drawScene);
@@ -73,7 +83,14 @@ int main(int argc, char *argv[])
   // it in 25 miliseconds
   srand((unsigned)time(NULL));
   glutTimerFunc(25, update, 0);
-  glutTimerFunc(25, initTutorial, 0);
+  if (!level)
+  {
+    glutTimerFunc(25, initTutorial, 0);
+  }
+  else
+  {
+    glutTimerFunc(25, initLevel, level);
+  }
   
   glutMainLoop();
   
@@ -163,9 +180,6 @@ void initTutorial(int blah)
 {
   FMOD_SOUND *sound;
   FMOD_RESULT result;
-  
-  // initializing the sound system and the sounds
-  initSound(&sound_system);
   
   vector<Drawable *> slides;
   vector<Texture *> textures;
