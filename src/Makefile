@@ -58,13 +58,18 @@ ifeq ($(shell uname),Linux)
 	LINUX_FMOD_INCL = -I/usr/local/include/fmodex
 endif
 
-all: ../$(PROG) 
+all: ../$(PROG)
+
+app: ../$(PROG) ../$(APP_NAME).app
 
 .cpp.o:
 	$(CC) $(ARCH) -c $(CFLAGS) -o $@ $(LINUX_FMOD_INCL) $(INCL) $<;
 
 ../$(PROG): $(OBJECTS)
-	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS); $(RUN_ANYWHERE); $(MAKE_APP)
+	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS);
+
+../$(APP_NAME).app: ../$(PROG)
+	$(RUN_ANYWHERE); $(MAKE_APP)
 
 clean:
 	rm -f $(OBJECTS)
