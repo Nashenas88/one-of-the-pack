@@ -60,15 +60,13 @@ endif
 
 all: ../$(PROG)
 
-app: ../$(PROG) ../$(APP_NAME).app
-
 .cpp.o:
 	$(CC) $(ARCH) -c $(CFLAGS) -o $@ $(LINUX_FMOD_INCL) $(INCL) $<;
 
 ../$(PROG): $(OBJECTS)
-	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS);
+	$(CC) $(ARCH) -o ../$(PROG) $(OBJECTS) $(FMOD_LIB_P)/$(FMOD_LIB) $(LIB_P) $(LIBS)
 
-../$(APP_NAME).app: ../$(PROG)
+app: ../$(PROG)
 	$(RUN_ANYWHERE); $(MAKE_APP)
 
 clean:

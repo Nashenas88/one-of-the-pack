@@ -14,6 +14,11 @@ all: $(PROG) $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
 
 $(PROG): $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h
 	cd $(SRC_DIR); make
+  
+ifeq ($(shell uname),Darwin)
+app: $(PROG)
+	cd $(SRC_DIR); make app
+endif
 
 clean:
 	rm -f $(PROG); cd $(SRC_DIR); make clean
