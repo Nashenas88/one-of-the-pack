@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #ifdef __APPLE__
 #include <dlfcn.h>
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
     resources[s + strlen("../Resources/") + 1] = '\0';
   #else
     resources = (char*)malloc(sizeof(char) * (strlen(RESOURCES) + 1));
-    resources = RESOURCES;
+    memcpy(resources, RESOURCES, strlen(RESOURCES));
     resources[strlen(RESOURCES) + 1] = '\0';
   #endif
   
