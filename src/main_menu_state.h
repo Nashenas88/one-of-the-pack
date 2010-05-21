@@ -1,9 +1,14 @@
 #ifndef FLOCK__MAIN_MENU_STATE__H
 #define FLOCK__MAIN_MENU_STATE__H
 
+#include <vector>
+using namespace std;
+
 #include "drawable.h"
 #include "FMOD_includes.h"
 #include "state.h"
+
+class Texture;
 
 class Main_Menu_State : public State
 {
@@ -17,9 +22,12 @@ private:
   
   FMOD_BOOL sound_paused;
   
+  vector<Texture *> textures;
+  
 public:
   Main_Menu_State(void);
-  Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s, FMOD_SOUND *mu);
+  Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s, FMOD_SOUND *mu,
+                  vector<Texture *> texs);
   ~Main_Menu_State(void);
   
   void draw(void);

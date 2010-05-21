@@ -8,6 +8,8 @@ using namespace std;
 #include "FMOD_includes.h"
 #include "state.h"
 
+class Texture;
+
 class Tutorial_State : public State
 {
 private:
@@ -19,9 +21,11 @@ private:
   
   FMOD_BOOL sound_paused;
   
+  vector<Texture *> textures;
 public:
   Tutorial_State(void);
-  Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s, FMOD_SOUND *mu);
+  Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s, FMOD_SOUND *mu,
+                 vector<Texture *> texs);
   ~Tutorial_State(void);
   
   void draw(void);

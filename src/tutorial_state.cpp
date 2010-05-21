@@ -4,8 +4,9 @@ Tutorial_State::Tutorial_State(void)
 : State() {}
 
 Tutorial_State::Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s,
-                                 FMOD_SOUND *mu)
-:State(s), slides(images), current_slide(0), music(mu), channel(NULL)
+                                 FMOD_SOUND *mu, vector<Texture *> texs)
+:State(s), slides(images), current_slide(0), music(mu), channel(NULL),
+textures(texs)
 {}
 
 void Tutorial_State::draw(void)
@@ -115,6 +116,13 @@ Tutorial_State::~Tutorial_State(void)
   }
   slides.clear();
   
+  for (unsigned int i = 0; i < textures.size(); ++i)
+  {
+    delete textures.at(i);
+    textures.at(i) = 0;
+  }
+  textures.clear();
+  
   if (current_slide > 0)
   {
     FMOD_RESULT result;
@@ -122,5 +130,4 @@ Tutorial_State::~Tutorial_State(void)
     result = FMOD_Sound_Release(music);
     ERRCHECK(result);
   }
-  
 }

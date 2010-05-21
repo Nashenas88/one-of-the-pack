@@ -24,6 +24,7 @@ State *tutorial;
 vector<State *> stack;
 vector<FMOD_SOUND *> sounds;
 vector<Texture *> textures_tr;
+vector<Texture *> load_texs;
 bool loading;
 bool control;
 Drawable *load_screen;
@@ -49,6 +50,7 @@ void update(int value);
 void drawScene(void);
 void system_clean(void);
 void sound_system_clean(void);
+void texture_clean(void);
 
 int main(int argc, char *argv[])
 {
@@ -182,11 +184,13 @@ void initLoading(void)
   control = false;
   ss << resources << LOADING_TEXTURE;
   tex = new Texture(ss.str().c_str());
+  load_texs.push_back(tex);
   load_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
   
   ss.str("");
   ss << resources << CONTROL_TEXTURE;
   tex = new Texture(ss.str().c_str());
+  load_texs.push_back(tex);
   control_screen = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, tex);
 }
 
@@ -197,13 +201,17 @@ void initMain(int blah)
   
   Drawable *background, *pointer;
   Texture *main_menu, *pointer_tex;
+  vector<Texture *> texs;
   
   stringstream temp_str;
   
   temp_str.str(""); temp_str << resources << MAIN_MENU_TEXTURE;
   main_menu = new Texture(temp_str.str().c_str());
+  texs.push_back(main_menu);
+  
   temp_str.str(""); temp_str << resources << MAIN_MENU_POINTER_TEXTURE;
   pointer_tex = new Texture(temp_str.str().c_str());
+  texs.push_back(pointer_tex);
   
   background = new Drawable(0.0f, 0.0f, 1, 1, BACKGROUND, main_menu);
   pointer = new Drawable(0.0f, 0.0f, 1, 1, VARIABLE, pointer_tex);
@@ -216,7 +224,7 @@ void initMain(int blah)
   ERRCHECK(result);
   
   
-  main_s = new Main_Menu_State(background, pointer, sound_system, sound);
+  main_s = new Main_Menu_State(background, pointer, sound_system, sound, texs);
   ((Main_Menu_State*)main_s)->play_sound();
   
   s = main_s;
@@ -260,7 +268,7 @@ void initTutorial(int blah)
   ERRCHECK(result);
   
   
-  tutorial = new Tutorial_State(slides, sound_system, sound);
+  tutorial = new Tutorial_State(slides, sound_system, sound, textures);
   
   s = tutorial;
   loading = false;
@@ -717,8 +725,7 @@ void handleKeypress(unsigned char key, int x, int y)
         glutPostRedisplay();
         ((Tutorial_State*)s)->pause_sound();
         ((Tutorial_State*)s)->reset();
-        delete (Tutorial_State*)s;
-        delete tutorial;
+        delete (Tutorial_State*)tutorial;
         glutTimerFunc(25, initMain, 0);
       }
       else if (s == main_s)
@@ -729,8 +736,7 @@ void handleKeypress(unsigned char key, int x, int y)
           loading = true;
           glutPostRedisplay();
           ((Main_Menu_State*)s)->pause_sound();
-          delete (Main_Menu_State*)s;
-          delete main_s;
+          delete (Main_Menu_State*)main_s;
           glutTimerFunc(25, initTutorial, 0);
         }
         else if (level == 12) // Quit
@@ -738,7 +744,9 @@ void handleKeypress(unsigned char key, int x, int y)
           free(resources);
           sound_system_clean();
           delete control_screen;
-          delete main_s;
+          delete load_screen;
+          texture_clean();
+          delete (Main_Menu_State*)main_s;
           exit(0);
         }
         else if (level > last_level)
@@ -750,8 +758,7 @@ void handleKeypress(unsigned char key, int x, int y)
           loading = true;
           glutPostRedisplay();
           ((Main_Menu_State*)s)->pause_sound();
-          delete (Main_Menu_State*)s;
-          delete main_s;
+          delete (Main_Menu_State*)main_s;
           glutTimerFunc(25, initLevel, level);
         }
       }
@@ -896,4 +903,14 @@ void sound_system_clean(void)
   ERRCHECK(result);
   result = FMOD_System_Release(sound_system);
   ERRCHECK(result);
+}
+
+void texture_clean(void)
+{
+  for (unsigned int i = 0; i < load_texs.size(); ++i)
+  {
+    delete load_texs.at(i);
+    load_texs.at(i) = 0;
+  }
+  load_texs.clear();
 }

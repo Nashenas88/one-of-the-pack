@@ -4,9 +4,9 @@ Main_Menu_State::Main_Menu_State(void)
 : State() {}
 
 Main_Menu_State::Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s,
-                                 FMOD_SOUND *mu)
+                                 FMOD_SOUND *mu, vector<Texture *> texs)
  :State(s), background(b), pointer(p), selected_x(0), selected_y(0), music(mu),
-  channel(NULL)
+  channel(NULL), textures(texs)
 {
   pointer->move(-pointer->get_x() + MAIN_POINTER_START_X,
                 -pointer->get_y() + MAIN_POINTER_START_Y);
@@ -151,4 +151,11 @@ Main_Menu_State::~Main_Menu_State(void)
   
   result= FMOD_Sound_Release(music);
   ERRCHECK(result);
+  
+  for (unsigned int i = 0; i < textures.size(); ++i)
+  {
+    delete textures.at(i);
+    textures.at(i) = 0;
+  }
+  textures.clear();
 }
