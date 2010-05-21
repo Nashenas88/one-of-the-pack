@@ -140,15 +140,15 @@ void Main_Menu_State::pause_sound(void)
   ERRCHECK(result);
 }
 
-void Main_Menu_State::clean(void)
+Main_Menu_State::~Main_Menu_State(void)
 {
-  background->clean();
-  pointer->clean();
   delete background;
+  background = 0;
   delete pointer;
+  pointer = 0;
   
   FMOD_RESULT result;
   
-  result = FMOD_Sound_Release(music);
+  result= FMOD_Sound_Release(music);
   ERRCHECK(result);
 }

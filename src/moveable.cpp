@@ -336,3 +336,8 @@ void Moveable::set_gravity(bool g)
     links.at(i)->set_grav(g);
   }
 }
+
+Moveable::~Moveable(void)
+{
+  delete (Drawable *) this;
+}

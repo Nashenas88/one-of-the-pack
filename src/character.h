@@ -39,6 +39,7 @@ public:
   Character(float x, float y, int num, int frames, Texture *tex,
             direc dir, int vs, int hs, FMOD_SYSTEM *sys,
             FMOD_SOUND *mu, FMOD_CHANNEL *mch);
+  ~Character(void);
   
   // getters and setters
   int getDirection(void) {return direction;}
@@ -89,8 +90,5 @@ public:
   // return sound system
   FMOD_SYSTEM *get_system(void) {return system;}
   FMOD_CHANNEL *get_channel(void) {return music_channel;}
-  
-  // clean all character data
-  void clean(void);
 };
 #endif // FLOCK__CHARACTER__H

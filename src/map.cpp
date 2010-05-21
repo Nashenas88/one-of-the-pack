@@ -769,23 +769,24 @@ void Map::update_breaks(void)
   }
 }
 
-void Map::clean(void)
+Map::~Map(void)
 {
   for (int i = 0; i < get_width(); ++i)
   {
     for (int j = 0; j < get_height(); ++j)
     {
-      free (map[i][j]);
+      free(map[i][j]);
     }
-    free (map[i]);
+    free(map[i]);
   }
-  free (map);
+  free(map);
   
   for (unsigned int i = 0; i < tiles.size(); ++i)
   {
     delete tiles.at(i);
+    tiles.at(i) = 0;
   }
   tiles.clear();
   
-  ((Drawable*)this)->clean();
+  delete (Drawable *) this;
 }

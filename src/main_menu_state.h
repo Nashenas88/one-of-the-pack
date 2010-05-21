@@ -20,6 +20,7 @@ private:
 public:
   Main_Menu_State(void);
   Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s, FMOD_SOUND *mu);
+  ~Main_Menu_State(void);
   
   void draw(void);
   
@@ -34,7 +35,5 @@ public:
   
   void play_sound(void);
   void pause_sound(void);
-  
-  void clean(void);
 };
 #endif // FLOCK__MAIN_MENU_STATE__H

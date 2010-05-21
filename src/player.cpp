@@ -25,3 +25,8 @@ void Player::reset(Map *m)
   move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
   move(move_x, move_y);
 }
+
+Player::~Player(void)
+{
+  delete (Drawable *)this;
+}

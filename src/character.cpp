@@ -479,12 +479,14 @@ void Character::set_volume(float volume)
   FMOD_Channel_SetVolume(music_channel, volume);
 }
 
-// cleans up all garbage data
-void Character::clean(void)
+Character::~Character(void)
 {
-  // clean up the sound data
   FMOD_RESULT result;
   
   result = FMOD_Sound_Release(music);
   ERRCHECK(result);
+  
+  free(music_channel);
+  
+  delete (Drawable *) this;
 }

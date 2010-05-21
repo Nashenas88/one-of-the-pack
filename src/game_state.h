@@ -47,6 +47,7 @@ public:
   Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
              vector<Special *> sps, vector<Drawable*> nums,
              FMOD_SYSTEM *system);
+  ~Game_State(void);
   
   Player *get_player(void) {return p;}
   vector<Special *> get_specials(void) {return specials;}
@@ -74,10 +75,6 @@ public:
   void unpause_volume(void);
   
   void reset_keys(void);
-  
-  // cleans all data from state
-  void clean(void);
-  
 };
 
 #endif // FLOCK__GAME_STATE__H

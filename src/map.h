@@ -36,6 +36,7 @@ private:
 public:
   Map(void);
   Map(vector<Drawable *> t);
+  ~Map(void);
   
   // draws each item on the map
   void draw(void);
@@ -74,8 +75,6 @@ public:
                 FMOD_SYSTEM *system, vector<FMOD_SOUND *> musics,
                 FMOD_CHANNEL *m_channel, vector<FMOD_SOUND *> effects,
                 FMOD_CHANNEL *a_channel, vector<FMOD_SOUND *> collects);
-  
-  void clean(void);
 };
 
 #endif // FLOCK__MAP__H

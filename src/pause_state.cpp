@@ -202,18 +202,13 @@ void Pause_State::pause_sounds(void)
   game_state->pause_sounds();
 }
 
-void Pause_State::clean(void)
+Pause_State::~Pause_State(void)
 {
-  background->clean();
-  map->clean();
-  pointer->clean();
   delete background;
   delete map;
   delete pointer;
   delete movers;
   delete statics;
-  paused_names->clean();
   delete paused_names;
-  game_state->clean();
   delete game_state;
 }

@@ -120,4 +120,7 @@ void Special::move_number(float x, float y){
   number->move(x, y);
 }
 
-void Special::clean(void) {}
+Special::~Special(void)
+{
+  delete (Drawable *)this;
+}

@@ -17,6 +17,7 @@ public:
   Player(void);
   Player(float x, float y, int num, int frames, Texture *tex, direc dir,
          bool jump, FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch);
+  ~Player(void);
   
   bool should_follow(void) {return follow;}
   void switch_follow(void) {follow = !follow;}

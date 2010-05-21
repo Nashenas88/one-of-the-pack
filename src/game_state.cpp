@@ -1684,36 +1684,36 @@ void Game_State::pause_sounds(void)
   }
 }
 
-void Game_State::clean(void)
+Game_State::~Game_State(void)
 {
-  p->clean();
   delete p;
-  map->clean();
+  p = 0;
   delete map;
-  if (moveables.size() > 0)
-  {
-    moveables.at(0)->clean();
-  }
+  map = 0;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     delete moveables.at(i);
+    moveables.at(i) = 0;
   }
   for (unsigned int i = 0; i < specials.size(); ++i)
   {
-    specials.at(i)->clean();
     delete specials.at(i);
+    specials.at(i) = 0;
   }
   for (unsigned int i = 0; i < beams.size(); ++i)
   {
     delete beams.at(i);
+    beams.at(i) = 0;
   }
   for (unsigned int i = 0; i < kisses.size(); ++i)
   {
     delete kisses.at(i);
+    kisses.at(i) = 0;
   }
   for (unsigned int i = 0; i < numbers.size(); ++i)
   {
     delete numbers.at(i);
+    numbers.at(i) = 0;
   }
 }
 

@@ -106,14 +106,12 @@ void Tutorial_State::pause_sound(bool b)
   ERRCHECK(result);
 }
 
-void Tutorial_State::clean(void)
+Tutorial_State::~Tutorial_State(void)
 {
-  vector<Drawable *>::iterator it;
-  for (it = slides.begin(); it != slides.end(); )
+  for (unsigned int i = 0; i < slides.size(); ++i)
   {
-    (*it)->clean();
-    delete *it;
-    it = slides.erase(it);
+    delete slides.at(i);
+    slides.at(i) = 0;
   }
   slides.clear();
   
@@ -124,4 +122,5 @@ void Tutorial_State::clean(void)
     result = FMOD_Sound_Release(music);
     ERRCHECK(result);
   }
+  
 }

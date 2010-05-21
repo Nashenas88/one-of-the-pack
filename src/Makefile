@@ -24,8 +24,6 @@ ifeq ($(shell uname),Darwin)
 	FMOD_LIB_P = /Developer/FMOD\ Programmers\ API\ Mac/api/lib
 	FMOD_LIB = libfmodex.dylib
 	ARCH = -arch i386
-	RUN_ANYWHERE = install_name_tool -change ./$(FMOD_LIB) \
-		@executable_path/../Resources/$(FMOD_LIB) ../$(PROG)
 	APP_NAME = One\ of\ the\ Pack
 	MAKE_APP = rm -rf ../$(APP_NAME).app; \
 		mkdir ../$(APP_NAME).app; \
@@ -36,7 +34,8 @@ ifeq ($(shell uname),Darwin)
 		cp -R ../Mac\ OS\ X/*icns ../$(APP_NAME).app/Contents/Resources; \
 		cp -R ../$(FMOD_LIB) ../$(APP_NAME).app/Contents/Resources/; \
 		cp -R ../resources/* ../$(APP_NAME).app/Contents/Resources/; \
-		cp ../$(PROG) ../$(APP_NAME).app/Contents/MacOS;
+		cp ../$(PROG) ../$(APP_NAME).app/Contents/MacOS; \
+		install_name_tool -change ./$(FMOD_LIB) @executable_path/../Resources/$(FMOD_LIB) ../$(APP_NAME).app/Contents/MacOS/$(PROG);
 else
 	LIBS = -lSOIL -lglut -lGLU -pthread
 	FMOD_LIB_P = /usr/local/lib
@@ -69,7 +68,17 @@ all: ../$(PROG)
 
 ifeq ($(shell uname),Darwin)
 app: ../$(PROG)
-	$(RUN_ANYWHERE); $(MAKE_APP)
+	rm -rf ../$(APP_NAME).app
+	mkdir ../$(APP_NAME).app
+	mkdir ../$(APP_NAME).app/Contents
+	mkdir ../$(APP_NAME).app/Contents/MacOS
+	mkdir ../$(APP_NAME).app/Contents/Resources
+	cp -R ../Mac\ OS\ X/*Info* ../$(APP_NAME).app/Contents/
+	cp -R ../Mac\ OS\ X/*icns ../$(APP_NAME).app/Contents/Resources
+	cp -R ../$(FMOD_LIB) ../$(APP_NAME).app/Contents/Resources/
+	cp -R ../resources/* ../$(APP_NAME).app/Contents/Resources/
+	cp ../$(PROG) ../$(APP_NAME).app/Contents/MacOS
+	install_name_tool -change ./$(FMOD_LIB) @executable_path/../Resources/$(FMOD_LIB) ../$(APP_NAME).app/Contents/MacOS/$(PROG)
 endif
 
 clean:
