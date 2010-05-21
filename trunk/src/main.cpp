@@ -249,7 +249,6 @@ void initLevel(int level)
   ifstream file;
   stringstream temp_string;
   
-  
   // initializing the texture
   temp_string.str(""); temp_string << RESOURCES /*<< LEVEL << level << "/"*/ << PLAYER_TEXTURE;
   t = new Texture(temp_string.str().c_str());
