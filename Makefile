@@ -9,7 +9,7 @@ ifeq ($(OS),Windows_NT)
 	CLFAGS = -Wall -mno-cygwin
 else
 	PROG = $(NAME)
-	CFLAGS = -Wall -pthread
+	CFLAGS = -Wall
 endif
 
 SRCS = drawable.cpp texture.cpp player.cpp moveable.cpp character.cpp \
@@ -25,7 +25,7 @@ ifeq ($(shell uname),Darwin)
 	FMOD_LIB = libfmodex.dylib
 	ARCH = -arch i386
 else
-	LIBS = -lSOIL -lglut -lGLU
+	LIBS = -lSOIL -lglut -lGLU -pthread
 	FMOD_LIB_P = /usr/local/lib
 	FMOD_LIB = libfmodex-4.30.03.so
 endif
