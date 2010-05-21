@@ -35,7 +35,7 @@ ifeq ($(shell uname),Darwin)
     cp -R ../Mac\ OS\ X/* ../$(APP_NAME).app/Contents/; \
     cp -R ../$(FMOD_LIB) ../$(APP_NAME).app/Contents/Resources/; \
     cp -R ../resources/* ../$(APP_NAME).app/Contents/Resources/; \
-    mv ../$(PROG) ../$(APP_NAME).app/Contents/MacOS;
+    cp ../$(PROG) ../$(APP_NAME).app/Contents/MacOS;
 else
 	LIBS = -lSOIL -lglut -lGLU -pthread
 	FMOD_LIB_P = /usr/local/lib
