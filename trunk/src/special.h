@@ -35,6 +35,7 @@ public:
           int abil_frames, Texture *tex, direc dir, int vs, int hs,
           special_type t, FMOD_SYSTEM *sys, FMOD_SOUND *so, FMOD_CHANNEL *ch,
           FMOD_SOUND *as, FMOD_CHANNEL *ac, FMOD_SOUND *cs);
+  ~Special(void);
   
   unsigned int get_abil_frames(void) {return num_abil_frames;}
   special_type get_type(void) {return type;}
@@ -64,8 +65,6 @@ public:
   void move(float x, float y);
   
   void move_number(float x, float y);
-  
-  void clean(void);
 };
 
 #endif // FLOCK__SPECIAL__H

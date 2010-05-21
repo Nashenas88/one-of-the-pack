@@ -234,7 +234,4 @@ void Drawable::change_direction(direc dir)
   }
 }
 
-void Drawable::clean(void)
-{
-  delete texture;
-}
+Drawable::~Drawable(void) {}

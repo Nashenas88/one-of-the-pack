@@ -23,6 +23,8 @@ Texture::Texture(const char *filename)
   loadTexture(filename);
 }
 
+Texture::~Texture(void) {}
+
 // loads the texture from any image file
 void Texture::loadTexture (const char *filename)
 {

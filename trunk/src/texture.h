@@ -19,6 +19,7 @@ private:
 public:
   Texture(void);
   Texture(const char *filename);
+  ~Texture(void);
   
   // loads texture from a file, and automagically sets up
   // width, height, and all OpenGL information

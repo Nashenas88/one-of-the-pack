@@ -36,6 +36,7 @@ public:
   Moveable(void);
   Moveable(float x, float y, int start_x, int start_y, int num, int frames,
            Texture *tex, bool g, bool r, Kurt *c);
+  ~Moveable(void);
   
   // getters and setters
   int getVSpeed(void) {return v_speed;}

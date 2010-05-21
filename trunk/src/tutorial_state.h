@@ -22,6 +22,7 @@ private:
 public:
   Tutorial_State(void);
   Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s, FMOD_SOUND *mu);
+  ~Tutorial_State(void);
   
   void draw(void);
   
@@ -37,7 +38,5 @@ public:
   void pause_sound(bool b);
   
   void reset(void) {current_slide = 0;}
-  
-  void clean(void);
 };
 #endif // FLOCK__MAIN_MENU_STATE__H

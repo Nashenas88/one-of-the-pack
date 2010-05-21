@@ -26,6 +26,7 @@ public:
   Pause_State(void);
   Pause_State(FMOD_SYSTEM *system, Game_State *gs, Drawable *b, Drawable *m,
               Drawable *p, Texture *icons, Drawable *pn);
+  ~Pause_State(void);
   
   void draw(void);
   
@@ -40,7 +41,5 @@ public:
   
   unsigned int get_selected(void) {return selected;}
   void reset_selected(void);
-  
-  void clean(void);
 };
 #endif // FLOCK__PAUSE_STATE__H

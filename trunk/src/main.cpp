@@ -48,6 +48,7 @@ void handleSpecialrelease(int key, int x, int y);
 void update(int value);
 void drawScene(void);
 void system_clean(void);
+void sound_system_clean(void);
 
 int main(int argc, char *argv[])
 {
@@ -305,31 +306,56 @@ void initLevel(int level)
   // initializing the texture
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << PLAYER_TEXTURE;
   t = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(t);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << BACKGROUND_TEXTURE;
   bg = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(bg);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << TILE_TEXTURE;
   tiles = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(tiles);
+  
   temp_string.str(""); temp_string << resources << PAUSED_BACKGROUND;
   pause_bg = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(pause_bg);
+  
   temp_string.str(""); temp_string << resources << LEVEL << level << "/" << MAP_IMAGE;
   mi = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(mi);
+  
   temp_string.str(""); temp_string << resources << POINTER_TEXTURE;
   pi = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(pi);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << AHNOLD_TEXTURE;
   ahnold = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(ahnold);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << JUMPER_TEXTURE;
   jumper = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(jumper);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << ENGINEER_TEXTURE;
   engineer = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(engineer);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << PARIS_TEXTURE;
   paris = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(paris);
+  
   temp_string.str(""); temp_string << resources /*<< LEVEL << level << "/"*/ << KURT_TEXTURE;
   kurt = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(kurt);
+  
   temp_string.str(""); temp_string << resources << PAUSED_NAMES_TEXTURE;
   p_names = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(p_names);
   
   temp_string.str(""); temp_string << resources << NUMBER_TEXTURE;
   nums = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(nums);
+  
   for (unsigned int i = 1; i < 10; ++i)
   {
     numbers.push_back(new Drawable(0.0f, 0.0f, 1, 1, NUM, nums));
@@ -338,6 +364,7 @@ void initLevel(int level)
   
   temp_string.str(""); temp_string << resources << PAUSE_ICONS_TEXTURE;
   ps_ic = new Texture(temp_string.str().c_str());
+  textures_tr.push_back(ps_ic);
   
   temp_string.str(""); temp_string << resources << LEVEL << level << "/" << PLAYER_SOUND;
   result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
@@ -585,14 +612,6 @@ void initLevel(int level)
   textures.push_back(kurt);
   textures.push_back(paris);
   
-  textures_tr.push_back(ahnold);
-  textures_tr.push_back(jumper);
-  textures_tr.push_back(nums);
-  textures_tr.push_back(ps_ic);
-  textures_tr.push_back(engineer);
-  textures_tr.push_back(paris);
-  textures_tr.push_back(kurt);
-  
   m = new Map(v);
   temp_string.str(""); temp_string << resources << LEVEL << level << "/" << MAP1;
   m->load_map(temp_string.str().c_str(), moveables, specials, tiles, textures,
@@ -698,7 +717,7 @@ void handleKeypress(unsigned char key, int x, int y)
         glutPostRedisplay();
         ((Tutorial_State*)s)->pause_sound();
         ((Tutorial_State*)s)->reset();
-        ((Tutorial_State*)s)->clean();
+        delete (Tutorial_State*)s;
         delete tutorial;
         glutTimerFunc(25, initMain, 0);
       }
@@ -710,15 +729,15 @@ void handleKeypress(unsigned char key, int x, int y)
           loading = true;
           glutPostRedisplay();
           ((Main_Menu_State*)s)->pause_sound();
-          ((Main_Menu_State*)s)->clean();
+          delete (Main_Menu_State*)s;
           delete main_s;
           glutTimerFunc(25, initTutorial, 0);
         }
         else if (level == 12) // Quit
         {
           free(resources);
-          control_screen->clean();
-          main_s->clean();
+          sound_system_clean();
+          delete control_screen;
           delete main_s;
           exit(0);
         }
@@ -731,7 +750,7 @@ void handleKeypress(unsigned char key, int x, int y)
           loading = true;
           glutPostRedisplay();
           ((Main_Menu_State*)s)->pause_sound();
-          ((Main_Menu_State*)s)->clean();
+          delete (Main_Menu_State*)s;
           delete main_s;
           glutTimerFunc(25, initLevel, level);
         }
@@ -788,7 +807,6 @@ void update(int delta)
         loading = true;
         ((Tutorial_State*)tutorial)->pause_sound();
         ((Tutorial_State*)tutorial)->reset();
-        ((Tutorial_State*)tutorial)->clean();
         delete tutorial;
         glutTimerFunc(25, initMain, 0);
       }
@@ -855,15 +873,27 @@ void system_clean(void)
     
     result = FMOD_Sound_Release(sounds.at(i));
     ERRCHECK(result);
+    
+    sounds.at(i) = 0;
   }
   sounds.clear();
   
   for (unsigned int i = 0; i < textures_tr.size(); ++i)
   {
     delete textures_tr.at(i);
+    textures_tr.at(i) = 0;
   }
   textures_tr.clear();
   
-  paused->clean();
   delete paused;
+}
+
+void sound_system_clean(void)
+{
+  FMOD_RESULT result;
+  
+  result = FMOD_System_Close(sound_system);
+  ERRCHECK(result);
+  result = FMOD_System_Release(sound_system);
+  ERRCHECK(result);
 }

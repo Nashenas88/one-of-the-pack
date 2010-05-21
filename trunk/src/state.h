@@ -10,6 +10,7 @@ private:
 public:
   State(void);
   State(FMOD_SYSTEM *sys);
+  ~State(void);
   
   virtual void draw(void);
   
@@ -22,8 +23,5 @@ public:
   virtual void special_released(int key, int x, int y);
   
   FMOD_SYSTEM *get_system(void) {return system;}
-  
-  virtual void clean(void);
-  void state_clean(void);
 };
 #endif // FLOCK__STATE__H
