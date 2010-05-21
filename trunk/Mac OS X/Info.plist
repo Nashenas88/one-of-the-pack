@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>one_of_the_pack</string>
 	<key>CFBundleIconFile</key>
-	<string>ootp.icns</string>
+	<string>test.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.egd.ootp</string>
 	<key>CFBundleInfoDictionaryVersion</key>

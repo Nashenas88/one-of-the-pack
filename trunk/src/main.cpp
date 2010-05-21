@@ -2,10 +2,6 @@
 #include <time.h>
 #include <string.h>
 
-#ifdef __APPLE__
-#include <dlfcn.h>
-#endif
-
 #include <vector>
 #include <fstream>
 #include <sstream>
