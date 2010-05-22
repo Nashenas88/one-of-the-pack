@@ -23,6 +23,37 @@ s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
 key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false),
 debug(false) {}
 
+Game_State::~Game_State(void)
+{
+  delete p;
+  delete map;
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    delete moveables.at(i);
+    moveables.at(i) = 0;
+  }
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    delete specials.at(i);
+    specials.at(i) = 0;
+  }
+  for (unsigned int i = 0; i < beams.size(); ++i)
+  {
+    delete beams.at(i);
+    beams.at(i) = 0;
+  }
+  for (unsigned int i = 0; i < kisses.size(); ++i)
+  {
+    delete kisses.at(i);
+    kisses.at(i) = 0;
+  }
+  for (unsigned int i = 0; i < numbers.size(); ++i)
+  {
+    delete numbers.at(i);
+    numbers.at(i) = 0;
+  }
+}
+
 // this draws everything to the screen
 void Game_State::draw(void)
 {
@@ -1682,37 +1713,6 @@ void Game_State::pause_sounds(void)
     {
       specials.at(i)->pause_sound();
     }
-  }
-}
-
-Game_State::~Game_State(void)
-{
-  delete p;
-  delete map;
-  for (unsigned int i = 0; i < moveables.size(); ++i)
-  {
-    delete moveables.at(i);
-    moveables.at(i) = 0;
-  }
-  for (unsigned int i = 0; i < specials.size(); ++i)
-  {
-    delete specials.at(i);
-    specials.at(i) = 0;
-  }
-  for (unsigned int i = 0; i < beams.size(); ++i)
-  {
-    delete beams.at(i);
-    beams.at(i) = 0;
-  }
-  for (unsigned int i = 0; i < kisses.size(); ++i)
-  {
-    delete kisses.at(i);
-    kisses.at(i) = 0;
-  }
-  for (unsigned int i = 0; i < numbers.size(); ++i)
-  {
-    delete numbers.at(i);
-    numbers.at(i) = 0;
   }
 }
 

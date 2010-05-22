@@ -12,6 +12,26 @@ Main_Menu_State::Main_Menu_State(Drawable *b, Drawable *p, FMOD_SYSTEM *s,
                 -pointer->get_y() + MAIN_POINTER_START_Y);
 }
 
+Main_Menu_State::~Main_Menu_State(void)
+{
+  delete background;
+  background = 0;
+  delete pointer;
+  pointer = 0;
+  
+  FMOD_RESULT result;
+  
+  result= FMOD_Sound_Release(music);
+  ERRCHECK(result);
+  
+  for (unsigned int i = 0; i < textures.size(); ++i)
+  {
+    delete textures.at(i);
+    textures.at(i) = 0;
+  }
+  textures.clear();
+}
+
 void Main_Menu_State::draw(void)
 {
   background->draw();
@@ -138,24 +158,4 @@ void Main_Menu_State::pause_sound(void)
   
   result = FMOD_Channel_SetPaused(channel, sound_paused);
   ERRCHECK(result);
-}
-
-Main_Menu_State::~Main_Menu_State(void)
-{
-  delete background;
-  background = 0;
-  delete pointer;
-  pointer = 0;
-  
-  FMOD_RESULT result;
-  
-  result= FMOD_Sound_Release(music);
-  ERRCHECK(result);
-  
-  for (unsigned int i = 0; i < textures.size(); ++i)
-  {
-    delete textures.at(i);
-    textures.at(i) = 0;
-  }
-  textures.clear();
 }
