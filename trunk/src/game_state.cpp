@@ -20,7 +20,8 @@ Game_State::Game_State(Player *pl, Map *m, vector<Moveable *> mvs,
 :State(system), p(pl), c(pl), map(m), moveables(mvs), specials(sps),
 numbers(nums), next_special(0), gravity(true), collision(true), w(0), a(0),
 s(0), d(0), last_x(0), last_y(0), map_slide_effect(SLIDE_COUNTER), last_key(0),
-key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false),debug(false) {}
+key_held(0), jump_delta(-1), controllable(false), shift(false), odd(false),
+debug(false) {}
 
 // this draws everything to the screen
 void Game_State::draw(void)
