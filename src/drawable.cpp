@@ -58,6 +58,8 @@ facing_right(true), upside_down(false), shadow(false)
   reset_corners();
 }
 
+Drawable::~Drawable(void) {}
+
 // whenever the object's image is changed
 // the corners of the points on the
 // texture need to be recalculated
@@ -233,5 +235,3 @@ void Drawable::change_direction(direc dir)
     facing_right = true;
   }
 }
-
-Drawable::~Drawable(void) {}

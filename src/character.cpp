@@ -29,6 +29,18 @@ bounce(false)
   pause_sound();
 }
 
+Character::~Character(void)
+{
+  FMOD_RESULT result;
+  
+  result = FMOD_Sound_Release(music);
+  ERRCHECK(result);
+  
+  free(music_channel);
+  
+  delete (Drawable *) this;
+}
+
 void Character::change_direction(direc dir)
 {
   direction = dir;
@@ -477,16 +489,4 @@ void Character::pause_sound(void)
 void Character::set_volume(float volume)
 {
   FMOD_Channel_SetVolume(music_channel, volume);
-}
-
-Character::~Character(void)
-{
-  FMOD_RESULT result;
-  
-  result = FMOD_Sound_Release(music);
-  ERRCHECK(result);
-  
-  free(music_channel);
-  
-  delete (Drawable *) this;
 }

@@ -12,6 +12,17 @@ paused_names(pn), selected(0), anim_timer(0)
   statics = new Drawable (0.0f, 0.0f, 1, 1, MAP_ICON, icons);
 }
 
+Pause_State::~Pause_State(void)
+{
+  delete background;
+  delete map;
+  delete pointer;
+  delete movers;
+  delete statics;
+  delete paused_names;
+  delete game_state;
+}
+
 void Pause_State::draw(void)
 {
   Special *spec;
@@ -200,15 +211,4 @@ void Pause_State::reset_selected(void)
 void Pause_State::pause_sounds(void)
 {
   game_state->pause_sounds();
-}
-
-Pause_State::~Pause_State(void)
-{
-  delete background;
-  delete map;
-  delete pointer;
-  delete movers;
-  delete statics;
-  delete paused_names;
-  delete game_state;
 }

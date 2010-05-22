@@ -11,6 +11,11 @@ Player::Player(float x, float y, int num, int frames, Texture *tex, direc dir,
 follow(true)
 {}
 
+Player::~Player(void)
+{
+  delete (Drawable *)this;
+}
+
 void Player::set_checkpoint(int x, int y)
 {
   loc[0] = x;
@@ -24,9 +29,4 @@ void Player::reset(Map *m)
   move_x = loc[0] * TILE_WIDTH + m->get_x() - get_x();
   move_y = loc[1] * TILE_HEIGHT + m->get_y() - get_y();
   move(move_x, move_y);
-}
-
-Player::~Player(void)
-{
-  delete (Drawable *)this;
 }

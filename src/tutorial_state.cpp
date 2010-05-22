@@ -12,6 +12,28 @@ Tutorial_State::Tutorial_State(vector<Drawable *> images, FMOD_SYSTEM *s,
 textures(texs)
 {}
 
+Tutorial_State::~Tutorial_State(void)
+{
+  for (unsigned int i = 0; i < slides.size(); ++i)
+  {
+    delete slides.at(i);
+    slides.at(i) = 0;
+  }
+  slides.clear();
+  
+  for (unsigned int i = 0; i < textures.size(); ++i)
+  {
+    delete textures.at(i);
+    textures.at(i) = 0;
+  }
+  textures.clear();
+  
+  FMOD_RESULT result;
+  
+  result = FMOD_Sound_Release(music);
+  ERRCHECK(result);
+}
+
 void Tutorial_State::draw(void)
 {
   if (current_slide < slides.size())
@@ -107,27 +129,5 @@ void Tutorial_State::pause_sound(bool b)
   sound_paused = b;
   
   result = FMOD_Channel_SetPaused(channel, sound_paused);
-  ERRCHECK(result);
-}
-
-Tutorial_State::~Tutorial_State(void)
-{
-  for (unsigned int i = 0; i < slides.size(); ++i)
-  {
-    delete slides.at(i);
-    slides.at(i) = 0;
-  }
-  slides.clear();
-  
-  for (unsigned int i = 0; i < textures.size(); ++i)
-  {
-    delete textures.at(i);
-    textures.at(i) = 0;
-  }
-  textures.clear();
-  
-  FMOD_RESULT result;
-  
-  result = FMOD_Sound_Release(music);
   ERRCHECK(result);
 }

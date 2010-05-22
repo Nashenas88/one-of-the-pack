@@ -15,6 +15,11 @@ freezeable(g), v_speed(0), h_speed(0), creator(c)
   loc[1] = start_y;
 }
 
+Moveable::~Moveable(void)
+{
+  delete (Drawable *) this;
+}
+
 void Moveable::reset(Map *m)
 {
   float move_x, move_y;
@@ -335,9 +340,4 @@ void Moveable::set_gravity(bool g)
   {
     links.at(i)->set_grav(g);
   }
-}
-
-Moveable::~Moveable(void)
-{
-  delete (Drawable *) this;
 }

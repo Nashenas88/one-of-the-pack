@@ -690,6 +690,10 @@ void handleKeypress(unsigned char key, int x, int y)
       {
         control = false;
       }
+      else if (s == NULL)
+      {
+        return;
+      }
       else if (s == paused)
       {
         if (((Pause_State *)s)->get_selected() == 0) // return
@@ -728,6 +732,8 @@ void handleKeypress(unsigned char key, int x, int y)
         glutPostRedisplay();
         ((Tutorial_State*)s)->pause_sound();
         delete (Tutorial_State*)s;
+        s = NULL;
+        tutorial = NULL;
         glutTimerFunc(25, initMain, 0);
       }
       else if (s == main_s)
@@ -739,6 +745,8 @@ void handleKeypress(unsigned char key, int x, int y)
           glutPostRedisplay();
           ((Main_Menu_State*)s)->pause_sound();
           delete (Main_Menu_State*)main_s;
+          main_s = NULL;
+          s = NULL;
           glutTimerFunc(25, initTutorial, 0);
         }
         else if (level == 12) // Quit
@@ -749,6 +757,8 @@ void handleKeypress(unsigned char key, int x, int y)
           delete load_screen;
           texture_clean();
           delete (Main_Menu_State*)main_s;
+          main_s = NULL;
+          s = NULL;
           exit(0);
         }
         else if (level > last_level)
@@ -761,6 +771,8 @@ void handleKeypress(unsigned char key, int x, int y)
           glutPostRedisplay();
           ((Main_Menu_State*)s)->pause_sound();
           delete (Main_Menu_State*)main_s;
+          main_s = NULL;
+          s = NULL;
           glutTimerFunc(25, initLevel, level);
         }
       }

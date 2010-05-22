@@ -21,6 +21,11 @@ abil_sound(as), abil_channel(ac), collect_sound(cs), number(NULL), jump_delta(-1
   set_mute(true);
 }
 
+Special::~Special(void)
+{
+  delete (Drawable *)this;
+}
+
 void Special::start_following(void)
 {
   following = true;
@@ -118,9 +123,4 @@ void Special::use_ability(Map *m) {}
 
 void Special::move_number(float x, float y){
   number->move(x, y);
-}
-
-Special::~Special(void)
-{
-  delete (Drawable *)this;
 }

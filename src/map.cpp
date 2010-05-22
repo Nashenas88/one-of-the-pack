@@ -20,6 +20,28 @@ Map::Map(void)
 Map::Map(vector<Drawable *> t)
 :Drawable(0.0f, 0.0f, 0, 0, TILE, (GLuint) 0), tiles(t) {}
 
+Map::~Map(void)
+{
+  for (int i = 0; i < get_width(); ++i)
+  {
+    for (int j = 0; j < get_height(); ++j)
+    {
+      free(map[i][j]);
+    }
+    free(map[i]);
+  }
+  free(map);
+  
+  for (unsigned int i = 0; i < tiles.size(); ++i)
+  {
+    delete tiles.at(i);
+    tiles.at(i) = 0;
+  }
+  tiles.clear();
+  
+  delete (Drawable *) this;
+}
+
 // draws the map by going to each point and drawing
 // the specified tile. ignore the tiles marked BG for
 // background
@@ -773,26 +795,4 @@ void Map::update_breaks(void)
       }
     }
   }
-}
-
-Map::~Map(void)
-{
-  for (int i = 0; i < get_width(); ++i)
-  {
-    for (int j = 0; j < get_height(); ++j)
-    {
-      free(map[i][j]);
-    }
-    free(map[i]);
-  }
-  free(map);
-  
-  for (unsigned int i = 0; i < tiles.size(); ++i)
-  {
-    delete tiles.at(i);
-    tiles.at(i) = 0;
-  }
-  tiles.clear();
-  
-  delete (Drawable *) this;
 }
