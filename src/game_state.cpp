@@ -1688,9 +1688,7 @@ void Game_State::pause_sounds(void)
 Game_State::~Game_State(void)
 {
   delete p;
-  p = 0;
   delete map;
-  map = 0;
   for (unsigned int i = 0; i < moveables.size(); ++i)
   {
     delete moveables.at(i);

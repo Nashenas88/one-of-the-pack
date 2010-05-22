@@ -380,6 +380,7 @@ void initLevel(int level)
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
+  sounds.push_back(s_sound);
   
   temp_string.str(""); temp_string << resources << LEVEL << level << "/" << NUM_SOUNDS_FILE;
   file.open (temp_string.str().c_str(), ios::in);
@@ -396,6 +397,7 @@ void initLevel(int level)
     ERRCHECK(result);
     
     musics.push_back(temp_sound);
+    sounds.push_back(temp_sound);
   }
   
   temp_string.str(""); temp_string << resources << AHNOLD_SFX;
@@ -655,6 +657,7 @@ void handleResize(int w, int h)
 // called when a normal key is pressed
 void handleKeypress(unsigned char key, int x, int y)
 {
+  cout << key << endl;
   if (loading)
   {
     return;
