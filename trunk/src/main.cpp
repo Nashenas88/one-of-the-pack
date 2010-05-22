@@ -218,7 +218,7 @@ void initMain(int blah)
   
   temp_str.str(""); temp_str << resources << MAIN_MENU_MUSIC;
   result = FMOD_System_CreateSound(sound_system, temp_str.str().c_str(),
-                                   FMOD_SOFTWARE, 0, &sound);
+                                   FMOD_HARDWARE, 0, &sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
@@ -262,7 +262,7 @@ void initTutorial(int blah)
   
   temp_str.str(""); temp_str << resources << TUTORIAL TUTORIAL_MUSIC;
   result = FMOD_System_CreateSound(sound_system, temp_str.str().c_str(),
-                                   FMOD_SOFTWARE, 0, &sound);
+                                   FMOD_HARDWARE, 0, &sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
@@ -287,7 +287,6 @@ void initMaxLevel(void)
 
 void initLevel(int level)
 {
-  cout << "Initializing level " << level << endl;
   // objects that are needed by the state
   Player *p;
   Drawable *block1, *background, *breakable1, *plat1, *ladder, *paused_background;
@@ -377,7 +376,7 @@ void initLevel(int level)
   
   temp_string.str(""); temp_string << resources << LEVEL << level << "/" << PLAYER_SOUND;
   result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
-                                   FMOD_SOFTWARE, 0, &s_sound);
+                                   FMOD_HARDWARE, 0, &s_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(s_sound, FMOD_LOOP_NORMAL);
   ERRCHECK(result);
@@ -391,7 +390,7 @@ void initLevel(int level)
   {
     temp_string.str(""); temp_string << resources << LEVEL << level << "/" << i << SOUND_FILE_TYPE;
     result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(),
-                                     FMOD_SOFTWARE, 0, &temp_sound);
+                                     FMOD_HARDWARE, 0, &temp_sound);
     ERRCHECK(result);
     result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_NORMAL);
     ERRCHECK(result);
@@ -400,7 +399,7 @@ void initLevel(int level)
   }
   
   temp_string.str(""); temp_string << resources << AHNOLD_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -409,7 +408,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << JUMPER_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -418,7 +417,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << ENGINEER_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -427,7 +426,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << KURT_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -436,7 +435,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << PARIS_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -445,7 +444,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << BEAM_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -454,7 +453,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << JUMPER_SFX;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -463,7 +462,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << AHNOLD_COLLECT;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -472,7 +471,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << JUMPER_COLLECT;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -481,7 +480,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << ENGINEER_COLLECT;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -490,7 +489,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << KURT_COLLECT;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -499,7 +498,7 @@ void initLevel(int level)
   sounds.push_back(temp_sound);
   
   temp_string.str(""); temp_string << resources << PARIS_COLLECT;
-  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_SOFTWARE,
+  result = FMOD_System_CreateSound(sound_system, temp_string.str().c_str(), FMOD_HARDWARE,
                                    0, &temp_sound);
   ERRCHECK(result);
   result = FMOD_Sound_SetMode(temp_sound, FMOD_LOOP_OFF);
@@ -725,8 +724,7 @@ void handleKeypress(unsigned char key, int x, int y)
         loading = true;
         glutPostRedisplay();
         ((Tutorial_State*)s)->pause_sound();
-        ((Tutorial_State*)s)->reset();
-        delete (Tutorial_State*)tutorial;
+        delete (Tutorial_State*)s;
         glutTimerFunc(25, initMain, 0);
       }
       else if (s == main_s)
@@ -814,7 +812,6 @@ void update(int delta)
       {
         loading = true;
         ((Tutorial_State*)tutorial)->pause_sound();
-        ((Tutorial_State*)tutorial)->reset();
         delete tutorial;
         glutTimerFunc(25, initMain, 0);
       }

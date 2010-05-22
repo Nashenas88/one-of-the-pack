@@ -1,5 +1,8 @@
 #include "tutorial_state.h"
 
+#include <iostream>
+using namespace std;
+
 Tutorial_State::Tutorial_State(void)
 : State() {}
 
@@ -123,11 +126,8 @@ Tutorial_State::~Tutorial_State(void)
   }
   textures.clear();
   
-  if (current_slide > 0)
-  {
-    FMOD_RESULT result;
-    
-    result = FMOD_Sound_Release(music);
-    ERRCHECK(result);
-  }
+  FMOD_RESULT result;
+  
+  result = FMOD_Sound_Release(music);
+  ERRCHECK(result);
 }
