@@ -692,8 +692,14 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
     }
   }
   
-  moves = moveables;
-  specs = specials;
+  for (unsigned int i = 0; i < moveables.size(); ++i)
+  {
+    moves.push_back(moveables.at(i));
+  }
+  for (unsigned int i = 0; i < specials.size(); ++i)
+  {
+    specs.push_back(specials.at(i));
+  }
   
   tiles.at((int)BG)->move(-SCREEN_WIDTH, -SCREEN_HEIGHT);
   

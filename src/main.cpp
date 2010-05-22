@@ -287,6 +287,7 @@ void initMaxLevel(void)
 
 void initLevel(int level)
 {
+  cout << "Initializing level " << level << endl;
   // objects that are needed by the state
   Player *p;
   Drawable *block1, *background, *breakable1, *plat1, *ladder, *paused_background;
