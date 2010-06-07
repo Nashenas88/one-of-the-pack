@@ -13,6 +13,7 @@ using namespace std;
 #include "map.h"
 #include "defines.h"
 #include "character.h"
+#include "vectors.h"
 
 Map::Map(void)
 :Drawable(), map(NULL) {}
@@ -173,6 +174,36 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
   unsigned long offset, size, width, height;
   unsigned int bpp;
   
+  Vec2f static_mover_color                  = Vec2f(150,150);
+  Vec2f moving_rubber_ended_mover_color     = Vec2f(160,160);
+  Vec2f static_rubber_ended_mover_color     = Vec2f(170,170);
+  Vec2f freezable_color                     = Vec2f(180,180);
+  Vec2f pushable_color                      = Vec2f(190,190);
+  
+  Vec3f block_color                         = Vec3f(0,0,0);
+  Vec3f circuit_color                       = Vec3f(0,0,128);
+  Vec3f outside_color                       = Vec3f(0,128,0);
+  Vec3f right_bouncer_color                 = Vec3f(0,128,128);
+  Vec3f left_bouncer_color                  = Vec3f(0,128,129);
+  Vec3f breakable_color                     = Vec3f(0,128,255);
+  Vec3f jumper_color                        = Vec3f(0,255,0);
+  Vec3f rubber_color                        = Vec3f(0,255,255);
+  
+  Vec3f ladder_color                        = Vec3f(128,128,0);
+  Vec3f platform_color                      = Vec3f(128,128,128);
+  Vec3f blackhole_color                     = Vec3f(128,128,255);
+  Vec3f toxic_sludge_color                  = Vec3f(128,255,128);
+  
+  Vec3f checkpoint_color                    = Vec3f(192,128,255);
+  
+  Vec3f ahnold_color                        = Vec3f(255,0,0);  
+  Vec3f paris_color                         = Vec3f(255,0,128);
+  Vec3f player_start_color                  = Vec3f(255,0,255);
+  Vec3f smog_color                          = Vec3f(255,64,128);
+  Vec3f engineer_color                      = Vec3f(255,128,64);
+  Vec3f kurt_color                          = Vec3f(255,128,198);
+  Vec3f goal_color                          = Vec3f(255,255,0);
+  
   file.open(map_bmp, ios::in | ios::binary);
   
   // Check for BM
@@ -280,8 +311,10 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         file.read((char *)alpha, 1);
       }
       
+      Vec3f data_color = Vec3f(red[0],green[0],blue[0]);
+      
       // block
-      if(red[0] == 0 && green[0] == 0 && blue[0] == 0)
+      if(data_color == block_color)
       {
         map[x][y][M_COLL] = 1;
         if (x > 0)
@@ -297,25 +330,25 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         }
       }
       // rubber
-      else if(red[0] == 0 && green[0] == 255 && blue[0] == 255)
+      else if(data_color == rubber_color)
       {
         map[x][y][M_COLL] = OUTSIDE;
         map[x][y][M_TILE] = RUBBER;
       }
       // circuit
-      else if(red[0] == 0 && green[0] == 0 && blue[0] == 128)
+      else if(data_color == circuit_color)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = CIRCUIT;
       }
       // outside of the playable area
-      else if(red[0] == 0 && green[0] == 128 && blue[0] == 0)
+      else if(data_color == outside_color)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = OUTSIDE;
       }
       // strong helper
-      else if(red[0] == 255 && green[0] == 0 && blue[0] == 0)
+      else if(data_color == ahnold_color)
       {
         float mx, my;
         get_top_left(mx, my);
@@ -328,7 +361,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // jumping helper
-      else if(red[0] == 0 && green[0] == 255 && blue[0] == 0)
+      else if(data_color == jumper_color)
       {
         float mx, my;
         get_top_left(mx, my);
@@ -341,7 +374,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // paris helper
-      else if (red[0] == 255 && green[0] == 0 && blue[0] == 128)
+      else if (data_color == paris_color)
       {
         float mx, my;
         get_top_left(mx, my);
@@ -355,7 +388,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // engineer helper
-      else if (red[0] == 255 && green[0] == 128 && blue[0] == 64)
+      else if (data_color == engineer_color)
       {
         float mx, my;
         get_top_left(mx, my);
@@ -369,7 +402,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // Kurt helper
-      else if (red[0] == 255 && green[0] == 128 && blue[0] == 192)
+      else if (data_color == kurt_color)
       {
         float mx, my;
         get_top_left(mx, my);
@@ -382,7 +415,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ++sound_num;
       }
       // moveable block
-      else if(red[0] == 190 && green[0] == 190)
+      else if(data_color.r() == pushable_color.r() && data_color.g() == pushable_color.g())
       {
         float mx, my;
         Moveable *move;
@@ -396,7 +429,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         groups.push_back(blue[0]);
       }
       // freezeable moveable block
-      else if(red[0] == 180 && green[0] == 180)
+      else if(data_color.r() == freezable_color.r() && data_color.g() == freezable_color.g())
       {
         float mx, my;
         Moveable *move;
@@ -410,7 +443,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         groups.push_back(blue[0]);
       }
       // static rubber moveable block
-      else if(red[0] == 170 && green[0] == 170)
+      else if(data_color.r() == static_rubber_ended_mover_color.r() && data_color.g() == static_rubber_ended_mover_color.g())
       {
         float mx, my;
         Moveable *move;
@@ -422,7 +455,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         groups.push_back(blue[0]);
       }
       // moving rubber moveable block
-      else if(red[0] == 160 && green[0] == 160)
+      else if(data_color.r() == moving_rubber_ended_mover_color.r() && data_color.g() == moving_rubber_ended_mover_color.g())
       {
         float mx, my;
         Moveable *move;
@@ -435,12 +468,12 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         groups.push_back(blue[0]);
       }
       // ladder
-      else if(red[0] == 128 && green[0] == 128 && blue[0] == 0)
+      else if(data_color == ladder_color)
       {
         map[x][y][M_TILE] = LADDER;
       }
       // platform (can jump from bottom)
-      else if(red[0] == 128 && green[0] == 128 && blue[0] == 128)
+      else if(data_color == platform_color)
       {
         if (x > 0)
         {
@@ -455,32 +488,33 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         }
       }
       // breakeabe block
-      else if(red[0] == 0 && green[0] == 128 && blue[0] == 255)
+      else if(data_color == breakable_color)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = BREAKABLE1;
       }
       // goal
-      else if(red[0] == 255 && green[0] == 255 && blue[0] == 0)
+      else if(data_color == goal_color)
       {
         map[x][y][M_TILE] = GOAL;
       }
       // black hole tile
-      else if(red[0] == 128 && green[0] == 128 && blue[0] == 255)
+      else if(data_color == blackhole_color)
       {
         map[x][y][M_TILE] = BLACK_HOLE;
       }
       // toxic sludge tile
-      else if (red[0] == 128 && green[0] == 255 && blue[0] == 128)
+      else if (data_color == toxic_sludge_color)
       {
         map[x][y][M_TILE] = TOXIC_SLUDGE;
       }
-      else if (red[0] == 255 && green[0] == 64 && blue[0] == 128)
+      // smog
+      else if (data_color == smog_color)
       {
         map[x][y][M_TILE] = SMOG;
       }
       // moving platform
-      else if(red[0] == 150 && green[0] == 150)
+      else if(data_color.r() == freezable_color.r() && data_color.g() == freezable_color.g())
       {
         float mx, my;
         get_top_left(mx, my);
@@ -492,7 +526,7 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         groups.push_back(blue[0]);                                  
       }
       // player start position
-      else if(red[0] == 255 && green[0] == 0 && blue[0] == 255)
+      else if(data_color == player_start_color)
       {
         // move map so that player start is centered
         move(-x * TILE_WIDTH + SCREEN_WIDTH / 2.0f - TILE_WIDTH,
@@ -512,19 +546,19 @@ bool Map::load_map(const char *map_bmp, vector<Moveable *> &moveables,
         ((Player *)player)->set_checkpoint(x, y);
       }
       // check point
-      else if (red[0] == 192 && green[0] == 128 && blue[0] == 255)
+      else if (data_color == checkpoint_color)
       {
         map[x][y][M_TILE] = NEW_CHECKPOINT;
       }
       // Body Guards
       // Right
-      else if(red[0] == 0 && green[0] == 128 && blue[0] == 128)
+      else if(data_color == right_bouncer_color)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = BOUNCER_CLOSED_R;
       }
       // Left
-      else if(red[0] == 0 && green[0] == 128 && blue[0] == 129)
+      else if(data_color == left_bouncer_color)
       {
         map[x][y][M_COLL] = 1;
         map[x][y][M_TILE] = BOUNCER_CLOSED_L;
