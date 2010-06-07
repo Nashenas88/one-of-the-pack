@@ -49,6 +49,9 @@ public:
   }
   float x() const { return data[0]; }
   float y() const { return data[1]; }
+  
+  float r() const { return data[0]; }
+  float g() const { return data[1]; }
   float Length() const 
   {
     return (float)sqrt( data[0] * data[0] + data[1] * data[1] ); 
@@ -327,10 +330,8 @@ public:
   }
 
 private:
-
   // REPRESENTATION
   float		data[4];
-  
 };
 #endif
 
