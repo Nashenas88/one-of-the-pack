@@ -657,7 +657,6 @@ void handleResize(int w, int h)
 // called when a normal key is pressed
 void handleKeypress(unsigned char key, int x, int y)
 {
-  cout << key << endl;
   if (loading)
   {
     return;
